@@ -1,7 +1,8 @@
 // Service Worker for Done-It PWA
 const CACHE_NAME = 'doneit-v1';
 const urlsToCache = [
-  '/lumina-vault.html',
+ '/done-it-app/lumina-vault.html',
+ '/done-it-app/index.html',
   'https://cdn.tailwindcss.com',
   'https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;800&display=swap'
 ];
