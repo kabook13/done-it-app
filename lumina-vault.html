@@ -987,7 +987,10 @@
         <div id="vault-content" class="hidden space-y-4 fade-in">
             <div class="flex justify-between items-center">
                 <h2 class="text-2xl font-bold">הכספת</h2>
-                <button onclick="lockVault()" class="text-red-500 text-xs font-bold active:opacity-70">🔒 נעילה מחדש</button>
+                <div class="flex gap-2">
+                    <button onclick="showChangePasswordModal()" class="text-purple-600 dark:text-purple-400 text-xs font-bold active:opacity-70">🔑 שנה סיסמה</button>
+                    <button onclick="lockVault()" class="text-red-500 text-xs font-bold active:opacity-70">🔒 נעילה מחדש</button>
+                </div>
             </div>
             <textarea id="vault-text" class="apple-card w-full h-96 p-4 text-sm resize-none" 
                       placeholder="מידע רגיש, קודים, מספרי דרכון..."></textarea>
@@ -1010,6 +1013,36 @@
                 <button onclick="saveNote()" class="flex-1 bg-gradient-to-r from-purple-600 to-pink-500 text-white py-3 rounded-xl font-bold shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 active:scale-95 transition-all">שמירה</button>
                 <button onclick="closeNoteModal()" class="flex-1 bg-slate-100/80 dark:bg-slate-800/80 backdrop-blur-sm py-3 rounded-xl font-bold hover:bg-slate-200/80 dark:hover:bg-slate-700/80 active:scale-95 transition-all">ביטול</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div id="change-password-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-[100] p-6" onclick="if(event.target === this) closeChangePasswordModal()">
+        <div class="apple-card w-full max-w-md mx-auto p-6 space-y-4 slide-in" onclick="event.stopPropagation()">
+            <h2 class="text-xl font-bold mb-4">🔑 שינוי סיסמת הכספת</h2>
+            <div class="space-y-3">
+                <div>
+                    <label class="text-xs text-slate-400 mb-1 block">סיסמה נוכחית</label>
+                    <input type="password" id="current-pass-input" placeholder="הקישי את הסיסמה הנוכחית" 
+                           class="w-full p-3 bg-slate-100/80 dark:bg-slate-800/80 rounded-xl text-sm border border-slate-200/50 dark:border-slate-700/50 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 mb-1 block">סיסמה חדשה</label>
+                    <input type="password" id="new-pass-input" placeholder="הקישי סיסמה חדשה" 
+                           class="w-full p-3 bg-slate-100/80 dark:bg-slate-800/80 rounded-xl text-sm border border-slate-200/50 dark:border-slate-700/50 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 mb-1 block">אימות סיסמה חדשה</label>
+                    <input type="password" id="confirm-pass-input" placeholder="הקישי שוב את הסיסמה החדשה" 
+                           class="w-full p-3 bg-slate-100/80 dark:bg-slate-800/80 rounded-xl text-sm border border-slate-200/50 dark:border-slate-700/50 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+                           onkeypress="if(event.key === 'Enter') changeVaultPassword()">
+                </div>
+            </div>
+            <div class="flex gap-2 pt-2">
+                <button onclick="changeVaultPassword()" class="flex-1 bg-gradient-to-r from-purple-600 to-pink-500 text-white py-3 rounded-xl font-bold shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 active:scale-95 transition-all">שמור סיסמה</button>
+                <button onclick="closeChangePasswordModal()" class="flex-1 bg-slate-100/80 dark:bg-slate-800/80 backdrop-blur-sm py-3 rounded-xl font-bold hover:bg-slate-200/80 dark:hover:bg-slate-700/80 active:scale-95 transition-all">ביטול</button>
+            </div>
+            <p class="text-[10px] text-slate-400 text-center mt-2">💡 הסיסמה נשמרת במכשיר שלך בלבד</p>
         </div>
     </div>
 
@@ -1084,7 +1117,8 @@
             localStorage.setItem('lumina_vault_pass_hash', btoa(newPass + 'lumina_salt_2024'));
         }
         
-        const VAULT_PASS = getVaultPassword();
+        let VAULT_PASS = getVaultPassword();
+        window.VAULT_PASS = VAULT_PASS; // Make it accessible globally for password change
 
         // --- Theme Management ---
         function initTheme() {
@@ -1644,6 +1678,55 @@
             document.getElementById('vault-auth').classList.remove('hidden');
             document.getElementById('vault-content').classList.add('hidden');
             document.getElementById('vault-pass').value = '';
+        }
+        
+        function showChangePasswordModal() {
+            document.getElementById('change-password-modal').classList.remove('hidden');
+            document.getElementById('current-pass-input').value = '';
+            document.getElementById('new-pass-input').value = '';
+            document.getElementById('confirm-pass-input').value = '';
+            setTimeout(() => document.getElementById('current-pass-input').focus(), 100);
+        }
+        
+        function closeChangePasswordModal() {
+            document.getElementById('change-password-modal').classList.add('hidden');
+        }
+        
+        function changeVaultPassword() {
+            const currentPass = document.getElementById('current-pass-input').value;
+            const newPass = document.getElementById('new-pass-input').value;
+            const confirmPass = document.getElementById('confirm-pass-input').value;
+            
+            // Validate current password
+            if (currentPass !== VAULT_PASS) {
+                alert('סיסמה נוכחית שגויה');
+                document.getElementById('current-pass-input').classList.add('shake');
+                setTimeout(() => document.getElementById('current-pass-input').classList.remove('shake'), 400);
+                return;
+            }
+            
+            // Validate new password
+            if (!newPass || newPass.length < 3) {
+                alert('סיסמה חדשה חייבת להכיל לפחות 3 תווים');
+                document.getElementById('new-pass-input').classList.add('shake');
+                setTimeout(() => document.getElementById('new-pass-input').classList.remove('shake'), 400);
+                return;
+            }
+            
+            // Validate confirmation
+            if (newPass !== confirmPass) {
+                alert('סיסמה חדשה ואימות הסיסמה לא תואמים');
+                document.getElementById('confirm-pass-input').classList.add('shake');
+                setTimeout(() => document.getElementById('confirm-pass-input').classList.remove('shake'), 400);
+                return;
+            }
+            
+            // Change password
+            setVaultPassword(newPass);
+            window.VAULT_PASS = newPass; // Update the global variable
+            
+            alert('סיסמה שונתה בהצלחה! 🔑');
+            closeChangePasswordModal();
         }
 
         function exportVault() {
