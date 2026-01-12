@@ -564,6 +564,173 @@
             position: relative;
             z-index: 1;
         }
+        
+        /* Celebration Animations */
+        @keyframes confetti {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+        
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: var(--primary);
+            animation: confetti 3s ease-out forwards;
+            pointer-events: none;
+            z-index: 9999;
+        }
+        
+        @keyframes celebrate {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        
+        .celebrate {
+            animation: celebrate 0.6s ease;
+        }
+        
+        /* Achievement Badge */
+        .achievement-badge {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.1), rgba(236, 72, 153, 0.1));
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .achievement-badge.unlocked {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.2), rgba(236, 72, 153, 0.2));
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+        
+        .achievement-badge.locked {
+            opacity: 0.4;
+            filter: grayscale(100%);
+        }
+        
+        .achievement-badge.unlocked::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Progress Bar */
+        .progress-bar {
+            background: linear-gradient(90deg, var(--primary), var(--primary-pink));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+            min-height: 8px;
+        }
+        
+        /* Insight Card */
+        .insight-card {
+            padding: 12px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.05), rgba(236, 72, 153, 0.05));
+            border-right: 3px solid var(--primary);
+            font-size: 13px;
+            animation: fadeIn 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* Streak fire animation */
+        @keyframes fire {
+            0%, 100% { transform: scale(1) rotate(-2deg); }
+            50% { transform: scale(1.1) rotate(2deg); }
+        }
+        
+        #streak-count {
+            animation: fire 2s ease-in-out infinite;
+        }
+        
+        /* Progress bar animation */
+        .progress-bar {
+            animation: progressGrow 0.8s ease-out;
+        }
+        
+        @keyframes progressGrow {
+            from { height: 0; }
+        }
+        
+        /* Achievement hover effect */
+        .achievement-badge.unlocked:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 0 30px var(--primary-glow);
+        }
+        
+        /* Gift Item Styles */
+        .gift-item {
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .gift-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.05), rgba(236, 72, 153, 0.05));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 24px;
+        }
+        
+        .gift-item:hover::before {
+            opacity: 1;
+        }
+        
+        .gift-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-xl), var(--shadow-glow);
+        }
+        
+        .gift-item:active {
+            transform: scale(0.98);
+        }
+        
+        /* Gift opening animation */
+        @keyframes giftOpen {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05) rotate(2deg); }
+            100% { transform: scale(1); }
+        }
+        
+        .gift-item.opening {
+            animation: giftOpen 0.5s ease;
+        }
+        
+        /* New gift indicator */
+        .gift-item.ring-2 {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(147, 51, 234, 0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(147, 51, 234, 0); }
+        }
     </style>
 </head>
 <body class="pb-24" data-theme="light">
@@ -581,11 +748,12 @@
         </div>
     </header>
 
-    <nav class="flex bg-white/80 dark:bg-[#0F172A]/80 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50 sticky top-[73px] z-40 transition-all shadow-sm">
-        <button onclick="showTab('apps')" id="btn-apps" class="flex-1 py-4 text-sm text-slate-400">אפליקציות</button>
-        <button onclick="showTab('tasks')" id="btn-tasks" class="flex-1 py-4 text-sm tab-active">משימות</button>
-        <button onclick="showTab('spaces')" id="btn-spaces" class="flex-1 py-4 text-sm text-slate-400">עולמות</button>
-        <button onclick="showTab('vault')" id="btn-vault" class="flex-1 py-4 text-sm text-slate-400">הכספת</button>
+    <nav class="flex bg-white/80 dark:bg-[#0F172A]/80 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50 sticky top-[73px] z-40 transition-all shadow-sm overflow-x-auto">
+        <button onclick="showTab('apps')" id="btn-apps" class="flex-1 py-4 text-sm text-slate-400 min-w-[80px]">אפליקציות</button>
+        <button onclick="showTab('tasks')" id="btn-tasks" class="flex-1 py-4 text-sm tab-active min-w-[80px]">משימות</button>
+        <button onclick="showTab('spaces')" id="btn-spaces" class="flex-1 py-4 text-sm text-slate-400 min-w-[80px]">עולמות</button>
+        <button onclick="showTab('gifts')" id="btn-gifts" class="flex-1 py-4 text-sm text-slate-400 min-w-[80px]">💝 ממני</button>
+        <button onclick="showTab('vault')" id="btn-vault" class="flex-1 py-4 text-sm text-slate-400 min-w-[80px]">הכספת</button>
     </nav>
 
     <!-- Apps Tab -->
@@ -694,6 +862,117 @@
         </div>
     </main>
 
+    <!-- Progress Tab -->
+    <main id="tab-progress" class="p-5 hidden space-y-6 fade-in">
+        <!-- Streak Card -->
+        <div class="apple-card p-6 text-center relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-transparent"></div>
+            <div class="relative">
+                <div class="text-6xl mb-4" style="filter: drop-shadow(0 0 10px rgba(236, 72, 153, 0.5)); animation: fire 2s ease-in-out infinite;">🔥</div>
+                <h3 class="text-3xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent" id="streak-count">0</h3>
+                <p class="text-sm text-slate-500 dark:text-slate-400 font-semibold">יום רצף של השלמת משימות!</p>
+                <p class="text-xs text-slate-400 mt-2" id="streak-message">התחל להשלמת משימות כדי להתחיל רצף</p>
+            </div>
+        </div>
+
+        <!-- Achievements -->
+        <div class="apple-card p-4 space-y-3">
+            <h3 class="text-xs font-bold text-slate-400 uppercase mb-3">🏆 הישגים</h3>
+            <div id="achievements-grid" class="grid grid-cols-3 gap-3">
+                <!-- Achievements will be rendered here -->
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-2 gap-4">
+            <div class="apple-card p-4 text-center">
+                <div class="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent" id="total-tasks">0</div>
+                <p class="text-xs text-slate-500 mt-1">סה"כ משימות</p>
+            </div>
+            <div class="apple-card p-4 text-center">
+                <div class="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent" id="completed-tasks">0</div>
+                <p class="text-xs text-slate-500 mt-1">הושלמו</p>
+            </div>
+            <div class="apple-card p-4 text-center">
+                <div class="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent" id="completion-rate">0%</div>
+                <p class="text-xs text-slate-500 mt-1">אחוז השלמה</p>
+            </div>
+            <div class="apple-card p-4 text-center">
+                <div class="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent" id="total-notes">0</div>
+                <p class="text-xs text-slate-500 mt-1">רשימות</p>
+            </div>
+        </div>
+
+        <!-- Progress Chart -->
+        <div class="apple-card p-4">
+            <h3 class="text-xs font-bold text-slate-400 uppercase mb-4">📈 התקדמות שבועית</h3>
+            <div id="progress-chart" class="h-32 flex items-end justify-between gap-2">
+                <!-- Chart bars will be rendered here -->
+            </div>
+        </div>
+
+        <!-- Smart Insights -->
+        <div class="apple-card p-4 space-y-3">
+            <h3 class="text-xs font-bold text-slate-400 uppercase mb-3">💡 תובנות</h3>
+            <div id="insights-container" class="space-y-2">
+                <!-- Insights will be rendered here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Gifts Tab - הודעות ומתנות ממני -->
+    <main id="tab-gifts" class="p-5 hidden space-y-6 fade-in">
+        <div class="apple-card p-6 text-center relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-transparent"></div>
+            <div class="relative">
+                <div class="text-5xl mb-3">💝</div>
+                <h2 class="text-2xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">מתנות ממני</h2>
+                <p class="text-sm text-slate-500 dark:text-slate-400">הודעות, תזכורות ומתנות קטנות</p>
+            </div>
+        </div>
+
+        <!-- Gifts Container -->
+        <div id="gifts-container" class="space-y-4">
+            <!-- Gifts will be rendered here -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="gifts-empty" class="hidden text-center py-12">
+            <span class="text-6xl block mb-4">🎁</span>
+            <p class="text-slate-400 text-lg mb-2">אין מתנות כרגע</p>
+            <p class="text-slate-500 text-sm">מתנות חדשות יופיעו כאן</p>
+        </div>
+
+        <!-- Admin Panel (hidden by default, accessible via special code) -->
+        <div id="gifts-admin" class="hidden apple-card p-4 space-y-3 mt-6 border-2 border-purple-300 dark:border-purple-700">
+            <div class="flex justify-between items-center mb-2">
+                <h3 class="text-xs font-bold text-slate-400 uppercase">ניהול מתנות</h3>
+                <button onclick="toggleGiftsAdmin()" class="text-xs text-slate-400 hover:text-purple-600">הסתר</button>
+            </div>
+            <input type="text" id="gift-title-input" placeholder="כותרת המתנה/הודעה" 
+                   class="w-full p-3 bg-slate-100/80 dark:bg-slate-800/80 rounded-xl text-sm border border-slate-200/50 dark:border-slate-700/50">
+            <textarea id="gift-message-input" placeholder="ההודעה או התוכן..." 
+                      class="w-full p-3 bg-slate-100/80 dark:bg-slate-800/80 rounded-xl text-sm min-h-[100px] border border-slate-200/50 dark:border-slate-700/50 resize-none"></textarea>
+            <div class="flex gap-2">
+                <input type="text" id="gift-icon-input" placeholder="אימוג'י" 
+                       class="w-16 p-3 bg-slate-100/80 dark:bg-slate-800/80 rounded-xl text-center text-2xl border border-slate-200/50 dark:border-slate-700/50"
+                       maxlength="2">
+                <input type="date" id="gift-date-input" 
+                       class="flex-1 p-3 bg-slate-100/80 dark:bg-slate-800/80 rounded-xl text-sm border border-slate-200/50 dark:border-slate-700/50">
+            </div>
+            <div class="flex gap-2">
+                <button onclick="addGift()" class="flex-1 bg-gradient-to-r from-purple-600 to-pink-500 text-white py-3 rounded-xl font-bold text-sm shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 active:scale-95 transition-all">➕ הוסף מתנה</button>
+                <button onclick="clearAllGifts()" class="px-4 bg-red-500/10 text-red-600 dark:text-red-400 py-3 rounded-xl font-bold text-sm active:scale-95 transition-all">🗑️</button>
+            </div>
+            <p class="text-[10px] text-slate-400 text-center mt-2">💡 טיפ: השאר תאריך ריק כדי שהמתנה תופיע מיד</p>
+        </div>
+
+        <!-- Secret Button to Access Admin (triple tap on title) -->
+        <div class="text-center mt-4">
+            <button id="secret-admin-btn" class="text-xs text-slate-300 hover:text-purple-500 transition opacity-0 hover:opacity-100" style="user-select: none;">🔧</button>
+        </div>
+    </main>
+
     <!-- Vault Tab -->
     <main id="tab-vault" class="p-5 hidden">
         <div id="vault-auth" class="apple-card p-8 text-center space-y-4">
@@ -763,6 +1042,21 @@
             { id: 5, name: 'גימייל', url: 'https://gmail.com', icon: '📧' },
             { id: 6, name: 'גוגל', url: 'https://google.com', icon: '🔍' }
         ];
+        let progressData = JSON.parse(localStorage.getItem('lumina_progress')) || {
+            streak: 0,
+            lastCompletedDate: null,
+            achievements: {},
+            weeklyProgress: {}
+        };
+        
+        // Initialize progress data if needed
+        if (!progressData.achievements) progressData.achievements = {};
+        if (!progressData.weeklyProgress) progressData.weeklyProgress = {};
+        
+        // Gifts data - מתנות ממני
+        let gifts = JSON.parse(localStorage.getItem('lumina_gifts')) || [];
+        let giftsAdminVisible = false;
+        let secretTapCount = 0;
         let currentSpace = '';
         let currentNoteIndex = -1;
         let selectedPriority = 3;
@@ -830,6 +1124,8 @@
             if(tab === 'tasks') renderTasks();
             if(tab === 'spaces') exitSpace();
             if(tab === 'apps') renderApps();
+            if(tab === 'progress') renderProgress();
+            if(tab === 'gifts') renderGifts();
         }
 
         // --- Tasks Logic ---
@@ -861,8 +1157,27 @@
         }
 
         function toggleTask(id) {
-            tasks = tasks.map(t => t.id === id ? {...t, done: !t.done} : t);
+            const task = tasks.find(t => t.id === id);
+            const wasDone = task.done;
+            tasks = tasks.map(t => {
+                if (t.id === id) {
+                    const newDone = !t.done;
+                    return {
+                        ...t, 
+                        done: newDone,
+                        completedAt: newDone && !wasDone ? new Date().toISOString() : t.completedAt
+                    };
+                }
+                return t;
+            });
             saveTasks();
+            
+            // Celebration if task was completed (was not done, now is done)
+            if (!wasDone && tasks.find(t => t.id === id).done) {
+                celebrateTaskCompletion();
+                updateStreak();
+                checkAchievements();
+            }
         }
 
         function deleteTask(id) {
@@ -1107,6 +1422,202 @@
             document.getElementById('note-modal').classList.add('hidden'); 
         }
 
+        // --- Gifts Logic - מתנות ממני ---
+        function renderGifts() {
+            const container = document.getElementById('gifts-container');
+            const empty = document.getElementById('gifts-empty');
+            container.innerHTML = '';
+            
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            // Filter gifts that should be visible (no date or date <= today)
+            const visibleGifts = gifts.filter(gift => {
+                if (!gift.revealDate) return true; // No date = show immediately
+                const revealDate = new Date(gift.revealDate);
+                revealDate.setHours(0, 0, 0, 0);
+                return revealDate <= today;
+            }).sort((a, b) => {
+                // Sort by date (newest first) or by creation date
+                if (a.revealDate && b.revealDate) {
+                    return new Date(b.revealDate) - new Date(a.revealDate);
+                }
+                return (b.createdAt || 0) - (a.createdAt || 0);
+            });
+            
+            if (visibleGifts.length === 0) {
+                container.classList.add('hidden');
+                empty.classList.remove('hidden');
+            } else {
+                container.classList.remove('hidden');
+                empty.classList.add('hidden');
+                
+                visibleGifts.forEach((gift, index) => {
+                    const giftEl = document.createElement('div');
+                    giftEl.className = 'apple-card p-5 relative overflow-hidden gift-item fade-in';
+                    giftEl.style.animationDelay = (index * 0.1) + 's';
+                    
+                    const isNew = !gift.viewed;
+                    if (isNew) {
+                        giftEl.classList.add('ring-2', 'ring-purple-400', 'ring-opacity-50');
+                    }
+                    
+                    giftEl.innerHTML = `
+                        <div class="flex items-start gap-4">
+                            <div class="text-4xl flex-shrink-0 ${isNew ? 'animate-bounce' : ''}" style="filter: ${isNew ? 'drop-shadow(0 0 8px rgba(236, 72, 153, 0.6))' : 'none'};">
+                                ${gift.icon || '💝'}
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-start justify-between mb-2">
+                                    <h3 class="text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">${gift.title}</h3>
+                                    ${isNew ? '<span class="text-xs bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1 rounded-full animate-pulse shadow-lg">חדש! ✨</span>' : ''}
+                                </div>
+                                <p class="text-sm text-slate-600 dark:text-slate-300 whitespace-pre-wrap leading-relaxed mt-2">${gift.message}</p>
+                                ${gift.revealDate ? `<p class="text-[10px] text-slate-400 mt-3 flex items-center gap-1">
+                                    <span>📅</span>
+                                    <span>למתנה מיום ${new Date(gift.revealDate).toLocaleDateString('he-IL')}</span>
+                                </p>` : ''}
+                                ${gift.viewedAt ? `<p class="text-[10px] text-slate-400 mt-1">נפתח ב-${new Date(gift.viewedAt).toLocaleDateString('he-IL')}</p>` : ''}
+                            </div>
+                            ${giftsAdminVisible ? `<button onclick="event.stopPropagation(); deleteGift(${gift.id})" class="text-slate-300 hover:text-red-500 active:scale-90 transition ml-2 flex-shrink-0">✕</button>` : ''}
+                        </div>
+                    `;
+                    
+                    giftEl.onclick = () => {
+                        if (!gift.viewed) {
+                            giftEl.classList.add('opening');
+                            setTimeout(() => {
+                                gift.viewed = true;
+                                gift.viewedAt = new Date().toISOString();
+                                localStorage.setItem('lumina_gifts', JSON.stringify(gifts));
+                                celebrateGiftOpening();
+                                renderGifts();
+                            }, 300);
+                        }
+                    };
+                    
+                    container.appendChild(giftEl);
+                });
+            }
+            
+            // Setup secret admin access
+            setupSecretAdminAccess();
+        }
+        
+        function celebrateGiftOpening() {
+            // Special celebration for opening a gift
+            const colors = ['#9333EA', '#EC4899', '#F472B6', '#C084FC'];
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.top = Math.random() * 20 + '%';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.width = (Math.random() * 10 + 8) + 'px';
+                    confetti.style.height = confetti.style.width;
+                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0%';
+                    confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                    confetti.style.animationDuration = (Math.random() * 2 + 3) + 's';
+                    document.body.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 5000);
+                }, i * 20);
+            }
+            
+            // Haptic feedback
+            if (navigator.vibrate) {
+                navigator.vibrate([200, 100, 200, 100, 200]);
+            }
+        }
+        
+        function addGift() {
+            const title = document.getElementById('gift-title-input').value.trim();
+            const message = document.getElementById('gift-message-input').value.trim();
+            const icon = document.getElementById('gift-icon-input').value.trim() || '💝';
+            const date = document.getElementById('gift-date-input').value;
+            
+            if (!title || !message) {
+                alert('נא למלא כותרת והודעה');
+                return;
+            }
+            
+            gifts.push({
+                id: Date.now(),
+                title: title,
+                message: message,
+                icon: icon,
+                revealDate: date || null,
+                createdAt: new Date().toISOString(),
+                viewed: false
+            });
+            
+            saveGifts();
+            
+            // Clear inputs
+            document.getElementById('gift-title-input').value = '';
+            document.getElementById('gift-message-input').value = '';
+            document.getElementById('gift-icon-input').value = '';
+            document.getElementById('gift-date-input').value = '';
+            
+            alert('מתנה נוספה בהצלחה! 💝');
+        }
+        
+        function deleteGift(id) {
+            if (confirm('למחוק את המתנה?')) {
+                gifts = gifts.filter(g => g.id !== id);
+                saveGifts();
+            }
+        }
+        
+        function clearAllGifts() {
+            if (confirm('למחוק את כל המתנות? זה לא ניתן לשחזור!')) {
+                if (confirm('בטוח בטוח?')) {
+                    gifts = [];
+                    saveGifts();
+                }
+            }
+        }
+        
+        function saveGifts() {
+            localStorage.setItem('lumina_gifts', JSON.stringify(gifts));
+            renderGifts();
+        }
+        
+        function toggleGiftsAdmin() {
+            giftsAdminVisible = !giftsAdminVisible;
+            const adminPanel = document.getElementById('gifts-admin');
+            if (giftsAdminVisible) {
+                adminPanel.classList.remove('hidden');
+            } else {
+                adminPanel.classList.add('hidden');
+            }
+            renderGifts();
+        }
+        
+        function setupSecretAdminAccess() {
+            const titleEl = document.querySelector('#tab-gifts h2');
+            const secretBtn = document.getElementById('secret-admin-btn');
+            
+            if (titleEl && !giftsAdminVisible) {
+                titleEl.style.cursor = 'pointer';
+                titleEl.onclick = () => {
+                    secretTapCount++;
+                    if (secretTapCount >= 5) {
+                        toggleGiftsAdmin();
+                        secretTapCount = 0;
+                        if (secretBtn) secretBtn.style.opacity = '1';
+                    }
+                    setTimeout(() => { 
+                        if (secretTapCount < 5) secretTapCount = 0; 
+                    }, 2000);
+                };
+            }
+            
+            if (secretBtn) {
+                secretBtn.onclick = () => toggleGiftsAdmin();
+            }
+        }
+
         // --- Vault Logic ---
         function unlockVault() {
             const input = document.getElementById('vault-pass');
@@ -1254,6 +1765,322 @@
             }
         });
 
+        // --- Progress & Achievements System ---
+        function celebrateTaskCompletion() {
+            // Create confetti with more variety
+            const colors = ['#9333EA', '#EC4899', '#A855F7', '#F472B6', '#C084FC', '#F9A8D4'];
+            const shapes = ['●', '◆', '▲', '★'];
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.top = Math.random() * 20 + '%';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.width = (Math.random() * 8 + 6) + 'px';
+                    confetti.style.height = confetti.style.width;
+                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0%';
+                    confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    document.body.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 4000);
+                }, i * 30);
+            }
+            
+            // Haptic feedback (if available)
+            if (navigator.vibrate) {
+                navigator.vibrate([100, 50, 100]);
+            }
+            
+            // Add celebration sound effect (optional - using Web Audio API)
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.2);
+            } catch (e) {
+                // Audio not supported, continue silently
+            }
+        }
+        
+        function updateStreak() {
+            const today = new Date().toDateString();
+            const lastDate = progressData.lastCompletedDate ? new Date(progressData.lastCompletedDate).toDateString() : null;
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayStr = yesterday.toDateString();
+            
+            if (lastDate === today) {
+                // Already completed today
+                return;
+            } else if (lastDate === yesterdayStr) {
+                // Continue streak
+                progressData.streak++;
+            } else if (lastDate === null) {
+                // First time
+                progressData.streak = 1;
+            } else {
+                // Streak broken, start over
+                progressData.streak = 1;
+            }
+            
+            progressData.lastCompletedDate = new Date().toISOString();
+            localStorage.setItem('lumina_progress', JSON.stringify(progressData));
+            if (document.getElementById('tab-progress') && !document.getElementById('tab-progress').classList.contains('hidden')) {
+                renderProgress();
+            }
+        }
+        
+        function checkAchievements() {
+            const completed = tasks.filter(t => t.done).length;
+            const total = tasks.length;
+            // Check perfect day
+            const today = new Date().toDateString();
+            const todayTasks = tasks.filter(t => {
+                if (!t.createdAt) return false;
+                return new Date(t.createdAt).toDateString() === today;
+            });
+            const todayCompleted = todayTasks.filter(t => t.done).length;
+            const perfectDay = todayTasks.length > 0 && todayCompleted === todayTasks.length;
+            
+            const achievements = {
+                'first_task': { unlocked: completed >= 1, icon: '🎯', name: 'משימה ראשונה', desc: 'השלמת משימה אחת' },
+                'ten_tasks': { unlocked: completed >= 10, icon: '🌟', name: 'עשר משימות', desc: 'השלמת 10 משימות' },
+                'fifty_tasks': { unlocked: completed >= 50, icon: '💎', name: 'חמישים משימות', desc: 'השלמת 50 משימות' },
+                'hundred_tasks': { unlocked: completed >= 100, icon: '👑', name: 'מאה משימות', desc: 'השלמת 100 משימות' },
+                'streak_3': { unlocked: progressData.streak >= 3, icon: '🔥', name: 'רצף של 3', desc: '3 ימים רצופים' },
+                'streak_7': { unlocked: progressData.streak >= 7, icon: '🔥🔥', name: 'שבוע רצוף', desc: '7 ימים רצופים' },
+                'streak_30': { unlocked: progressData.streak >= 30, icon: '🔥🔥🔥', name: 'חודש רצוף', desc: '30 ימים רצופים' },
+                'perfect_day': { unlocked: perfectDay, icon: '✨', name: 'יום מושלם', desc: 'השלמת כל המשימות ביום' },
+                'notes_master': { unlocked: Object.values(spacesData).flat().length >= 10, icon: '📝', name: 'מאסטר רשימות', desc: '10 רשימות' }
+            };
+            
+            let newAchievement = false;
+            Object.keys(achievements).forEach(key => {
+                if (achievements[key].unlocked && !progressData.achievements[key]) {
+                    progressData.achievements[key] = true;
+                    newAchievement = true;
+                }
+            });
+            
+            if (newAchievement) {
+                localStorage.setItem('lumina_progress', JSON.stringify(progressData));
+                celebrateAchievement();
+            }
+        }
+        
+        function celebrateAchievement() {
+            // Show achievement notification with animation
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-20 left-1/2 transform -translate-x-1/2 z-[9999] apple-card p-6 text-center';
+            notification.style.background = 'linear-gradient(135deg, rgba(147, 51, 234, 0.95), rgba(236, 72, 153, 0.95))';
+            notification.style.backdropFilter = 'blur(20px)';
+            notification.style.border = '2px solid rgba(255,255,255,0.3)';
+            notification.style.boxShadow = '0 20px 40px rgba(147, 51, 234, 0.4)';
+            notification.style.animation = 'modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+            notification.innerHTML = `
+                <div class="text-6xl mb-3 animate-bounce">🏆</div>
+                <div class="font-bold text-xl text-white mb-1">הישג חדש!</div>
+                <div class="text-sm text-white/80">כל הכבוד על ההתקדמות!</div>
+            `;
+            document.body.appendChild(notification);
+            
+            // Confetti for achievement
+            celebrateTaskCompletion();
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translate(-50%, -20px) scale(0.9)';
+                notification.style.transition = 'all 0.5s ease';
+                setTimeout(() => notification.remove(), 500);
+            }, 3000);
+        }
+        
+        function renderProgress() {
+            // Update streak
+            document.getElementById('streak-count').textContent = progressData.streak || 0;
+            const streakMessages = {
+                0: 'התחל להשלמת משימות כדי להתחיל רצף',
+                1: 'יום ראשון! המשך כך!',
+                3: 'רצף של 3 ימים - מעולה!',
+                7: 'שבוע רצוף - מדהים!',
+                14: 'שבועיים רצופים - אתה על אש!',
+                30: 'חודש רצוף - אתה אלוף!'
+            };
+            const streakMsg = streakMessages[progressData.streak] || streakMessages[0];
+            document.getElementById('streak-message').textContent = streakMsg;
+            
+            // Update stats
+            const completed = tasks.filter(t => t.done).length;
+            const total = tasks.length;
+            const rate = total > 0 ? Math.round((completed / total) * 100) : 0;
+            const totalNotes = Object.values(spacesData).flat().length;
+            
+            document.getElementById('total-tasks').textContent = total;
+            document.getElementById('completed-tasks').textContent = completed;
+            document.getElementById('completion-rate').textContent = rate + '%';
+            document.getElementById('total-notes').textContent = totalNotes;
+            
+            // Render achievements
+            renderAchievements();
+            
+            // Render progress chart
+            renderProgressChart();
+            
+            // Render insights
+            generateInsights();
+        }
+        
+        function renderAchievements() {
+            const container = document.getElementById('achievements-grid');
+            container.innerHTML = '';
+            
+            const achievements = [
+                { key: 'first_task', icon: '🎯', name: 'ראשונה', unlocked: progressData.achievements?.first_task },
+                { key: 'ten_tasks', icon: '🌟', name: '10 משימות', unlocked: progressData.achievements?.ten_tasks },
+                { key: 'fifty_tasks', icon: '💎', name: '50 משימות', unlocked: progressData.achievements?.fifty_tasks },
+                { key: 'hundred_tasks', icon: '👑', name: '100 משימות', unlocked: progressData.achievements?.hundred_tasks },
+                { key: 'streak_3', icon: '🔥', name: '3 ימים', unlocked: progressData.achievements?.streak_3 },
+                { key: 'streak_7', icon: '🔥🔥', name: '7 ימים', unlocked: progressData.achievements?.streak_7 },
+                { key: 'streak_30', icon: '🔥🔥🔥', name: '30 ימים', unlocked: progressData.achievements?.streak_30 },
+                { key: 'notes_master', icon: '📝', name: '10 רשימות', unlocked: progressData.achievements?.notes_master },
+                { key: 'perfect_day', icon: '✨', name: 'יום מושלם', unlocked: progressData.achievements?.perfect_day }
+            ];
+            
+            achievements.forEach(ach => {
+                const badge = document.createElement('div');
+                badge.className = `achievement-badge ${ach.unlocked ? 'unlocked' : 'locked'}`;
+                badge.innerHTML = `
+                    <div class="text-2xl mb-1">${ach.icon}</div>
+                    <div class="text-[10px] font-bold text-center">${ach.name}</div>
+                `;
+                container.appendChild(badge);
+            });
+        }
+        
+        function renderProgressChart() {
+            const container = document.getElementById('progress-chart');
+            container.innerHTML = '';
+            
+            // Get last 7 days
+            const days = ['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ש'];
+            const today = new Date();
+            
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toDateString();
+                
+                // Count completed tasks for this day
+                const dayTasks = tasks.filter(t => {
+                    if (!t.completedAt) return false;
+                    return new Date(t.completedAt).toDateString() === dateStr;
+                }).length;
+                
+                const maxTasks = Math.max(1, ...Array.from({length: 7}, (_, idx) => {
+                    const d = new Date(today);
+                    d.setDate(d.getDate() - (6 - idx));
+                    return tasks.filter(t => {
+                        if (!t.completedAt) return false;
+                        return new Date(t.completedAt).toDateString() === d.toDateString();
+                    }).length;
+                }));
+                
+                const height = maxTasks > 0 ? (dayTasks / maxTasks) * 100 : 0;
+                
+                const bar = document.createElement('div');
+                bar.className = 'flex-1 flex flex-col items-center group';
+                bar.innerHTML = `
+                    <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-t-lg relative overflow-hidden group-hover:bg-slate-300 dark:group-hover:bg-slate-600 transition-colors" style="height: 100px;">
+                        <div class="progress-bar absolute bottom-0 w-full rounded-t-lg" style="height: ${height}%"></div>
+                        <div class="absolute inset-0 flex items-end justify-center pb-1">
+                            <span class="text-[10px] font-bold text-white opacity-0 group-hover:opacity-100 transition-opacity">${dayTasks}</span>
+                        </div>
+                    </div>
+                    <div class="text-[10px] text-slate-500 dark:text-slate-400 mt-1 font-semibold">${days[date.getDay()]}</div>
+                    <div class="text-[8px] text-slate-400 dark:text-slate-500">${dayTasks}</div>
+                `;
+                container.appendChild(bar);
+            }
+        }
+        
+        function generateInsights() {
+            const container = document.getElementById('insights-container');
+            container.innerHTML = '';
+            
+            const insights = [];
+            const completed = tasks.filter(t => t.done).length;
+            const total = tasks.length;
+            const rate = total > 0 ? (completed / total) * 100 : 0;
+            
+            if (progressData.streak > 0) {
+                insights.push({
+                    icon: '🔥',
+                    text: `רצף מדהים של ${progressData.streak} ימים! המשך כך!`
+                });
+            }
+            
+            if (rate >= 80 && total > 0) {
+                insights.push({
+                    icon: '⭐',
+                    text: `אחוז השלמה מעולה: ${Math.round(rate)}%! אתה על אש!`
+                });
+            } else if (rate < 50 && total > 5) {
+                insights.push({
+                    icon: '💪',
+                    text: `יש לך ${total - completed} משימות ממתינות. בואו נסיים אותן!`
+                });
+            }
+            
+            const todayTasks = tasks.filter(t => {
+                if (!t.completedAt) return false;
+                return new Date(t.completedAt).toDateString() === new Date().toDateString();
+            }).length;
+            
+            if (todayTasks > 0) {
+                insights.push({
+                    icon: '🎉',
+                    text: `היום השלמת ${todayTasks} משימות! כל הכבוד!`
+                });
+            }
+            
+            const p1Tasks = tasks.filter(t => !t.done && t.p === 1).length;
+            if (p1Tasks > 0) {
+                insights.push({
+                    icon: '⚠️',
+                    text: `יש לך ${p1Tasks} משימות עדיפות גבוהה (P1) שצריך לטפל בהן`
+                });
+            }
+            
+            if (insights.length === 0) {
+                insights.push({
+                    icon: '🌱',
+                    text: 'התחל להשלמת משימות כדי לראות תובנות כאן'
+                });
+            }
+            
+            insights.forEach(insight => {
+                const card = document.createElement('div');
+                card.className = 'insight-card';
+                card.innerHTML = `
+                    <span class="text-lg">${insight.icon}</span>
+                    <span class="mr-2">${insight.text}</span>
+                `;
+                container.appendChild(card);
+            });
+        }
+
         // --- Initialization ---
         function init() {
             initTheme();
@@ -1262,6 +2089,14 @@
             document.getElementById('header-days').innerText = diff.toLocaleString() + " ימים יחד";
             renderTasks();
             renderApps();
+            checkAchievements();
+            renderGifts();
+            // Initialize progress if tab is visible
+            setTimeout(() => {
+                if (!document.getElementById('tab-progress').classList.contains('hidden')) {
+                    renderProgress();
+                }
+            }, 100);
             
             // Register service worker for PWA
             if ('serviceWorker' in navigator) {
