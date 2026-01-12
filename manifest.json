@@ -2,7 +2,7 @@
   "name": "Done-It - Personal OS",
   "short_name": "Done-It",
   "description": "מערכת ניהול אישית עם כספת מאובטחת",
-  "start_url": "/lumina-vault.html",
+  "start_url": "/done-it-app/lumina-vault.html",
   "display": "standalone",
   "background_color": "#F2F2F7",
   "theme_color": "#9333EA",
