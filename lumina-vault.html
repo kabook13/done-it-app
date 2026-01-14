@@ -362,6 +362,8 @@
             white-space: nowrap;
             position: relative;
             overflow: hidden;
+            text-align: center;
+            direction: rtl;
         }
         
         .filter-chip::before {
@@ -1338,32 +1340,64 @@
             if (!task || task.done) return; // Don't show reminder for completed tasks
             
             // Check if browser supports notifications
-            if ('Notification' in window && Notification.permission === 'granted') {
-                new Notification('⏰ תזכורת משימה: ' + task.title, {
-                    body: `זמן לטפל במשימה: ${task.title}`,
-                    icon: '/icon-192.png',
-                    badge: '/icon-192.png',
-                    tag: `task-reminder-${taskId}`,
-                    requireInteraction: true
-                });
-            } else if ('Notification' in window && Notification.permission !== 'denied') {
-                Notification.requestPermission().then(permission => {
-                    if (permission === 'granted') {
-                        showTaskReminder(taskId);
+            if ('Notification' in window) {
+                if (Notification.permission === 'granted') {
+                    try {
+                        new Notification('⏰ תזכורת משימה: ' + task.title, {
+                            body: `זמן לטפל במשימה: ${task.title}`,
+                            icon: '/done-it-app/icon-192.png',
+                            badge: '/done-it-app/icon-192.png',
+                            tag: `task-reminder-${taskId}`,
+                            requireInteraction: false,
+                            silent: false
+                        });
+                        console.log('Task reminder notification sent:', task.title);
+                    } catch (e) {
+                        console.error('Error showing notification:', e);
+                        // Fallback: show alert if notification fails
+                        alert(`⏰ תזכורת: ${task.title}`);
                     }
-                });
+                } else if (Notification.permission === 'default') {
+                    Notification.requestPermission().then(permission => {
+                        if (permission === 'granted') {
+                            showTaskReminder(taskId);
+                        } else {
+                            // Fallback: show alert if permission denied
+                            alert(`⏰ תזכורת: ${task.title}`);
+                        }
+                    });
+                } else {
+                    // Permission denied - use alert as fallback
+                    alert(`⏰ תזכורת: ${task.title}`);
+                }
+            } else {
+                // Notifications not supported - use alert
+                alert(`⏰ תזכורת: ${task.title}`);
             }
         }
         
         function checkTaskReminders() {
             // Check all tasks for reminders that should fire
+            const now = new Date();
+            const checkedReminders = JSON.parse(localStorage.getItem('lumina_checked_task_reminders') || '[]');
+            
             tasks.forEach(task => {
                 if (task.reminder && task.reminder.enabled && task.reminder.datetime && !task.done) {
                     const reminderTime = new Date(task.reminder.datetime);
-                    const now = new Date();
+                    const reminderKey = `task-${task.id}-${task.reminder.datetime}`;
+                    
                     // If reminder time passed but not more than 1 hour ago, show it
                     if (reminderTime <= now && (now - reminderTime) < 3600000) {
-                        showTaskReminder(task.id);
+                        // Check if we already showed this reminder
+                        if (!checkedReminders.includes(reminderKey)) {
+                            showTaskReminder(task.id);
+                            checkedReminders.push(reminderKey);
+                            // Keep only last 100 checked reminders
+                            if (checkedReminders.length > 100) {
+                                checkedReminders.shift();
+                            }
+                            localStorage.setItem('lumina_checked_task_reminders', JSON.stringify(checkedReminders));
+                        }
                     }
                 }
             });
@@ -1703,37 +1737,69 @@
         }
         
         function showNoteReminder(space, noteIndex) {
+            const note = spacesData[space][noteIndex];
+            if (!note) return;
+            
             // Check if browser supports notifications
-            if ('Notification' in window && Notification.permission === 'granted') {
-                const note = spacesData[space][noteIndex];
-                if (note) {
-                    new Notification('⏰ תזכורת: ' + note.title, {
-                        body: note.body.substring(0, 100) + (note.body.length > 100 ? '...' : ''),
-                        icon: '/icon-192.png',
-                        badge: '/icon-192.png',
-                        tag: `note-reminder-${space}-${noteIndex}`,
-                        requireInteraction: true
-                    });
-                }
-            } else if ('Notification' in window && Notification.permission !== 'denied') {
-                Notification.requestPermission().then(permission => {
-                    if (permission === 'granted') {
-                        showNoteReminder(space, noteIndex);
+            if ('Notification' in window) {
+                if (Notification.permission === 'granted') {
+                    try {
+                        new Notification('⏰ תזכורת: ' + note.title, {
+                            body: note.body.substring(0, 100) + (note.body.length > 100 ? '...' : ''),
+                            icon: '/done-it-app/icon-192.png',
+                            badge: '/done-it-app/icon-192.png',
+                            tag: `note-reminder-${space}-${noteIndex}`,
+                            requireInteraction: false,
+                            silent: false
+                        });
+                        console.log('Note reminder notification sent:', note.title);
+                    } catch (e) {
+                        console.error('Error showing notification:', e);
+                        // Fallback: show alert if notification fails
+                        alert(`⏰ תזכורת: ${note.title}`);
                     }
-                });
+                } else if (Notification.permission === 'default') {
+                    Notification.requestPermission().then(permission => {
+                        if (permission === 'granted') {
+                            showNoteReminder(space, noteIndex);
+                        } else {
+                            // Fallback: show alert if permission denied
+                            alert(`⏰ תזכורת: ${note.title}`);
+                        }
+                    });
+                } else {
+                    // Permission denied - use alert as fallback
+                    alert(`⏰ תזכורת: ${note.title}`);
+                }
+            } else {
+                // Notifications not supported - use alert
+                alert(`⏰ תזכורת: ${note.title}`);
             }
         }
         
         function checkNoteReminders() {
             // Check all notes for reminders that should fire
+            const now = new Date();
+            const checkedReminders = JSON.parse(localStorage.getItem('lumina_checked_note_reminders') || '[]');
+            
             Object.keys(spacesData).forEach(space => {
                 spacesData[space].forEach((note, index) => {
                     if (note.reminder && note.reminder.enabled && note.reminder.datetime) {
                         const reminderTime = new Date(note.reminder.datetime);
-                        const now = new Date();
+                        const reminderKey = `note-${space}-${index}-${note.reminder.datetime}`;
+                        
                         // If reminder time passed but not more than 1 hour ago, show it
                         if (reminderTime <= now && (now - reminderTime) < 3600000) {
-                            showNoteReminder(space, index);
+                            // Check if we already showed this reminder
+                            if (!checkedReminders.includes(reminderKey)) {
+                                showNoteReminder(space, index);
+                                checkedReminders.push(reminderKey);
+                                // Keep only last 100 checked reminders
+                                if (checkedReminders.length > 100) {
+                                    checkedReminders.shift();
+                                }
+                                localStorage.setItem('lumina_checked_note_reminders', JSON.stringify(checkedReminders));
+                            }
                         }
                     }
                 });
@@ -2523,7 +2589,11 @@
             
             // Request notification permission
             if ('Notification' in window && Notification.permission === 'default') {
-                Notification.requestPermission();
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        console.log('Notification permission granted');
+                    }
+                });
             }
             
             // Schedule existing task reminders
@@ -2533,15 +2603,16 @@
                 }
             });
             
-            // Check for note reminders
+            // Check for note reminders immediately
             checkNoteReminders();
-            // Check for task reminders
+            // Check for task reminders immediately
             checkTaskReminders();
-            // Check reminders every minute
+            
+            // Check reminders every 30 seconds (more frequent for better reliability)
             setInterval(() => {
                 checkNoteReminders();
                 checkTaskReminders();
-            }, 60000);
+            }, 30000);
             
             // Initialize progress if tab is visible
             setTimeout(() => {
