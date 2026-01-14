@@ -872,9 +872,9 @@
             
             <div class="flex justify-between items-center pt-2">
                 <div class="flex gap-2">
-                    <button onclick="setTaskP(1)" id="p-1" class="priority-btn w-8 h-8 rounded-full border-2 border-red-500 text-red-500 text-[10px] flex items-center justify-center font-bold" title="עדיפות גבוהה">1</button>
-                    <button onclick="setTaskP(2)" id="p-2" class="priority-btn w-8 h-8 rounded-full border-2 border-yellow-500 text-yellow-500 text-[10px] flex items-center justify-center font-bold" title="עדיפות בינונית">2</button>
-                    <button onclick="setTaskP(3)" id="p-3" class="priority-btn w-8 h-8 rounded-full border-2 border-purple-500 text-purple-500 text-[10px] flex items-center justify-center font-bold bg-purple-50 dark:bg-purple-900/20 active" title="עדיפות נמוכה">3</button>
+                    <button onclick="setTaskP(1)" id="p-1" class="priority-btn w-8 h-8 rounded-full border-2 border-red-500 text-red-500 text-[10px] font-bold" title="עדיפות גבוהה" style="display: flex; align-items: center; justify-content: center; text-align: center; direction: ltr;">1</button>
+                    <button onclick="setTaskP(2)" id="p-2" class="priority-btn w-8 h-8 rounded-full border-2 border-yellow-500 text-yellow-500 text-[10px] font-bold" title="עדיפות בינונית" style="display: flex; align-items: center; justify-content: center; text-align: center; direction: ltr;">2</button>
+                    <button onclick="setTaskP(3)" id="p-3" class="priority-btn w-8 h-8 rounded-full border-2 border-purple-500 text-purple-500 text-[10px] font-bold bg-purple-50 dark:bg-purple-900/20 active" title="עדיפות נמוכה" style="display: flex; align-items: center; justify-content: center; text-align: center; direction: ltr;">3</button>
                 </div>
                 <button onclick="addTask()" class="bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 active:scale-95 text-white px-8 py-3 rounded-full font-bold text-sm shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 transition-all relative overflow-hidden group">
                     <span class="relative z-10">הוספה</span>
@@ -1337,18 +1337,26 @@
         
         async function showTaskReminder(taskId) {
             const task = tasks.find(t => t.id === taskId);
-            if (!task || task.done) return; // Don't show reminder for completed tasks
+            if (!task || task.done) {
+                console.log('Task not found or already done:', taskId);
+                return;
+            }
             
             const title = '⏰ תזכורת משימה: ' + task.title;
             const body = `זמן לטפל במשימה: ${task.title}`;
             const tag = `task-reminder-${taskId}`;
             
-            // Try to use Service Worker for notification (works even when app is closed)
+            console.log('Attempting to show task reminder:', title);
+            console.log('Notification permission:', Notification.permission);
+            console.log('Service Worker available:', 'serviceWorker' in navigator);
+            
+            // First, try Service Worker (best option - no site name)
             if ('serviceWorker' in navigator) {
                 try {
                     const registration = await navigator.serviceWorker.ready;
-                    if (registration && Notification.permission === 'granted') {
-                        // Use Service Worker's showNotification (no browser site name)
+                    console.log('Service Worker ready:', registration);
+                    
+                    if (Notification.permission === 'granted') {
                         await registration.showNotification(title, {
                             body: body,
                             icon: '/done-it-app/icon-192.png',
@@ -1362,11 +1370,31 @@
                                 taskId: taskId
                             }
                         });
-                        console.log('Task reminder sent via Service Worker:', task.title);
+                        console.log('✅ Task reminder sent via Service Worker:', task.title);
                         return;
+                    } else {
+                        console.log('Notification permission not granted, requesting...');
+                        const permission = await Notification.requestPermission();
+                        if (permission === 'granted') {
+                            await registration.showNotification(title, {
+                                body: body,
+                                icon: '/done-it-app/icon-192.png',
+                                badge: '/done-it-app/icon-192.png',
+                                tag: tag,
+                                requireInteraction: false,
+                                silent: false,
+                                vibrate: [200, 100, 200],
+                                data: {
+                                    url: '/done-it-app/lumina-vault.html',
+                                    taskId: taskId
+                                }
+                            });
+                            console.log('✅ Task reminder sent via Service Worker (after permission):', task.title);
+                            return;
+                        }
                     }
                 } catch (e) {
-                    console.error('Service Worker notification failed:', e);
+                    console.error('❌ Service Worker notification failed:', e);
                 }
             }
             
@@ -1383,23 +1411,32 @@
                             silent: false,
                             vibrate: [200, 100, 200]
                         });
-                        console.log('Task reminder notification sent:', task.title);
+                        console.log('✅ Task reminder sent via Notification API:', task.title);
                         return;
                     } catch (e) {
-                        console.error('Error showing notification:', e);
+                        console.error('❌ Error showing notification:', e);
                     }
                 } else if (Notification.permission === 'default') {
-                    Notification.requestPermission().then(permission => {
-                        if (permission === 'granted') {
-                            showTaskReminder(taskId);
-                        }
-                    });
-                    return;
+                    const permission = await Notification.requestPermission();
+                    if (permission === 'granted') {
+                        const notification = new Notification(title, {
+                            body: body,
+                            icon: '/done-it-app/icon-192.png',
+                            badge: '/done-it-app/icon-192.png',
+                            tag: tag,
+                            requireInteraction: false,
+                            silent: false,
+                            vibrate: [200, 100, 200]
+                        });
+                        console.log('✅ Task reminder sent via Notification API (after permission):', task.title);
+                        return;
+                    }
                 }
             }
             
-            // Last resort: no notification possible
-            console.warn('Could not show notification for task:', task.title);
+            // Last resort: alert (always works)
+            console.warn('⚠️ Using alert fallback for task:', task.title);
+            alert(`⏰ תזכורת: ${task.title}`);
         }
         
         function checkTaskReminders() {
@@ -1416,7 +1453,12 @@
                     if (reminderTime <= now && (now - reminderTime) < 3600000) {
                         // Check if we already showed this reminder
                         if (!checkedReminders.includes(reminderKey)) {
-                            showTaskReminder(task.id);
+                            console.log('Triggering task reminder:', task.title, 'at', reminderTime);
+                            showTaskReminder(task.id).catch(err => {
+                                console.error('Failed to show task reminder:', err);
+                                // Fallback: at least log it
+                                alert(`⏰ תזכורת: ${task.title}`);
+                            });
                             checkedReminders.push(reminderKey);
                             // Keep only last 100 checked reminders
                             if (checkedReminders.length > 100) {
@@ -1764,18 +1806,23 @@
         
         async function showNoteReminder(space, noteIndex) {
             const note = spacesData[space][noteIndex];
-            if (!note) return;
+            if (!note) {
+                console.log('Note not found:', space, noteIndex);
+                return;
+            }
             
             const title = '⏰ תזכורת: ' + note.title;
             const body = note.body.substring(0, 100) + (note.body.length > 100 ? '...' : '');
             const tag = `note-reminder-${space}-${noteIndex}`;
             
-            // Try to use Service Worker for notification (works even when app is closed)
+            console.log('Attempting to show note reminder:', title);
+            
+            // First, try Service Worker (best option - no site name)
             if ('serviceWorker' in navigator) {
                 try {
                     const registration = await navigator.serviceWorker.ready;
-                    if (registration && Notification.permission === 'granted') {
-                        // Use Service Worker's showNotification (no browser site name)
+                    
+                    if (Notification.permission === 'granted') {
                         await registration.showNotification(title, {
                             body: body,
                             icon: '/done-it-app/icon-192.png',
@@ -1790,11 +1837,31 @@
                                 noteIndex: noteIndex
                             }
                         });
-                        console.log('Note reminder sent via Service Worker:', note.title);
+                        console.log('✅ Note reminder sent via Service Worker:', note.title);
                         return;
+                    } else {
+                        const permission = await Notification.requestPermission();
+                        if (permission === 'granted') {
+                            await registration.showNotification(title, {
+                                body: body,
+                                icon: '/done-it-app/icon-192.png',
+                                badge: '/done-it-app/icon-192.png',
+                                tag: tag,
+                                requireInteraction: false,
+                                silent: false,
+                                vibrate: [200, 100, 200],
+                                data: {
+                                    url: '/done-it-app/lumina-vault.html',
+                                    space: space,
+                                    noteIndex: noteIndex
+                                }
+                            });
+                            console.log('✅ Note reminder sent via Service Worker (after permission):', note.title);
+                            return;
+                        }
                     }
                 } catch (e) {
-                    console.error('Service Worker notification failed:', e);
+                    console.error('❌ Service Worker notification failed:', e);
                 }
             }
             
@@ -1811,23 +1878,32 @@
                             silent: false,
                             vibrate: [200, 100, 200]
                         });
-                        console.log('Note reminder notification sent:', note.title);
+                        console.log('✅ Note reminder sent via Notification API:', note.title);
                         return;
                     } catch (e) {
-                        console.error('Error showing notification:', e);
+                        console.error('❌ Error showing notification:', e);
                     }
                 } else if (Notification.permission === 'default') {
-                    Notification.requestPermission().then(permission => {
-                        if (permission === 'granted') {
-                            showNoteReminder(space, noteIndex);
-                        }
-                    });
-                    return;
+                    const permission = await Notification.requestPermission();
+                    if (permission === 'granted') {
+                        const notification = new Notification(title, {
+                            body: body,
+                            icon: '/done-it-app/icon-192.png',
+                            badge: '/done-it-app/icon-192.png',
+                            tag: tag,
+                            requireInteraction: false,
+                            silent: false,
+                            vibrate: [200, 100, 200]
+                        });
+                        console.log('✅ Note reminder sent via Notification API (after permission):', note.title);
+                        return;
+                    }
                 }
             }
             
-            // Last resort: no notification possible
-            console.warn('Could not show notification for note:', note.title);
+            // Last resort: alert (always works)
+            console.warn('⚠️ Using alert fallback for note:', note.title);
+            alert(`⏰ תזכורת: ${note.title}`);
         }
         
         function checkNoteReminders() {
@@ -1845,7 +1921,12 @@
                         if (reminderTime <= now && (now - reminderTime) < 3600000) {
                             // Check if we already showed this reminder
                             if (!checkedReminders.includes(reminderKey)) {
-                                showNoteReminder(space, index);
+                                console.log('Triggering note reminder:', note.title, 'at', reminderTime);
+                                showNoteReminder(space, index).catch(err => {
+                                    console.error('Failed to show note reminder:', err);
+                                    // Fallback: at least log it
+                                    alert(`⏰ תזכורת: ${note.title}`);
+                                });
                                 checkedReminders.push(reminderKey);
                                 // Keep only last 100 checked reminders
                                 if (checkedReminders.length > 100) {
@@ -2682,11 +2763,19 @@
             // Check for task reminders immediately
             checkTaskReminders();
             
-            // Check reminders every 30 seconds (more frequent for better reliability)
+            // Check reminders every 10 seconds (very frequent for better reliability)
             setInterval(() => {
                 checkNoteReminders();
                 checkTaskReminders();
-            }, 30000);
+            }, 10000);
+            
+            // Also check immediately on visibility change (when user returns to app)
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) {
+                    checkNoteReminders();
+                    checkTaskReminders();
+                }
+            });
             
             // Initialize progress if tab is visible
             setTimeout(() => {
