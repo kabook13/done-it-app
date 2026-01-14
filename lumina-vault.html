@@ -1335,45 +1335,71 @@
             }
         }
         
-        function showTaskReminder(taskId) {
+        async function showTaskReminder(taskId) {
             const task = tasks.find(t => t.id === taskId);
             if (!task || task.done) return; // Don't show reminder for completed tasks
             
-            // Check if browser supports notifications
+            const title = '⏰ תזכורת משימה: ' + task.title;
+            const body = `זמן לטפל במשימה: ${task.title}`;
+            const tag = `task-reminder-${taskId}`;
+            
+            // Try to use Service Worker for notification (works even when app is closed)
+            if ('serviceWorker' in navigator) {
+                try {
+                    const registration = await navigator.serviceWorker.ready;
+                    if (registration && Notification.permission === 'granted') {
+                        // Use Service Worker's showNotification (no browser site name)
+                        await registration.showNotification(title, {
+                            body: body,
+                            icon: '/done-it-app/icon-192.png',
+                            badge: '/done-it-app/icon-192.png',
+                            tag: tag,
+                            requireInteraction: false,
+                            silent: false,
+                            vibrate: [200, 100, 200],
+                            data: {
+                                url: '/done-it-app/lumina-vault.html',
+                                taskId: taskId
+                            }
+                        });
+                        console.log('Task reminder sent via Service Worker:', task.title);
+                        return;
+                    }
+                } catch (e) {
+                    console.error('Service Worker notification failed:', e);
+                }
+            }
+            
+            // Fallback to regular Notification API
             if ('Notification' in window) {
                 if (Notification.permission === 'granted') {
                     try {
-                        new Notification('⏰ תזכורת משימה: ' + task.title, {
-                            body: `זמן לטפל במשימה: ${task.title}`,
+                        const notification = new Notification(title, {
+                            body: body,
                             icon: '/done-it-app/icon-192.png',
                             badge: '/done-it-app/icon-192.png',
-                            tag: `task-reminder-${taskId}`,
+                            tag: tag,
                             requireInteraction: false,
-                            silent: false
+                            silent: false,
+                            vibrate: [200, 100, 200]
                         });
                         console.log('Task reminder notification sent:', task.title);
+                        return;
                     } catch (e) {
                         console.error('Error showing notification:', e);
-                        // Fallback: show alert if notification fails
-                        alert(`⏰ תזכורת: ${task.title}`);
                     }
                 } else if (Notification.permission === 'default') {
                     Notification.requestPermission().then(permission => {
                         if (permission === 'granted') {
                             showTaskReminder(taskId);
-                        } else {
-                            // Fallback: show alert if permission denied
-                            alert(`⏰ תזכורת: ${task.title}`);
                         }
                     });
-                } else {
-                    // Permission denied - use alert as fallback
-                    alert(`⏰ תזכורת: ${task.title}`);
+                    return;
                 }
-            } else {
-                // Notifications not supported - use alert
-                alert(`⏰ תזכורת: ${task.title}`);
             }
+            
+            // Last resort: no notification possible
+            console.warn('Could not show notification for task:', task.title);
         }
         
         function checkTaskReminders() {
@@ -1736,45 +1762,72 @@
             }
         }
         
-        function showNoteReminder(space, noteIndex) {
+        async function showNoteReminder(space, noteIndex) {
             const note = spacesData[space][noteIndex];
             if (!note) return;
             
-            // Check if browser supports notifications
+            const title = '⏰ תזכורת: ' + note.title;
+            const body = note.body.substring(0, 100) + (note.body.length > 100 ? '...' : '');
+            const tag = `note-reminder-${space}-${noteIndex}`;
+            
+            // Try to use Service Worker for notification (works even when app is closed)
+            if ('serviceWorker' in navigator) {
+                try {
+                    const registration = await navigator.serviceWorker.ready;
+                    if (registration && Notification.permission === 'granted') {
+                        // Use Service Worker's showNotification (no browser site name)
+                        await registration.showNotification(title, {
+                            body: body,
+                            icon: '/done-it-app/icon-192.png',
+                            badge: '/done-it-app/icon-192.png',
+                            tag: tag,
+                            requireInteraction: false,
+                            silent: false,
+                            vibrate: [200, 100, 200],
+                            data: {
+                                url: '/done-it-app/lumina-vault.html',
+                                space: space,
+                                noteIndex: noteIndex
+                            }
+                        });
+                        console.log('Note reminder sent via Service Worker:', note.title);
+                        return;
+                    }
+                } catch (e) {
+                    console.error('Service Worker notification failed:', e);
+                }
+            }
+            
+            // Fallback to regular Notification API
             if ('Notification' in window) {
                 if (Notification.permission === 'granted') {
                     try {
-                        new Notification('⏰ תזכורת: ' + note.title, {
-                            body: note.body.substring(0, 100) + (note.body.length > 100 ? '...' : ''),
+                        const notification = new Notification(title, {
+                            body: body,
                             icon: '/done-it-app/icon-192.png',
                             badge: '/done-it-app/icon-192.png',
-                            tag: `note-reminder-${space}-${noteIndex}`,
+                            tag: tag,
                             requireInteraction: false,
-                            silent: false
+                            silent: false,
+                            vibrate: [200, 100, 200]
                         });
                         console.log('Note reminder notification sent:', note.title);
+                        return;
                     } catch (e) {
                         console.error('Error showing notification:', e);
-                        // Fallback: show alert if notification fails
-                        alert(`⏰ תזכורת: ${note.title}`);
                     }
                 } else if (Notification.permission === 'default') {
                     Notification.requestPermission().then(permission => {
                         if (permission === 'granted') {
                             showNoteReminder(space, noteIndex);
-                        } else {
-                            // Fallback: show alert if permission denied
-                            alert(`⏰ תזכורת: ${note.title}`);
                         }
                     });
-                } else {
-                    // Permission denied - use alert as fallback
-                    alert(`⏰ תזכורת: ${note.title}`);
+                    return;
                 }
-            } else {
-                // Notifications not supported - use alert
-                alert(`⏰ תזכורת: ${note.title}`);
             }
+            
+            // Last resort: no notification possible
+            console.warn('Could not show notification for note:', note.title);
         }
         
         function checkNoteReminders() {
@@ -2587,13 +2640,34 @@
             checkAchievements();
             renderGifts();
             
-            // Request notification permission
-            if ('Notification' in window && Notification.permission === 'default') {
-                Notification.requestPermission().then(permission => {
-                    if (permission === 'granted') {
-                        console.log('Notification permission granted');
-                    }
-                });
+            // Register Service Worker for background notifications
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/done-it-app/service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker registered:', registration);
+                        // Request notification permission
+                        if ('Notification' in window && Notification.permission === 'default') {
+                            return Notification.requestPermission();
+                        }
+                        return Notification.permission;
+                    })
+                    .then(permission => {
+                        if (permission === 'granted') {
+                            console.log('Notification permission granted');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Service Worker registration failed:', error);
+                    });
+            } else {
+                // Fallback: request notification permission without Service Worker
+                if ('Notification' in window && Notification.permission === 'default') {
+                    Notification.requestPermission().then(permission => {
+                        if (permission === 'granted') {
+                            console.log('Notification permission granted');
+                        }
+                    });
+                }
             }
             
             // Schedule existing task reminders
@@ -2621,14 +2695,6 @@
                 }
             }, 100);
             
-            // Register service worker for PWA
-            if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('service-worker.js')
-                        .then(reg => console.log('Service Worker registered'))
-                        .catch(err => console.log('Service Worker registration failed'));
-                });
-            }
         }
 
         init();
