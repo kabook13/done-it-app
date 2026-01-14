@@ -223,6 +223,8 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
+            text-align: center !important;
+            direction: ltr !important; /* Force LTR for numbers */
         }
         
         .priority-btn::before {
@@ -482,6 +484,8 @@
         /* Priority button improvements */
         .priority-btn {
             box-shadow: var(--shadow);
+            text-align: center !important;
+            direction: ltr !important; /* Force LTR for numbers */
         }
         
         .priority-btn:hover {
@@ -846,6 +850,24 @@
             <input type="text" id="task-input" placeholder="מה צריך לעשות?" 
                    class="w-full text-lg border-b-2 border-slate-200/50 dark:border-slate-700/50 pb-3 focus:border-purple-500 focus:pb-4 transition-all"
                    onkeypress="if(event.key === 'Enter') addTask()">
+            
+            <!-- Task Reminder Section -->
+            <div class="space-y-2">
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" id="task-reminder-enabled" onchange="toggleTaskReminder()" class="w-4 h-4 rounded border-slate-300 text-purple-600 focus:ring-purple-500">
+                    <label for="task-reminder-enabled" class="text-sm font-bold text-slate-700 dark:text-slate-300">⏰ תזכורת</label>
+                </div>
+                <div id="task-reminder-fields" class="hidden space-y-2 pl-6">
+                    <div class="flex gap-2">
+                        <input type="date" id="task-reminder-date" 
+                               class="flex-1 p-2 bg-slate-100/80 dark:bg-slate-800/80 rounded-lg text-sm border border-slate-200/50 dark:border-slate-700/50 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all">
+                        <input type="time" id="task-reminder-time" 
+                               class="flex-1 p-2 bg-slate-100/80 dark:bg-slate-800/80 rounded-lg text-sm border border-slate-200/50 dark:border-slate-700/50 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all">
+                    </div>
+                    <p class="text-[10px] text-slate-400">תזכורת תישלח ביום ובשעה שנבחרו</p>
+                </div>
+            </div>
+            
             <div class="flex justify-between items-center pt-2">
                 <div class="flex gap-2">
                     <button onclick="setTaskP(1)" id="p-1" class="priority-btn w-8 h-8 rounded-full border-2 border-red-500 text-red-500 text-[10px] flex items-center justify-center font-bold" title="עדיפות גבוהה">1</button>
@@ -1237,15 +1259,114 @@
         function addTask() {
             const input = document.getElementById('task-input');
             if(!input.value.trim()) return;
+            
+            // Get reminder data
+            const reminderEnabled = document.getElementById('task-reminder-enabled').checked;
+            let reminder = null;
+            if (reminderEnabled) {
+                const reminderDate = document.getElementById('task-reminder-date').value;
+                const reminderTime = document.getElementById('task-reminder-time').value;
+                if (reminderDate && reminderTime) {
+                    reminder = {
+                        enabled: true,
+                        date: reminderDate,
+                        time: reminderTime,
+                        datetime: new Date(`${reminderDate}T${reminderTime}`).toISOString()
+                    };
+                }
+            }
+            
+            const taskId = Date.now();
             tasks.push({ 
-                id: Date.now(), 
+                id: taskId, 
                 title: input.value.trim(), 
                 p: selectedPriority, 
                 done: false,
-                createdAt: new Date().toISOString()
+                createdAt: new Date().toISOString(),
+                reminder: reminder
             });
+            
+            // Schedule reminder if exists
+            if (reminder) {
+                scheduleTaskReminder(taskId, reminder);
+            }
+            
             input.value = '';
+            
+            // Reset reminder fields
+            document.getElementById('task-reminder-enabled').checked = false;
+            document.getElementById('task-reminder-fields').classList.add('hidden');
+            document.getElementById('task-reminder-date').value = '';
+            document.getElementById('task-reminder-time').value = '';
+            
             saveTasks();
+        }
+        
+        function toggleTaskReminder() {
+            const enabled = document.getElementById('task-reminder-enabled').checked;
+            const fields = document.getElementById('task-reminder-fields');
+            if (enabled) {
+                fields.classList.remove('hidden');
+                // Set default to tomorrow if no date
+                if (!document.getElementById('task-reminder-date').value) {
+                    const tomorrow = new Date();
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    document.getElementById('task-reminder-date').value = tomorrow.toISOString().split('T')[0];
+                }
+                if (!document.getElementById('task-reminder-time').value) {
+                    document.getElementById('task-reminder-time').value = '09:00';
+                }
+            } else {
+                fields.classList.add('hidden');
+            }
+        }
+        
+        function scheduleTaskReminder(taskId, reminder) {
+            const reminderTime = new Date(reminder.datetime);
+            const now = new Date();
+            
+            if (reminderTime > now) {
+                const timeout = reminderTime.getTime() - now.getTime();
+                setTimeout(() => {
+                    showTaskReminder(taskId);
+                }, timeout);
+            }
+        }
+        
+        function showTaskReminder(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (!task || task.done) return; // Don't show reminder for completed tasks
+            
+            // Check if browser supports notifications
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification('⏰ תזכורת משימה: ' + task.title, {
+                    body: `זמן לטפל במשימה: ${task.title}`,
+                    icon: '/icon-192.png',
+                    badge: '/icon-192.png',
+                    tag: `task-reminder-${taskId}`,
+                    requireInteraction: true
+                });
+            } else if ('Notification' in window && Notification.permission !== 'denied') {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        showTaskReminder(taskId);
+                    }
+                });
+            }
+        }
+        
+        function checkTaskReminders() {
+            // Check all tasks for reminders that should fire
+            tasks.forEach(task => {
+                if (task.reminder && task.reminder.enabled && task.reminder.datetime && !task.done) {
+                    const reminderTime = new Date(task.reminder.datetime);
+                    const now = new Date();
+                    // If reminder time passed but not more than 1 hour ago, show it
+                    if (reminderTime <= now && (now - reminderTime) < 3600000) {
+                        showTaskReminder(task.id);
+                    }
+                }
+            });
         }
 
         function toggleTask(id) {
@@ -1331,12 +1452,19 @@
                 filtered.forEach(t => {
                     const taskEl = document.createElement('div');
                     taskEl.className = `apple-card p-4 flex items-center justify-between p${t.p} task-item ${t.done ? 'opacity-40' : ''} fade-in`;
+                    const hasReminder = t.reminder && t.reminder.enabled;
+                    const reminderIcon = hasReminder ? '<span class="text-yellow-500 text-xs mr-1" title="יש תזכורת">⏰</span>' : '';
+                    
                     taskEl.innerHTML = `
                         <div class="flex items-center gap-3 cursor-pointer flex-1" onclick="toggleTask(${t.id})">
                             <div class="w-6 h-6 rounded-full border-2 border-purple-600 flex items-center justify-center flex-shrink-0">
                                 ${t.done ? '<div class="w-3 h-3 bg-gradient-to-r from-purple-600 to-pink-500 rounded-full"></div>' : ''}
                             </div>
-                            <span class="font-medium ${t.done ? 'line-through' : ''}">${t.title}</span>
+                            <div class="flex items-center gap-1 flex-1">
+                                <span class="font-medium ${t.done ? 'line-through' : ''}">${t.title}</span>
+                                ${reminderIcon}
+                            </div>
+                            ${hasReminder && t.reminder.date ? `<span class="text-[10px] text-slate-400 mr-2">${new Date(t.reminder.date).toLocaleDateString('he-IL')} ${t.reminder.time || ''}</span>` : ''}
                         </div>
                         <button onclick="deleteTask(${t.id})" class="text-slate-300 hover:text-red-500 active:scale-90 transition ml-2">✕</button>
                     `;
@@ -2398,10 +2526,22 @@
                 Notification.requestPermission();
             }
             
+            // Schedule existing task reminders
+            tasks.forEach(task => {
+                if (task.reminder && task.reminder.enabled && task.reminder.datetime && !task.done) {
+                    scheduleTaskReminder(task.id, task.reminder);
+                }
+            });
+            
             // Check for note reminders
             checkNoteReminders();
+            // Check for task reminders
+            checkTaskReminders();
             // Check reminders every minute
-            setInterval(checkNoteReminders, 60000);
+            setInterval(() => {
+                checkNoteReminders();
+                checkTaskReminders();
+            }, 60000);
             
             // Initialize progress if tab is visible
             setTimeout(() => {
