@@ -2888,8 +2888,26 @@
             const tasksWithReminders = tasks.filter(t => t.reminder && t.reminder.enabled && !t.done);
             console.log('Tasks with reminders:', tasksWithReminders.length);
             tasksWithReminders.forEach(task => {
-                console.log('  - Task:', task.title, 'Reminder:', new Date(task.reminder.datetime).toLocaleString('he-IL'));
+                const reminderTime = new Date(task.reminder.datetime);
+                const now = new Date();
+                const timeUntilReminder = reminderTime.getTime() - now.getTime();
+                const minutesUntil = Math.floor(timeUntilReminder / 60000);
+                console.log('  - Task:', task.title, 'Reminder:', reminderTime.toLocaleString('he-IL'), `(${minutesUntil > 0 ? 'בעוד ' + minutesUntil + ' דקות' : 'עבר'})`);
             });
+            
+            // Mobile-specific: Show alert if notifications are not enabled
+            if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                setTimeout(() => {
+                    if ('Notification' in window && Notification.permission === 'denied') {
+                        console.warn('⚠️⚠️⚠️ MOBILE: Notification permission is DENIED!');
+                        console.warn('⚠️ To enable: Settings → Site Settings → Notifications → Allow');
+                    } else if ('Notification' in window && Notification.permission === 'default') {
+                        console.log('📱 MOBILE: Notification permission not yet requested');
+                    } else if ('Notification' in window && Notification.permission === 'granted') {
+                        console.log('✅ MOBILE: Notification permission GRANTED - notifications should work!');
+                    }
+                }, 2000);
+            }
             
             // Don't use scheduleTaskReminder (setTimeout) - rely on periodic checks instead
             // This ensures reminders work even if page is closed and reopened
@@ -2899,13 +2917,28 @@
             // Check for task reminders immediately
             checkTaskReminders();
             
-            // Check reminders every 5 seconds (very frequent for better reliability)
+            // Send reminders to Service Worker for background checking
+            setTimeout(() => {
+                sendRemindersToServiceWorker();
+            }, 1000);
+            
+            // Check reminders every 3 seconds when app is open (very frequent for better reliability)
+            // On mobile, browsers throttle intervals when tab is in background, so we check frequently
             const reminderInterval = setInterval(() => {
-                const checkTime = new Date().toLocaleTimeString('he-IL');
-                console.log('⏰ Checking reminders at', checkTime);
-                checkNoteReminders();
-                checkTaskReminders();
-            }, 5000);
+                // Only check if app is visible (to save battery)
+                if (!document.hidden) {
+                    const checkTime = new Date().toLocaleTimeString('he-IL');
+                    console.log('⏰ Checking reminders at', checkTime, '(app visible)');
+                    checkNoteReminders();
+                    checkTaskReminders();
+                } else {
+                    // Even when hidden, check occasionally (mobile browsers allow this)
+                    const checkTime = new Date().toLocaleTimeString('he-IL');
+                    console.log('⏰ Checking reminders at', checkTime, '(app hidden - mobile may throttle)');
+                    checkNoteReminders();
+                    checkTaskReminders();
+                }
+            }, 3000); // Check every 3 seconds for better responsiveness
             
             // Store interval ID for potential cleanup
             window.reminderInterval = reminderInterval;
@@ -2918,9 +2951,74 @@
             // Also check immediately on visibility change (when user returns to app)
             document.addEventListener('visibilitychange', () => {
                 if (!document.hidden) {
+                    console.log('👁️ App became visible - checking reminders immediately');
                     checkNoteReminders();
                     checkTaskReminders();
+                } else {
+                    console.log('👁️ App went to background - sending reminders to Service Worker');
+                    // Send reminders to Service Worker when app goes to background
+                    sendRemindersToServiceWorker();
                 }
+            });
+            
+            // Function to send reminders to Service Worker for background checking
+            async function sendRemindersToServiceWorker() {
+                if ('serviceWorker' in navigator) {
+                    try {
+                        const registration = await navigator.serviceWorker.ready;
+                        const tasksWithReminders = tasks.filter(t => t.reminder && t.reminder.enabled && !t.done);
+                        const notesWithReminders = [];
+                        Object.keys(spacesData).forEach(space => {
+                            spacesData[space].forEach((note, index) => {
+                                if (note.reminder && note.reminder.enabled && note.reminder.datetime) {
+                                    notesWithReminders.push({ space, index, reminder: note.reminder });
+                                }
+                            });
+                        });
+                        
+                        registration.active?.postMessage({
+                            type: 'UPDATE_REMINDERS',
+                            tasks: tasksWithReminders.map(t => ({
+                                id: t.id,
+                                title: t.title,
+                                reminder: t.reminder
+                            })),
+                            notes: notesWithReminders
+                        });
+                        console.log('📤 Sent reminders to Service Worker:', tasksWithReminders.length, 'tasks,', notesWithReminders.length, 'notes');
+                    } catch (e) {
+                        console.error('❌ Failed to send reminders to Service Worker:', e);
+                    }
+                }
+            }
+            
+            // Listen for messages from Service Worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.addEventListener('message', (event) => {
+                    if (event.data && event.data.type === 'CHECK_REMINDERS') {
+                        console.log('📨 Received CHECK_REMINDERS message from Service Worker');
+                        checkNoteReminders();
+                        checkTaskReminders();
+                    }
+                });
+            }
+            
+            // Also listen for page focus (when user switches back to app)
+            window.addEventListener('focus', () => {
+                console.log('🎯 Window focused - checking reminders immediately');
+                checkNoteReminders();
+                checkTaskReminders();
+            });
+            
+            // Check when page loads (in case it was closed and reopened)
+            window.addEventListener('pageshow', (event) => {
+                console.log('📄 Page shown - checking reminders and sending to Service Worker');
+                checkNoteReminders();
+                checkTaskReminders();
+                // Send reminders to Service Worker
+                setTimeout(() => {
+                    sendRemindersToServiceWorker();
+                }, 500);
             });
             
             // Initialize progress if tab is visible
