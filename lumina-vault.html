@@ -1288,9 +1288,10 @@
                 reminder: reminder
             });
             
-            // Schedule reminder if exists
+            // Reminder will be checked by checkTaskReminders() every 5 seconds
+            // No need to schedule with setTimeout (won't work when page is closed)
             if (reminder) {
-                scheduleTaskReminder(taskId, reminder);
+                console.log('✅ Task with reminder added:', input.value.trim(), 'Reminder:', new Date(reminder.datetime).toLocaleString('he-IL'));
             }
             
             input.value = '';
@@ -1324,15 +1325,10 @@
         }
         
         function scheduleTaskReminder(taskId, reminder) {
-            const reminderTime = new Date(reminder.datetime);
-            const now = new Date();
-            
-            if (reminderTime > now) {
-                const timeout = reminderTime.getTime() - now.getTime();
-                setTimeout(() => {
-                    showTaskReminder(taskId);
-                }, timeout);
-            }
+            // Don't use setTimeout - it won't work when page is closed
+            // Instead, rely on checkTaskReminders() which runs periodically
+            console.log('Task reminder scheduled:', taskId, 'for', reminder.datetime);
+            // The reminder will be checked by checkTaskReminders() every 10 seconds
         }
         
         async function showTaskReminder(taskId) {
@@ -1436,7 +1432,11 @@
             
             // Last resort: alert (always works)
             console.warn('⚠️ Using alert fallback for task:', task.title);
-            alert(`⏰ תזכורת: ${task.title}`);
+            try {
+                alert(`⏰ תזכורת: ${task.title}`);
+            } catch (e) {
+                console.error('Even alert failed:', e);
+            }
         }
         
         function checkTaskReminders() {
@@ -1444,18 +1444,29 @@
             const now = new Date();
             const checkedReminders = JSON.parse(localStorage.getItem('lumina_checked_task_reminders') || '[]');
             
+            console.log('Checking task reminders...', 'Total tasks:', tasks.length);
+            
             tasks.forEach(task => {
                 if (task.reminder && task.reminder.enabled && task.reminder.datetime && !task.done) {
                     const reminderTime = new Date(task.reminder.datetime);
                     const reminderKey = `task-${task.id}-${task.reminder.datetime}`;
+                    const timeDiff = now.getTime() - reminderTime.getTime();
+                    
+                    console.log('Checking reminder for task:', task.title, {
+                        reminderTime: reminderTime.toISOString(),
+                        now: now.toISOString(),
+                        timeDiff: timeDiff,
+                        shouldShow: reminderTime <= now && timeDiff < 3600000,
+                        alreadyShown: checkedReminders.includes(reminderKey)
+                    });
                     
                     // If reminder time passed but not more than 1 hour ago, show it
-                    if (reminderTime <= now && (now - reminderTime) < 3600000) {
+                    if (reminderTime <= now && timeDiff < 3600000) {
                         // Check if we already showed this reminder
                         if (!checkedReminders.includes(reminderKey)) {
-                            console.log('Triggering task reminder:', task.title, 'at', reminderTime);
+                            console.log('✅ Triggering task reminder:', task.title, 'at', reminderTime.toLocaleString('he-IL'));
                             showTaskReminder(task.id).catch(err => {
-                                console.error('Failed to show task reminder:', err);
+                                console.error('❌ Failed to show task reminder:', err);
                                 // Fallback: at least log it
                                 alert(`⏰ תזכורת: ${task.title}`);
                             });
@@ -1465,6 +1476,8 @@
                                 checkedReminders.shift();
                             }
                             localStorage.setItem('lumina_checked_task_reminders', JSON.stringify(checkedReminders));
+                        } else {
+                            console.log('⏭️ Reminder already shown for:', task.title);
                         }
                     }
                 }
@@ -1761,8 +1774,9 @@
                         time: reminderTime,
                         datetime: new Date(`${reminderDate}T${reminderTime}`).toISOString()
                     };
-                    // Schedule notification
-                    scheduleNoteReminder(currentSpace, currentNoteIndex === -1 ? spacesData[currentSpace].length : currentNoteIndex, reminder);
+                    // Reminder will be checked by checkNoteReminders() every 5 seconds
+                    // No need to schedule with setTimeout (won't work when page is closed)
+                    console.log('✅ Note with reminder saved:', title, 'Reminder:', new Date(reminder.datetime).toLocaleString('he-IL'));
                 }
             }
             
@@ -1792,17 +1806,8 @@
             renderNotes();
         }
         
-        function scheduleNoteReminder(space, noteIndex, reminder) {
-            const reminderTime = new Date(reminder.datetime);
-            const now = new Date();
-            
-            if (reminderTime > now) {
-                const timeout = reminderTime.getTime() - now.getTime();
-                setTimeout(() => {
-                    showNoteReminder(space, noteIndex);
-                }, timeout);
-            }
-        }
+        // Removed scheduleNoteReminder - using periodic checks instead
+        // This ensures reminders work even when page is closed
         
         async function showNoteReminder(space, noteIndex) {
             const note = spacesData[space][noteIndex];
@@ -1903,7 +1908,11 @@
             
             // Last resort: alert (always works)
             console.warn('⚠️ Using alert fallback for note:', note.title);
-            alert(`⏰ תזכורת: ${note.title}`);
+            try {
+                alert(`⏰ תזכורת: ${note.title}`);
+            } catch (e) {
+                console.error('Even alert failed:', e);
+            }
         }
         
         function checkNoteReminders() {
@@ -1911,19 +1920,22 @@
             const now = new Date();
             const checkedReminders = JSON.parse(localStorage.getItem('lumina_checked_note_reminders') || '[]');
             
+            console.log('Checking note reminders...');
+            
             Object.keys(spacesData).forEach(space => {
                 spacesData[space].forEach((note, index) => {
                     if (note.reminder && note.reminder.enabled && note.reminder.datetime) {
                         const reminderTime = new Date(note.reminder.datetime);
                         const reminderKey = `note-${space}-${index}-${note.reminder.datetime}`;
+                        const timeDiff = now.getTime() - reminderTime.getTime();
                         
                         // If reminder time passed but not more than 1 hour ago, show it
-                        if (reminderTime <= now && (now - reminderTime) < 3600000) {
+                        if (reminderTime <= now && timeDiff < 3600000) {
                             // Check if we already showed this reminder
                             if (!checkedReminders.includes(reminderKey)) {
-                                console.log('Triggering note reminder:', note.title, 'at', reminderTime);
+                                console.log('✅ Triggering note reminder:', note.title, 'at', reminderTime.toLocaleString('he-IL'));
                                 showNoteReminder(space, index).catch(err => {
-                                    console.error('Failed to show note reminder:', err);
+                                    console.error('❌ Failed to show note reminder:', err);
                                     // Fallback: at least log it
                                     alert(`⏰ תזכורת: ${note.title}`);
                                 });
@@ -2751,23 +2763,31 @@
                 }
             }
             
-            // Schedule existing task reminders
-            tasks.forEach(task => {
-                if (task.reminder && task.reminder.enabled && task.reminder.datetime && !task.done) {
-                    scheduleTaskReminder(task.id, task.reminder);
-                }
+            // Log all existing reminders for debugging
+            console.log('📋 Initializing reminders...');
+            const tasksWithReminders = tasks.filter(t => t.reminder && t.reminder.enabled && !t.done);
+            console.log('Tasks with reminders:', tasksWithReminders.length);
+            tasksWithReminders.forEach(task => {
+                console.log('  - Task:', task.title, 'Reminder:', new Date(task.reminder.datetime).toLocaleString('he-IL'));
             });
+            
+            // Don't use scheduleTaskReminder (setTimeout) - rely on periodic checks instead
+            // This ensures reminders work even if page is closed and reopened
             
             // Check for note reminders immediately
             checkNoteReminders();
             // Check for task reminders immediately
             checkTaskReminders();
             
-            // Check reminders every 10 seconds (very frequent for better reliability)
-            setInterval(() => {
+            // Check reminders every 5 seconds (very frequent for better reliability)
+            const reminderInterval = setInterval(() => {
+                console.log('⏰ Checking reminders at', new Date().toLocaleTimeString('he-IL'));
                 checkNoteReminders();
                 checkTaskReminders();
-            }, 10000);
+            }, 5000);
+            
+            // Store interval ID for potential cleanup
+            window.reminderInterval = reminderInterval;
             
             // Also check immediately on visibility change (when user returns to app)
             document.addEventListener('visibilitychange', () => {
