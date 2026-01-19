@@ -1,26 +1,24 @@
 {
-  "name": "Done-It - Personal OS",
-  "short_name": "Done-It",
-  "description": "מערכת ניהול אישית עם כספת מאובטחת",
-  "start_url": "/done-it-app/lumina-vault.html",
+  "name": "היומן של דנית",
+  "short_name": "יומן דנית",
+  "description": "יומן דיגיטלי אישי - סיפור חיים מתמשך ומתפתח",
+  "start_url": "/",
   "display": "standalone",
-  "background_color": "#F2F2F7",
-  "theme_color": "#9333EA",
+  "background_color": "#FFFEF7",
+  "theme_color": "#D4AF37",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "/assets/icon.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "icon-512.png",
+      "src": "/assets/icon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ],
-  "dir": "rtl",
-  "lang": "he"
+  ]
 }
