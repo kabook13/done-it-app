@@ -1240,18 +1240,36 @@
         }
         
         // Show Album Entries
-        function showAlbumEntries(albumId) {
-            currentView = 'album';
-            currentAlbumId = albumId;
-            const album = albums.find(a => a.id === albumId);
-            
-            document.getElementById('home-view').classList.remove('active');
-            document.getElementById('album-entries-view').classList.add('active');
-            document.getElementById('back-to-home').style.display = 'inline-flex';
-            document.getElementById('back-to-site').style.display = 'none';
-            document.getElementById('album-title-header').textContent = album ? album.title : 'אלבום';
-            
-            renderEntries();
+        async function showAlbumEntries(albumId) {
+            try {
+                console.log(`📂 [CLIENT] Opening album: ${albumId}`);
+                currentView = 'album';
+                currentAlbumId = albumId;
+                const album = albums.find(a => a.id === albumId);
+                
+                if (!album) {
+                    console.error(`❌ [CLIENT] Album not found: ${albumId}`);
+                    alert('אלבום לא נמצא');
+                    return;
+                }
+                
+                console.log(`✅ [CLIENT] Album found: ${album.title}`);
+                
+                document.getElementById('home-view').classList.remove('active');
+                document.getElementById('album-entries-view').classList.add('active');
+                document.getElementById('back-to-home').style.display = 'inline-flex';
+                document.getElementById('back-to-site').style.display = 'none';
+                document.getElementById('album-title-header').textContent = album.title;
+                
+                // Filter and render entries for this album
+                const albumEntries = journalEntries.filter(e => e.albumId === albumId);
+                console.log(`📸 [CLIENT] Rendering ${albumEntries.length} entries for album ${albumId}`);
+                
+                renderEntries(albumEntries);
+            } catch (error) {
+                console.error('❌ [CLIENT] Error opening album:', error);
+                alert('שגיאה בפתיחת האלבום: ' + error.message);
+            }
         }
         
         // Render Entries
@@ -1272,7 +1290,17 @@
             
             grid.innerHTML = entriesToShow.map((entry, index) => {
                 const tags = entry.tags || [];
-                const mediaUrl = entry.mediaUrl || '';
+                // Ensure mediaUrl is a valid path (case-sensitive for Linux)
+                let mediaUrl = entry.mediaUrl || '';
+                if (mediaUrl && !mediaUrl.startsWith('http') && !mediaUrl.startsWith('/')) {
+                    mediaUrl = '/' + mediaUrl;
+                }
+                
+                // Log image loading for debugging
+                if (entry.mediaType === 'image' && mediaUrl) {
+                    console.log(`🖼️ [CLIENT] Loading image: ${mediaUrl} for entry ${entry.id}`);
+                }
+                
                 return `
                     <div class="entry-card visible" data-entry-id="${entry.id}">
                         <div class="entry-actions">
@@ -1281,9 +1309,9 @@
                         </div>
                         <div class="entry-media">
                             ${entry.mediaType === 'image' && mediaUrl ? 
-                                `<img src="${mediaUrl}" alt="רגע ${index + 1}" loading="lazy">` :
+                                `<img src="${mediaUrl}" alt="רגע ${index + 1}" loading="lazy" onerror="console.error('❌ [CLIENT] Failed to load image: ${mediaUrl}')">` :
                                 entry.mediaType === 'video' && mediaUrl ?
-                                `<video src="${mediaUrl}" controls></video>` :
+                                `<video src="${mediaUrl}" controls onerror="console.error('❌ [CLIENT] Failed to load video: ${mediaUrl}')"></video>` :
                                 '<div style="font-size: 48px;">📷</div>'
                             }
                         </div>

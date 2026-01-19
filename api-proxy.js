@@ -44,9 +44,14 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 // Serve static files from current directory
 app.use(express.static(__dirname));
 
-// Serve static files from assets/journal directory
+// Serve static files from assets/journal directory (case-sensitive for Linux)
 const assetsDir = path.join(__dirname, 'assets', 'journal');
-app.use('/assets/journal', express.static(assetsDir));
+console.log(`📁 [SERVER] Assets directory path: ${assetsDir}`);
+app.use('/assets/journal', express.static(assetsDir, {
+    setHeaders: (res, path) => {
+        console.log(`📤 [SERVER] Serving static file: ${path}`);
+    }
+}));
 
 // Ensure assets/journal directory exists (synchronous check for production)
 const fsSync = require('fs');
@@ -212,14 +217,17 @@ app.post('/api/generate-story', async (req, res) => {
 // API endpoint for loading data
 app.get('/api/load-data', async (req, res) => {
     try {
+        console.log('📥 [LOAD-DATA] Request received');
         const dataPath = path.join(__dirname, 'data.json');
         
         try {
             const data = await fs.readFile(dataPath, 'utf8');
             const parsed = JSON.parse(data);
+            console.log(`📥 [LOAD-DATA] Success: ${parsed.journal?.albums?.length || 0} albums, ${parsed.journal?.entries?.length || 0} entries`);
             res.json(parsed);
         } catch (error) {
             // If file doesn't exist, return empty structure
+            console.log('📥 [LOAD-DATA] File not found, returning empty structure');
             res.json({
                 journal: {
                     albums: [],
@@ -234,7 +242,33 @@ app.get('/api/load-data', async (req, res) => {
             });
         }
     } catch (error) {
-        console.error('❌ Error loading data:', error);
+        console.error('❌ [LOAD-DATA] Error loading data:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// API endpoint for getting album details
+app.get('/api/album/:id', async (req, res) => {
+    try {
+        const albumId = req.params.id;
+        console.log(`📂 [ALBUM] Request for album ID: ${albumId}`);
+        
+        const dataPath = path.join(__dirname, 'data.json');
+        const data = await fs.readFile(dataPath, 'utf8');
+        const parsed = JSON.parse(data);
+        
+        const album = parsed.journal?.albums?.find(a => a.id === albumId);
+        const entries = parsed.journal?.entries?.filter(e => e.albumId === albumId) || [];
+        
+        if (!album) {
+            console.log(`❌ [ALBUM] Album not found: ${albumId}`);
+            return res.status(404).json({ error: 'Album not found' });
+        }
+        
+        console.log(`✅ [ALBUM] Found album "${album.title}" with ${entries.length} entries`);
+        res.json({ album, entries });
+    } catch (error) {
+        console.error('❌ [ALBUM] Error fetching album:', error);
         res.status(500).json({ error: error.message });
     }
 });
