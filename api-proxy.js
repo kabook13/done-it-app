@@ -18,9 +18,13 @@ const fs = require('fs').promises;
 const path = require('path');
 
 // Priority: Check environment variable first, then fallback to SETUP-AI-BACKEND file
+let apiKeySource = 'environment variable';
 if (!process.env.OPENAI_API_KEY) {
     console.log('⚠️ [API-KEY] Environment variable not found, checking SETUP-AI-BACKEND file...');
     require('dotenv').config({ path: './SETUP-AI-BACKEND' });
+    if (process.env.OPENAI_API_KEY) {
+        apiKeySource = 'SETUP-AI-BACKEND file';
+    }
 }
 
 const app = express();
@@ -36,8 +40,7 @@ if (!process.env.OPENAI_API_KEY) {
     console.error('❌ ERROR: OPENAI_API_KEY not found in environment variables or SETUP-AI-BACKEND file');
     console.error('Please set OPENAI_API_KEY in Render environment variables or SETUP-AI-BACKEND file');
 } else {
-    const source = process.env.OPENAI_API_KEY ? 'environment variable' : 'SETUP-AI-BACKEND file';
-    console.log(`✅ OpenAI API Key loaded successfully from ${source}`);
+    console.log(`✅ OpenAI API Key loaded successfully from ${apiKeySource}`);
 }
 
 // Increase body size limit to handle large files
