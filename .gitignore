@@ -1,0 +1,73 @@
+# WordPress
+wp-config.php
+wp-content/uploads/
+wp-content/cache/
+wp-content/upgrade/
+wp-content/backup-db/
+wp-content/advanced-cache.php
+wp-content/wp-cache-config.php
+wp-content/cache/
+wp-content/blogs.dir/
+wp-content/upgrade/
+wp-content/backups/
+wp-content/debug.log
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment
+.env
+.env.local
+.env.*.local
+SETUP-AI-BACKEND
+SETUP-AI-BACKEND.md
+
+# Logs
+*.log
+logs/
+error_log
+
+# Backup files
+*.sql
+*.sql.gz
+*.tar
+*.tar.gz
+*.zip
+backup/temp/
+
+# OS
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
