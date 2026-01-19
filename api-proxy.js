@@ -48,15 +48,14 @@ app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-// Define assets directory for journal files
-const assetsDir = path.join(__dirname, 'assets', 'journal');
-
-// Serve static files from assets folder (MUST be before other routes)
+// Serve static files from assets folder (MUST be BEFORE all other routes)
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
-console.log(`📁 [SERVER] Serving assets from: ${path.join(__dirname, 'assets')}`);
 
 // Serve static files from current directory
 app.use(express.static(__dirname));
+
+// Define assets directory for journal files
+const assetsDir = path.join(__dirname, 'assets', 'journal');
 
 // Ensure assets/journal directory exists (synchronous check for production)
 const fsSync = require('fs');
