@@ -41,6 +41,9 @@ app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
+// Serve static files from current directory
+app.use(express.static(__dirname));
+
 // Serve static files from assets/journal directory
 const assetsDir = path.join(__dirname, 'assets', 'journal');
 app.use('/assets/journal', express.static(assetsDir));
@@ -308,6 +311,11 @@ app.post('/api/save-data', async (req, res) => {
         console.error('❌ Error saving data:', error);
         res.status(500).json({ error: error.message || 'Unknown error occurred' });
     }
+});
+
+// Serve danit-journal.html at root route
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'danit-journal.html'));
 });
 
 app.listen(PORT, () => {
