@@ -17,8 +17,11 @@ const OpenAI = require('openai');
 const fs = require('fs').promises;
 const path = require('path');
 
-// Load environment variables from SETUP-AI-BACKEND file
-require('dotenv').config({ path: './SETUP-AI-BACKEND' });
+// Priority: Check environment variable first, then fallback to SETUP-AI-BACKEND file
+if (!process.env.OPENAI_API_KEY) {
+    console.log('⚠️ [API-KEY] Environment variable not found, checking SETUP-AI-BACKEND file...');
+    require('dotenv').config({ path: './SETUP-AI-BACKEND' });
+}
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -30,10 +33,11 @@ const openai = new OpenAI({
 
 // Verify API key is loaded
 if (!process.env.OPENAI_API_KEY) {
-    console.error('❌ ERROR: OPENAI_API_KEY not found in SETUP-AI-BACKEND file');
-    console.error('Please ensure SETUP-AI-BACKEND file exists and contains: OPENAI_API_KEY=your-key-here');
+    console.error('❌ ERROR: OPENAI_API_KEY not found in environment variables or SETUP-AI-BACKEND file');
+    console.error('Please set OPENAI_API_KEY in Render environment variables or SETUP-AI-BACKEND file');
 } else {
-    console.log('✅ OpenAI API Key loaded successfully from SETUP-AI-BACKEND');
+    const source = process.env.OPENAI_API_KEY ? 'environment variable' : 'SETUP-AI-BACKEND file';
+    console.log(`✅ OpenAI API Key loaded successfully from ${source}`);
 }
 
 // Increase body size limit to handle large files
@@ -45,8 +49,12 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.static(__dirname));
 
 // Serve static files from assets/journal directory (case-sensitive for Linux)
-const assetsDir = path.join(__dirname, 'assets', 'journal');
+// Use Render path if on Render, otherwise use relative path for local development
+const assetsDir = process.env.RENDER 
+    ? '/opt/render/project/src/assets/journal'
+    : path.join(__dirname, 'assets', 'journal');
 console.log(`📁 [SERVER] Assets directory path: ${assetsDir}`);
+console.log(`📁 [SERVER] Running on Render: ${!!process.env.RENDER}`);
 app.use('/assets/journal', express.static(assetsDir, {
     setHeaders: (res, path) => {
         console.log(`📤 [SERVER] Serving static file: ${path}`);
