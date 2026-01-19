@@ -1104,7 +1104,7 @@
         // Load data from SERVER ONLY (NO LOCALSTORAGE, NO DEFAULT ALBUMS)
         async function loadData() {
             try {
-                const response = await fetch('http://localhost:3000/api/load-data');
+                const response = await fetch('/api/load-data');
                 if (!response.ok) {
                     throw new Error('Failed to load data from server');
                 }
@@ -1151,7 +1151,7 @@
         // Save data to SERVER ONLY (NO LOCALSTORAGE)
         async function saveData() {
             try {
-                const response = await fetch('http://localhost:3000/api/save-data', {
+                const response = await fetch('/api/save-data', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1183,7 +1183,7 @@
             }
             
             try {
-                const response = await fetch('http://localhost:3000/api/delete-media', {
+                const response = await fetch('/api/delete-media', {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1221,7 +1221,7 @@
                         <button class="action-btn" onclick="event.stopPropagation(); deleteAlbum('${album.id}')">🗑️</button>
                     </div>
                     <div class="album-cover">
-                        ${album.coverImage ? `<img src="http://localhost:3000${album.coverImage}" alt="${album.title}">` : '<div style="font-size: 64px; opacity: 0.3;">📚</div>'}
+                        ${album.coverImage ? `<img src="${album.coverImage}" alt="${album.title}">` : '<div style="font-size: 64px; opacity: 0.3;">📚</div>'}
                     </div>
                     <div class="album-info">
                         <div class="album-title">${album.title}</div>
@@ -1272,7 +1272,7 @@
             
             grid.innerHTML = entriesToShow.map((entry, index) => {
                 const tags = entry.tags || [];
-                const mediaUrl = entry.mediaUrl ? (entry.mediaUrl.startsWith('http') ? entry.mediaUrl : `http://localhost:3000${entry.mediaUrl}`) : '';
+                const mediaUrl = entry.mediaUrl || '';
                 return `
                     <div class="entry-card visible" data-entry-id="${entry.id}">
                         <div class="entry-actions">
@@ -1317,8 +1317,8 @@
             const mediaDiv = document.getElementById('lightbox-media');
             const narrativeDiv = document.getElementById('lightbox-narrative');
             
-            // Use server path for media - ensure full URL
-            const mediaUrl = entry.mediaUrl ? (entry.mediaUrl.startsWith('http') ? entry.mediaUrl : `http://localhost:3000${entry.mediaUrl}`) : '';
+            // Use server path for media
+            const mediaUrl = entry.mediaUrl || '';
             
             if (entry.mediaType === 'image' && mediaUrl) {
                 mediaDiv.innerHTML = `<img src="${mediaUrl}" alt="רגע" style="max-width: 100%; max-height: 90vh; object-fit: contain;">`;
@@ -1350,7 +1350,7 @@
                 });
                 
                 // Upload to server
-                const response = await fetch('http://localhost:3000/api/upload-media', {
+                const response = await fetch('/api/upload-media', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1385,7 +1385,7 @@
                     hasAlbumPrompt: !!albumPrompt
                 });
                 
-                const response = await fetch('http://localhost:3000/api/generate-story', {
+                const response = await fetch('/api/generate-story', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1436,7 +1436,7 @@
             // Show current cover image with server path
             if (album.coverImage) {
                 const img = document.createElement('img');
-                const coverUrl = album.coverImage.startsWith('http') ? album.coverImage : `http://localhost:3000${album.coverImage}`;
+                const coverUrl = album.coverImage;
                 img.src = coverUrl;
                 img.style.maxWidth = '100%';
                 img.style.maxHeight = '200px';
@@ -1539,7 +1539,7 @@
             const previewDiv = document.getElementById('edit-entry-preview');
             previewDiv.innerHTML = '';
             if (entry.mediaUrl) {
-                const mediaUrl = entry.mediaUrl.startsWith('http') ? entry.mediaUrl : `http://localhost:3000${entry.mediaUrl}`;
+                const mediaUrl = entry.mediaUrl;
                 if (entry.mediaType === 'image') {
                     previewDiv.innerHTML = `<img src="${mediaUrl}" style="max-width: 100%; max-height: 200px; border-radius: 8px;">`;
                 } else if (entry.mediaType === 'video') {

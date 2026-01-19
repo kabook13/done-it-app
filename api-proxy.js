@@ -21,7 +21,7 @@ const path = require('path');
 require('dotenv').config({ path: './SETUP-AI-BACKEND' });
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Initialize OpenAI client
 const openai = new OpenAI({
@@ -48,17 +48,18 @@ app.use(express.static(__dirname));
 const assetsDir = path.join(__dirname, 'assets', 'journal');
 app.use('/assets/journal', express.static(assetsDir));
 
-// Ensure assets/journal directory exists
-async function ensureAssetsDir() {
+// Ensure assets/journal directory exists (synchronous check for production)
+const fsSync = require('fs');
+if (!fsSync.existsSync(assetsDir)) {
     try {
-        await fs.mkdir(assetsDir, { recursive: true });
-        console.log('✅ Assets directory ready:', assetsDir);
+        fsSync.mkdirSync(assetsDir, { recursive: true });
+        console.log('✅ Assets directory created:', assetsDir);
     } catch (error) {
         console.error('❌ Error creating assets directory:', error);
     }
+} else {
+    console.log('✅ Assets directory exists:', assetsDir);
 }
-
-ensureAssetsDir();
 
 // Helper function to save Base64 image/video to file
 async function saveMediaFile(base64Data, mediaType) {
