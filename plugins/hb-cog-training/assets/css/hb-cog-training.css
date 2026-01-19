@@ -1,0 +1,296 @@
+/**
+ * עיצוב מערכת אימון מוח - מסלול גיל שלישי
+ */
+.hb-cog-game-container,
+.hb-cog-profile-container {
+  direction: rtl;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Hebrew", Arial, sans-serif;
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+}
+
+/* מסך טעינה */
+.hb-cog-game-loading,
+.hb-cog-profile-loading {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  font-size: 18px;
+}
+
+/* משחק Go/No-Go */
+.hb-cog-game-wrapper {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.hb-cog-game-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.hb-cog-game-header h3 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #2e7d32;
+  margin: 0 0 12px 0;
+}
+
+.hb-cog-instructions {
+  font-size: 20px;
+  color: #555;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.hb-cog-start-screen {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.hb-cog-start-btn {
+  background: #2e7d32;
+  color: #fff;
+  border: none;
+  padding: 18px 48px;
+  font-size: 22px;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.hb-cog-start-btn:hover {
+  background: #1b5e20;
+}
+
+.hb-cog-game-area {
+  text-align: center;
+  padding: 40px 20px;
+  min-height: 300px;
+  position: relative;
+}
+
+.hb-cog-stimulus {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  margin: 0 auto 30px;
+  cursor: pointer;
+  transition: transform 0.1s;
+  display: none;
+}
+
+.hb-cog-stimulus:active {
+  transform: scale(0.95);
+}
+
+.hb-cog-stimulus.hb-cog-go {
+  background: #4caf50;
+  box-shadow: 0 4px 20px rgba(76, 175, 80, 0.4);
+}
+
+.hb-cog-stimulus.hb-cog-nogo {
+  background: #f44336;
+  box-shadow: 0 4px 20px rgba(244, 67, 54, 0.4);
+}
+
+.hb-cog-timer {
+  font-size: 48px;
+  font-weight: 700;
+  color: #2e7d32;
+  margin-top: 20px;
+}
+
+/* תוצאות */
+.hb-cog-results {
+  margin-top: 30px;
+}
+
+.hb-cog-results-box {
+  background: #f5f5f5;
+  border-radius: 12px;
+  padding: 28px;
+  text-align: center;
+}
+
+.hb-cog-results-box h3 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #2e7d32;
+  margin: 0 0 20px 0;
+}
+
+.hb-cog-results-content {
+  margin-bottom: 20px;
+}
+
+.hb-cog-result-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 18px;
+}
+
+.hb-cog-result-item:last-child {
+  border-bottom: none;
+}
+
+.hb-cog-result-label {
+  color: #666;
+  font-weight: 600;
+}
+
+.hb-cog-result-value {
+  color: #333;
+  font-weight: 700;
+}
+
+.hb-cog-disclaimer {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #ddd;
+  font-size: 14px;
+  color: #888;
+}
+
+.hb-cog-play-again-btn {
+  background: #2e7d32;
+  color: #fff;
+  border: none;
+  padding: 14px 32px;
+  font-size: 18px;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background 0.2s;
+}
+
+.hb-cog-play-again-btn:hover {
+  background: #1b5e20;
+}
+
+/* פרופיל */
+.hb-cog-profile-header {
+  margin-bottom: 24px;
+}
+
+.hb-cog-profile-header h3 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #2e7d32;
+  margin: 0 0 16px 0;
+}
+
+.hb-cog-profile-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.hb-cog-stat-item {
+  background: #f5f5f5;
+  padding: 16px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.hb-cog-stat-value {
+  font-size: 32px;
+  font-weight: 800;
+  color: #2e7d32;
+  margin-bottom: 8px;
+}
+
+.hb-cog-stat-label {
+  font-size: 14px;
+  color: #666;
+  font-weight: 600;
+}
+
+.hb-cog-profile-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.hb-cog-profile-table th {
+  background: #2e7d32;
+  color: #fff;
+  padding: 12px;
+  text-align: right;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.hb-cog-profile-table td {
+  padding: 12px;
+  text-align: right;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 16px;
+}
+
+.hb-cog-profile-table tr:last-child td {
+  border-bottom: none;
+}
+
+.hb-cog-profile-table tr:hover {
+  background: #f5f5f5;
+}
+
+.hb-cog-profile-error {
+  text-align: center;
+  padding: 20px;
+  color: #c0392b;
+  background: #ffebee;
+  border-radius: 8px;
+}
+
+/* מובייל */
+@media (max-width: 600px) {
+  .hb-cog-game-container,
+  .hb-cog-profile-container {
+    padding: 12px;
+  }
+  
+  .hb-cog-game-header h3 {
+    font-size: 24px;
+  }
+  
+  .hb-cog-instructions {
+    font-size: 18px;
+  }
+  
+  .hb-cog-stimulus {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .hb-cog-timer {
+    font-size: 36px;
+  }
+  
+  .hb-cog-profile-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .hb-cog-profile-table {
+    font-size: 14px;
+  }
+  
+  .hb-cog-profile-table th,
+  .hb-cog-profile-table td {
+    padding: 8px;
+  }
+}
+
+

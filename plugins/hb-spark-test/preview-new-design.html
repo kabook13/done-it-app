@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spark Test - Preview עיצוב חדש</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      background: #0a0e1a;
+      padding: 40px 20px;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Hebrew", Arial, sans-serif;
+      min-height: 100vh;
+    }
+    
+    .spark-test {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 20px 40px;
+      direction: rtl;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Hebrew", Arial, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+      border-radius: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .spark-test::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        radial-gradient(2px 2px at 20% 30%, rgba(255, 255, 255, 0.3), transparent),
+        radial-gradient(2px 2px at 60% 70%, rgba(255, 255, 255, 0.2), transparent),
+        radial-gradient(1px 1px at 50% 50%, rgba(255, 255, 255, 0.4), transparent),
+        radial-gradient(1px 1px at 80% 10%, rgba(255, 255, 255, 0.3), transparent),
+        radial-gradient(2px 2px at 90% 40%, rgba(255, 255, 255, 0.2), transparent),
+        radial-gradient(1px 1px at 33% 60%, rgba(255, 255, 255, 0.3), transparent),
+        radial-gradient(1px 1px at 66% 20%, rgba(255, 255, 255, 0.2), transparent);
+      background-size: 200% 200%;
+      animation: sparkle 20s linear infinite;
+      pointer-events: none;
+      opacity: 0.6;
+    }
+    
+    @keyframes sparkle {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 100% 100%; }
+    }
+    
+    .spark-test__header {
+      text-align: center;
+      margin-bottom: 50px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .spark-test__main-title {
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 0 0 16px 0;
+      line-height: 1.3;
+      text-shadow: 0 0 30px rgba(224, 231, 255, 0.3);
+      letter-spacing: -0.5px;
+    }
+    
+    .spark-test__subtitle {
+      font-size: 18px;
+      color: #94a3b8;
+      margin: 0;
+      line-height: 1.6;
+      font-weight: 400;
+    }
+    
+    .spark-test__gauge-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 50px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .spark-test__gauge-container {
+      position: relative;
+      width: 240px;
+      height: 140px;
+      filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.4));
+    }
+    
+    .spark-test__gauge-svg {
+      width: 100%;
+      height: 100%;
+    }
+    
+    .spark-test__gauge-track {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.1);
+      stroke-width: 14;
+      stroke-linecap: round;
+    }
+    
+    .spark-test__gauge-fill {
+      fill: none;
+      stroke: url(#gaugeGradient);
+      stroke-width: 14;
+      stroke-linecap: round;
+      stroke-dasharray: 251.33;
+      stroke-dashoffset: 100;
+      filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.6));
+      animation: gaugeFill 2s ease-out forwards;
+    }
+    
+    @keyframes gaugeFill {
+      to { stroke-dashoffset: 100; }
+    }
+    
+    .spark-test__gauge-value {
+      position: absolute;
+      bottom: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 42px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+      letter-spacing: -1px;
+    }
+    
+    .spark-test__gauge-label {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 14px;
+      color: #94a3b8;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+    
+    .spark-test__stats-wrapper {
+      margin-bottom: 50px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .spark-test__stats-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    
+    .spark-test__spark-index-stat {
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(245, 158, 11, 0.1) 100%);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      border-radius: 20px;
+      padding: 30px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      box-shadow: 0 8px 32px rgba(251, 191, 36, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .spark-test__spark-index-stat::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(251, 191, 36, 0.1) 0%, transparent 70%);
+      animation: pulse 3s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.1); }
+    }
+    
+    .spark-test__spark-index-icon {
+      font-size: 48px;
+      flex-shrink: 0;
+      filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.6));
+      position: relative;
+      z-index: 1;
+    }
+    
+    .spark-test__spark-index-content {
+      flex: 1;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .spark-test__spark-index-label {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fbbf24;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+    
+    .spark-test__spark-index-value {
+      font-size: 42px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 6px;
+      text-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+      letter-spacing: -1px;
+    }
+    
+    .spark-test__spark-index-subtext {
+      font-size: 14px;
+      color: #cbd5e1;
+      line-height: 1.4;
+    }
+    
+    .spark-test__leaderboard {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 24px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+    
+    .spark-test__leaderboard-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #e2e8f0;
+      margin: 0 0 20px 0;
+      text-align: center;
+      letter-spacing: 0.5px;
+    }
+    
+    .spark-test__leaderboard-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    
+    .spark-test__model-bar {
+      direction: rtl;
+    }
+    
+    .spark-test__model-bar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    
+    .spark-test__model-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #e2e8f0;
+      letter-spacing: 0.3px;
+    }
+    
+    .spark-test__model-percentage {
+      font-size: 18px;
+      font-weight: 700;
+      color: #ffffff;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    }
+    
+    .spark-test__model-bar-track {
+      height: 36px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 18px;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .spark-test__model-bar-fill {
+      height: 100%;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 14px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #ffffff;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      position: relative;
+      overflow: hidden;
+      animation: barFill 1.5s ease-out forwards;
+    }
+    
+    @keyframes barFill {
+      from { width: 0; }
+    }
+    
+    .spark-test__model-bar-fill::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      animation: shimmer 2s infinite;
+    }
+    
+    @keyframes shimmer {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+    
+    .spark-test__model-bar-fill--o1 {
+      background: linear-gradient(90deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%);
+      filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.6));
+      width: 18%;
+    }
+    
+    .spark-test__model-bar-fill--claude {
+      background: linear-gradient(90deg, #f59e0b 0%, #d97706 50%, #b45309 100%);
+      filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.6));
+      width: 7%;
+    }
+    
+    .spark-test__model-bar-fill--gemini {
+      background: linear-gradient(90deg, #10b981 0%, #059669 50%, #047857 100%);
+      filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.6));
+      width: 25%;
+    }
+    
+    .spark-test__model-bar-stats {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #94a3b8;
+      text-align: right;
+    }
+    
+    .spark-test__feed-wrapper {
+      position: relative;
+    }
+    
+    .spark-test__feed {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+    
+    .spark-test__card {
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 30px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      position: relative;
+      z-index: 1;
+    }
+    
+    .spark-test__card:hover {
+      border-color: rgba(59, 130, 246, 0.5);
+      box-shadow: 0 12px 40px rgba(59, 130, 246, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+    }
+    
+    .spark-test__card-clue {
+      font-size: 24px;
+      font-weight: 700;
+      color: #e2e8f0;
+      margin: 0 0 30px 0;
+      line-height: 1.4;
+      letter-spacing: -0.3px;
+    }
+    
+    .spark-test__spark-accordion-button {
+      width: 100%;
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(245, 158, 11, 0.15) 100%);
+      border: 1px solid rgba(251, 191, 36, 0.4);
+      border-radius: 12px;
+      padding: 18px 24px;
+      text-align: right;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fbbf24;
+      transition: all 0.2s ease;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 16px rgba(251, 191, 36, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      margin-bottom: 20px;
+    }
+    
+    .spark-test__spark-accordion-button:hover {
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.3) 0%, rgba(245, 158, 11, 0.25) 100%);
+      border-color: rgba(251, 191, 36, 0.6);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(251, 191, 36, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+    
+    .spark-test__ai-accordion-button {
+      width: 100%;
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 16px 20px;
+      text-align: right;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 15px;
+      font-weight: 600;
+      color: #e2e8f0;
+      transition: all 0.2s ease;
+      backdrop-filter: blur(10px);
+      margin-bottom: 15px;
+      border-radius: 10px;
+    }
+    
+    .spark-test__ai-accordion-button:hover {
+      background: rgba(30, 41, 59, 0.8);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .spark-test__ai-accordion-button--o1 {
+      border-right: 4px solid #3b82f6;
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+    }
+    
+    .spark-test__ai-accordion-button--claude {
+      border-right: 4px solid #f59e0b;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+    }
+    
+    .spark-test__ai-accordion-button--gemini {
+      border-right: 4px solid #10b981;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+    }
+    
+    @media (max-width: 768px) {
+      .spark-test__stats-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="spark-test">
+    <!-- Header -->
+    <div class="spark-test__header">
+      <h1 class="spark-test__main-title">איפה האלגוריתם עוצר וההברקה מתחילה</h1>
+      <p class="spark-test__subtitle">ניסוי מחשבתי הבוחן את גבולות ה-Reasoning של מודלי שפה מול חשיבה אנושית</p>
+    </div>
+    
+    <!-- Gauge -->
+    <div class="spark-test__gauge-wrapper">
+      <div class="spark-test__gauge-container">
+        <svg class="spark-test__gauge-svg" viewBox="0 0 200 120">
+          <defs>
+            <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:1" />
+              <stop offset="50%" style="stop-color:#3b82f6;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#2563eb;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <path class="spark-test__gauge-track" 
+                d="M 20 100 A 80 80 0 0 1 180 100" 
+                stroke-dasharray="251.33" />
+          <path class="spark-test__gauge-fill" 
+                d="M 20 100 A 80 80 0 0 1 180 100"
+                stroke-dasharray="251.33" />
+        </svg>
+        <div class="spark-test__gauge-value">17%</div>
+        <div class="spark-test__gauge-label">אחוז הצלחת המכונה</div>
+      </div>
+    </div>
+    
+    <!-- Statistics -->
+    <div class="spark-test__stats-wrapper">
+      <div class="spark-test__stats-container">
+        <!-- Human Spark Index -->
+        <div class="spark-test__spark-index-stat">
+          <div class="spark-test__spark-index-icon">💡</div>
+          <div class="spark-test__spark-index-content">
+            <div class="spark-test__spark-index-label">מדד הניצוץ האנושי</div>
+            <div class="spark-test__spark-index-value">83%</div>
+            <div class="spark-test__spark-index-subtext">ערך מוסף של המוח האנושי מעל הממוצע של ה-AI</div>
+          </div>
+        </div>
+        
+        <!-- Model Leaderboard -->
+        <div class="spark-test__leaderboard">
+          <h3 class="spark-test__leaderboard-title">דירוג המודלים</h3>
+          <div class="spark-test__leaderboard-bars">
+            <!-- ChatGPT -->
+            <div class="spark-test__model-bar">
+              <div class="spark-test__model-bar-header">
+                <span class="spark-test__model-name">ChatGPT</span>
+                <span class="spark-test__model-percentage">18%</span>
+              </div>
+              <div class="spark-test__model-bar-track">
+                <div class="spark-test__model-bar-fill spark-test__model-bar-fill--o1">18%</div>
+              </div>
+              <div class="spark-test__model-bar-stats">5 / 28 רמזים</div>
+            </div>
+            
+            <!-- Claude -->
+            <div class="spark-test__model-bar">
+              <div class="spark-test__model-bar-header">
+                <span class="spark-test__model-name">Claude</span>
+                <span class="spark-test__model-percentage">7%</span>
+              </div>
+              <div class="spark-test__model-bar-track">
+                <div class="spark-test__model-bar-fill spark-test__model-bar-fill--claude">7%</div>
+              </div>
+              <div class="spark-test__model-bar-stats">2 / 28 רמזים</div>
+            </div>
+            
+            <!-- Gemini -->
+            <div class="spark-test__model-bar">
+              <div class="spark-test__model-bar-header">
+                <span class="spark-test__model-name">Gemini</span>
+                <span class="spark-test__model-percentage">25%</span>
+              </div>
+              <div class="spark-test__model-bar-track">
+                <div class="spark-test__model-bar-fill spark-test__model-bar-fill--gemini">25%</div>
+              </div>
+              <div class="spark-test__model-bar-stats">7 / 28 רמזים</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Cards -->
+    <div class="spark-test__feed-wrapper">
+      <div class="spark-test__feed">
+        <!-- Card 1 -->
+        <div class="spark-test__card">
+          <h2 class="spark-test__card-clue">נותן תשובות של קוף (5)</h2>
+          <button class="spark-test__spark-accordion-button">
+            <span>💡 גלה את הניצוץ (הפתרון האנושי)</span>
+            <span>▼</span>
+          </button>
+          <button class="spark-test__ai-accordion-button spark-test__ai-accordion-button--o1">
+            <span>צפה בניתוח ChatGPT</span>
+            <span>▼</span>
+          </button>
+          <button class="spark-test__ai-accordion-button spark-test__ai-accordion-button--claude">
+            <span>צפה בניתוח Claude</span>
+            <span>▼</span>
+          </button>
+          <button class="spark-test__ai-accordion-button spark-test__ai-accordion-button--gemini">
+            <span>צפה בניתוח Gemini</span>
+            <span>▼</span>
+          </button>
+        </div>
+        
+        <!-- Card 2 -->
+        <div class="spark-test__card">
+          <h2 class="spark-test__card-clue">דוגמה נוספת של הגדרה (4,3)</h2>
+          <button class="spark-test__spark-accordion-button">
+            <span>💡 גלה את הניצוץ (הפתרון האנושי)</span>
+            <span>▼</span>
+          </button>
+        </div>
+        
+        <!-- Card 3 -->
+        <div class="spark-test__card">
+          <h2 class="spark-test__card-clue">עוד הגדרה לדוגמה (6)</h2>
+          <button class="spark-test__spark-accordion-button">
+            <span>💡 גלה את הניצוץ (הפתרון האנושי)</span>
+            <span>▼</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

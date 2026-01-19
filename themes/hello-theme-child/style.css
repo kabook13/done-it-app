@@ -1,0 +1,1950 @@
+/* 
+Theme Name: Hello Elementor Child
+Theme URI: https://github.com/elementor/hello-theme-child/
+Description: Hello Elementor Child is a child theme of Hello Elementor, created by Elementor team
+Author: Elementor Team
+Author URI: https://elementor.com/
+Template: hello-elementor
+Version: 2.0.0
+Text Domain: hello-elementor-child
+License: GNU General Public License v3 or later.
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
+Tags: flexible-header, custom-colors, custom-menu, custom-logo, editor-style, featured-images, rtl-language-support, threaded-comments, translation-ready
+*/
+
+/* .full_page{width: 100%;}
+.full_page_50_p{width: 50%;	display: flex;}
+.full_908{width: 100%;max-width:908px;margin: 0 auto;}
+.full_page_50_p.right{justify-content: flex-end;}
+.full_page_50_p.left{justify-content: flex-start;}
+.full_1200{width: 100%;max-width:1200px;margin: 0 auto;}
+.full_1400{width: 100%;max-width:1400px;margin: 0 auto;}
+.full_1050{width: 100%;max-width:1050px;margin: 0 auto;}
+.full_600 { width: 50%;}
+
+#primary, .content-area {max-width: 1200px;width: 100%;margin: 0 auto;padding: 0 0 0 0;}
+.site-header {box-shadow: none;}
+.full_width {position: relative;display: flex;width: 100%;height: auto;	flex-direction: column;	justify-content: center;}
+.link .the_link a{color:#067941;}
+.low_720{display:none;}
+.big_720{display:block}
+*/
+.row { display: flex; }
+.col { flex: 1; }
+p {margin: 10px 0 !important;font-size: 17px;font-stretch: normal;font-style: normal;line-height: 24px;letter-spacing: -0.04px;}
+.one_of_2, .one_of_3, .one_of_4, .one_of_5,.one_of_6, .two_of_3,  .one_third {
+	position: relative;
+	display: flex;
+	width: 50%;
+	flex-direction: column;
+}
+.one_of_3 {width: 32%;}
+.one_of_4 {width: 24%; box-sizing: border-box;}
+.hidden_data {display: none;}
+.half {flex: 1;}
+.one_of_two.reverse { flex-direction: row-reverse;}
+.one_line a{line-height: 14px !important;display: flex; align-items: center;}
+.one_line{display: flex;align-items: center;}
+.one_line a img {margin: 0 10px;}
+
+.full_1200{width: 100%;max-width:1200px;margin: 0 auto;}
+
+
+header#masthead { padding: 10px 10px 10px 10px;}
+
+/*--------------------------------------------------------------
+## Crossword Item
+--------------------------------------------------------------*/
+.singular.single-crossword H1.entry-title { font-size: 50px;font-weight: bold;}
+header.entry-header.alignwide.one_line { justify-content: center;}
+
+
+.crossword_element {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.crossword_puzzle {
+    width: 100%;
+    overflow-x: visible;
+    margin-bottom: 20px;
+}
+
+.crossword-definitions {
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* Crossword Puzzle Responsive Styles */
+.puzzle_rep {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    padding: 5px;
+    /* touch-action: pan-x pan-y; */
+    -webkit-tap-highlight-color: transparent;
+}
+
+.puzzle {
+    background-color: #fff;
+    border: 2px solid #000;
+    padding: 0 !important;
+    direction: rtl;
+    display: inline-block;
+    margin: 0 auto;
+}
+
+.puzzle_line {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    min-width: fit-content;
+}
+
+.puzzle_cel {
+    min-width: 40px;
+    min-height: 40px;
+    width: 40px;
+    height: 40px;
+    border: 1px solid #000;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.puzzle_cel_letter_val {
+    padding: 0 !important;
+    margin-top: 12px !important;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.puzzle_cel_letter input {
+    width: 100%;
+    max-width: 30px;
+    height: 30px;
+    padding: 0 !important;
+    margin: 0 !important;
+    font-size: 25px;
+    text-align: center;
+    border: none !important;
+    background-color: transparent;
+    touch-action: manipulation;
+}
+
+.puzzle_cel.black_cell {
+    background-color: #000;
+}
+
+.puzzle_cel_number {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    font-size: 9px !important;
+    width: auto;
+}
+
+.puzzle_cel_letter {
+    width: 100%;
+    height: 26px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.solution-exp_h {
+    display: none;
+}
+
+.solution-exp_h.visible {
+    padding-right: 20px;
+    display: inherit;
+    font-size: 1em;
+    line-height: 1.4em;
+    padding-bottom: .1em;
+}
+
+.puzzle_form {
+    width: 100%;
+}
+
+.puzzle_submit {
+    margin: 10px 0 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+.puzzle_check-container
+{
+    display: block;
+    font-size: 1.2em;
+    font-weight: 600;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 0px;
+    color: #DB8A16;
+}
+.one_line{display:flex;}
+
+.crossword-definitions {
+    padding: 0 10px;
+}
+.definitions.definitions_r {
+    padding-left: 30px;
+    
+}
+.definitions .title {
+    font-weight: bold;
+    color: #DB8A16;
+    font-size: 36px;
+
+}
+.definitions_title {
+    font-size: 50px;
+    text-align: center;
+    font-weight: bold;
+}
+.puzzle_cel.border_left {
+    border-left-width: 2px;
+	border-left-style: dotted;
+}
+.puzzle_cel.border_bottom {
+    border-bottom-width: 2px;
+	border-bottom-style: dotted;
+}
+
+.puzzle_rep::-webkit-scrollbar {
+    display: none;
+}
+.crossword-template-buttons .cls-3 {
+    transition: fill 0.3s ease;
+}
+
+
+@media (hover: none) {
+    .puzzle_cel_letter input:focus {
+        background-color: rgba(230, 243, 255, 0.5);
+    }
+}
+
+/* Single Media Query for Responsive Design */
+@media (max-width: 768px) {
+    .crossword_element {
+        flex-direction: column; /* example: change flex layout */
+    }
+    .puzzle_cel {
+        min-width: 35px;
+        min-height: 35px;
+        width: 35px;
+        height: 35px;   
+    }
+    
+    .puzzle_cel_letter input {
+        font-size: 20px;
+        height: 25px;
+    }
+    
+    .puzzle_cel_number {
+        font-size: 8px !important;
+    }
+    
+}
+
+@media (max-width: 540px) {
+    .crossword_element {
+        flex-direction: column; /* example: change flex layout */
+    }
+    .puzzle_cel {
+        min-width: 28px;
+        min-height: 28px;
+        width: 28px;
+        height: 28px;
+    }
+    
+    .puzzle_cel_letter input {
+        font-size: 16px;
+        height: 20px;
+    }
+    
+    .puzzle_cel_number {
+        font-size: 7px !important;
+    }
+    
+}
+@supports (-webkit-touch-callout: none) {
+    .puzzle_cel_letter input {
+        font-size: calc(16px + 1px);
+    }
+}
+@media (max-width: 400px) {
+    .crossword_element {
+        flex-direction: column; /* example: change flex layout */
+    }
+    .puzzle_cel {
+        min-width: 25px;
+        min-height: 25px;
+        width: 25px;
+        height: 25px;
+    }
+    
+    .puzzle_cel_letter input {
+        font-size: 13px;
+        height: 16px;
+    }
+    
+    .puzzle_cel_number {
+        font-size: 6px !important;
+    }
+
+    .puzzle_rep {
+        max-width: 100%;
+    }
+}
+
+
+/*--------------------------------------------------------------
+## Home Page
+--------------------------------------------------------------*/
+
+.crossword_item{margin-bottom: 25px;}
+.crossword_data{padding-right: 20px;}
+
+.usermenu-icon .e-n-menu-title { padding: 0; }
+.usermenu-icon .e-n-menu-icon {display: none!important;}
+.usermenu-drop {
+    box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.1) !important;
+    margin-top: 12px !important;
+}
+
+/*--------------------------------------------------------------
+## media print
+--------------------------------------------------------------*/
+/* Print Button Styles */
+.print-button {
+    background-color: #DB8A16;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0;
+}
+
+.print-button:hover {
+    background-color: #c17813;
+}
+
+.print-icon {
+    font-size: 1.2em;
+}
+
+/* Print styles - only hide what we don't want to print */
+@media print {
+    /* Hide non-essential elements */
+    header,
+    footer,
+    .elementor-location-header,
+    .elementor-location-footer,
+    .print-button,
+    .puzzle_check-container,
+    .crossword-template-buttons,
+    .puzzle_submit,
+    .site-navigation,
+    #comments,
+    .puzzle_cel_letter input,
+    nav,
+    button:not([data-print]),
+    .elementor-widget-container nav,
+    .elementor-widget-nav-menu,
+    .elementor-widget-button,
+    .solution-exp_h:not(.visible),
+    #sudoku-menu button,
+    .glws .controls,
+    .glws .banner {
+        display: none !important;
+    }
+    
+    /* הצגת סודוקו בהדפסה */
+    #sudoku-container,
+    #sudoku-wrapper {
+        display: block !important;
+        visibility: visible !important;
+        page-break-inside: avoid;
+        margin: 0 auto;
+        padding: 10mm;
+    }
+    
+    #sudoku-grid {
+        display: table !important;
+        visibility: visible !important;
+        width: 100% !important;
+        max-width: 180mm !important;
+        margin: 0 auto !important;
+        border-collapse: collapse !important;
+        page-break-inside: avoid;
+    }
+    
+    #sudoku-grid td {
+        display: table-cell !important;
+        visibility: visible !important;
+        width: 11.11% !important;
+        padding: 0 !important;
+        border: 1px solid #000 !important;
+        text-align: center !important;
+        vertical-align: middle !important;
+    }
+    
+    #sudoku-grid input {
+        display: block !important;
+        visibility: visible !important;
+        width: 100% !important;
+        height: 100% !important;
+        border: none !important;
+        text-align: center !important;
+        font-size: 16pt !important;
+        font-weight: bold !important;
+    }
+    
+    /* הצגת תפזורת בהדפסה */
+    .glws {
+        display: block !important;
+        visibility: visible !important;
+        page-break-inside: avoid;
+    }
+    
+    .glws-grid,
+    .glws-grid-wrap {
+        display: block !important;
+        visibility: visible !important;
+        page-break-inside: avoid;
+        margin: 0 auto !important;
+    }
+    
+    .glws-grid {
+        display: grid !important;
+        width: 100% !important;
+        max-width: 180mm !important;
+        margin: 0 auto 10mm auto !important;
+    }
+    
+    .glws-cell {
+        display: block !important;
+        visibility: visible !important;
+        border: 1px solid #000 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    
+    .glws-wordlist {
+        display: block !important;
+        visibility: visible !important;
+        page-break-inside: avoid;
+        margin: 10mm 0 !important;
+        padding: 0 !important;
+        list-style: none !important;
+    }
+    
+    .glws-wordlist li {
+        display: list-item !important;
+        visibility: visible !important;
+        margin: 2mm 0 !important;
+        font-size: 12pt !important;
+    }
+    .crossword_element {
+        flex-direction: column; /* example: change flex layout */
+    }
+    /* Basic print adjustments */
+    body {
+        margin: 0;
+        padding: 20px;
+    }
+    .definitions .title {
+        font-size: 32px !important;
+    }
+
+    .puzzle_cel.black_cell {
+        background-color: #000 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+}
+
+/*--------------------------------------------------------------
+## My Crossword Page
+--------------------------------------------------------------*/
+
+/* Featured Image של העמוד */
+.page-featured-image {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.page-featured-image .page-icon {
+    max-width: 120px;
+    height: auto;
+    border-radius: 8px;
+}
+
+/* רשימת התשבצים */
+.user_crossword_list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 30px;
+    padding: 30px 0;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* כרטיס תשבץ */
+.user_crossword_card {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    min-height: 100%;
+}
+
+.user_crossword_card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+    border-color: #DB8A16;
+}
+
+/* תמונת התשבץ */
+.crossword_card_image {
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.crossword_card_image a {
+    display: inline-block;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.crossword_card_image .crossword-thumbnail {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+}
+
+/* תוכן הכרטיס */
+.crossword_card_content {
+    flex: 1;
+    margin-bottom: 20px;
+}
+
+.crossword_card_title {
+    margin-bottom: 18px;
+}
+
+.crossword_card_title a {
+    font-size: 22px;
+    font-weight: 600;
+    color: #333;
+    text-decoration: none;
+    line-height: 1.5;
+    display: block;
+    letter-spacing: -0.3px;
+}
+
+.crossword_card_title a:hover {
+    color: #DB8A16;
+}
+
+/* מידע נוסף */
+.crossword_card_meta {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    font-size: 15px;
+    color: #666;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.crossword_meta_item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.crossword_meta_item .meta_label {
+    font-weight: 600;
+    color: #555;
+    min-width: 80px;
+}
+
+/* Footer - סטטוס וכפתור באותה שורה */
+.crossword_card_footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+    margin-top: auto;
+}
+
+/* סטטוס */
+.crossword_card_status {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+}
+
+.crossword_card_status img,
+.crossword_card_status svg {
+    width: 24px;
+    height: 24px;
+    display: block;
+}
+
+/* כפתור פעולה */
+.crossword_card_action {
+    flex: 0 0 auto;
+}
+
+.crossword_view_btn {
+    display: inline-block;
+    text-align: center;
+    padding: 10px 24px;
+    background: #DB8A16;
+    color: #ffffff !important;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-size: 15px;
+    white-space: nowrap;
+    border: none;
+    cursor: pointer;
+}
+
+.crossword_view_btn:hover {
+    background: #c77a12;
+    color: #ffffff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(219, 138, 22, 0.3);
+}
+
+.crossword_view_btn:visited,
+.crossword_view_btn:active,
+.crossword_view_btn:focus {
+    color: #ffffff !important;
+}
+
+/* הודעת "לא נמצא מידע" */
+.sorry_msg {
+    text-align: center;
+    padding: 40px 20px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.sorry_msg p {
+    font-size: 18px;
+    color: #666;
+    margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .user_crossword_list {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 20px 15px;
+    }
+    
+    .crossword_card_title a {
+        font-size: 18px;
+    }
+    
+    .crossword_card_footer {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    
+    .crossword_view_btn {
+        width: 100%;
+    }
+}
+
+/* Desktop - שיפור פריסה */
+@media (min-width: 1200px) {
+    .user_crossword_list {
+        grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+        gap: 35px;
+        padding: 40px 20px;
+    }
+}
+
+.crossword_ref {
+    padding: 0 10px;
+}
+
+/* ========================================================== */
+/* שיפורי UX כלליים - נגישות, אנימציות, טעינה */
+/* ========================================================== */
+
+/* שיפורי נגישות - פוקוס טוב יותר */
+*:focus-visible {
+    outline: 2px solid #DB8A16;
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+/* אנימציות חלקות לכפתורים */
+button, .pmpro_btn, a.pmpro_btn {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+button:hover, .pmpro_btn:hover, a.pmpro_btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+button:active, .pmpro_btn:active, a.pmpro_btn:active {
+    transform: translateY(0);
+}
+
+/* שיפור טעינה - ספינר */
+.loading-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #ffffff;
+    animation: spin 0.8s ease-in-out infinite;
+    margin-left: 8px;
+    margin-right: 0;
+    vertical-align: middle;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* הודעות משוב משופרות */
+.puzzle-feedback-message {
+    padding: 16px 24px;
+    border-radius: 12px;
+    margin: 15px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    position: relative;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    animation: slideIn 0.3s ease-out;
+    border-left: 4px solid;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.success-message,
+.puzzle-feedback-message.success-message {
+    background-color: #f0f9f4;
+    color: #166534;
+    border-left-color: #22c55e;
+    border: 1px solid #bbf7d0;
+}
+
+.error-message,
+.puzzle-feedback-message.error-message {
+    background-color: #fef2f2;
+    color: #991b1b;
+    border-left-color: #ef4444;
+    border: 1px solid #fecaca;
+}
+
+.info-message,
+.puzzle-feedback-message.info-message {
+    background-color: #eff6ff;
+    color: #1e40af;
+    border-left-color: #3b82f6;
+    border: 1px solid #bfdbfe;
+}
+
+.warning-message,
+.puzzle-feedback-message.warning-message {
+    background-color: #fffbeb;
+    color: #92400e;
+    border-left-color: #f59e0b;
+    border: 1px solid #fde68a;
+}
+
+.message-icon {
+    font-size: 20px;
+    font-weight: bold;
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+}
+
+.message-text {
+    flex: 1;
+    line-height: 1.6;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.message-close {
+    background: rgba(0, 0, 0, 0.05);
+    border: none;
+    font-size: 20px;
+    line-height: 1;
+    color: #666;
+    cursor: pointer;
+    padding: 0;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    font-weight: 300;
+}
+
+.message-close:hover {
+    background-color: rgba(0, 0, 0, 0.12);
+    color: #333;
+    transform: scale(1.1);
+}
+
+.message-close:focus {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+}
+
+/* אינדיקטור שמירה אוטומטית */
+.autosave-indicator {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    z-index: 1000;
+    animation: fadeInOut 2s ease-in-out;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes fadeInOut {
+    0%, 100% { opacity: 0; transform: translateY(10px); }
+    20%, 80% { opacity: 1; transform: translateY(0); }
+}
+
+/* שיפור כפתורים בטעינה */
+button.is-loading,
+#puzzle_check.is-loading,
+#puzzle_save.is-loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+    position: relative;
+}
+
+button.is-loading::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: inherit;
+}
+
+.button-text {
+    position: relative;
+    z-index: 1;
+}
+
+/* ==========================================================
+   Modal להתחברות/הרשמה
+   ========================================================== */
+
+.login-required-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.login-required-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.login-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+}
+
+.login-modal-content {
+    position: relative;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.25);
+    max-width: 520px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: scale(0.9) translateY(20px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    z-index: 1;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.login-required-modal.active .login-modal-content {
+    transform: scale(1) translateY(0);
+}
+
+.login-modal-close {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: none;
+    border: none;
+    font-size: 28px;
+    line-height: 1;
+    color: #666;
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.login-modal-close:hover {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.login-modal-close:focus {
+    outline: 2px solid #DB8A16;
+    outline-offset: 2px;
+}
+
+.login-modal-header {
+    padding: 40px 32px 28px;
+    text-align: center;
+    border-bottom: 1px solid #e5e7eb;
+    background: #ffffff;
+}
+
+.login-modal-icon-wrapper {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.login-modal-icon {
+    width: 64px;
+    height: 64px;
+    background: #fef3e7;
+    border-radius: 50%;
+    padding: 12px;
+    box-sizing: border-box;
+}
+
+.login-modal-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0 0 12px 0;
+    line-height: 1.3;
+}
+
+.login-modal-subtitle {
+    font-size: 16px;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.6;
+    font-weight: 400;
+}
+
+.login-modal-body {
+    padding: 32px;
+}
+
+.login-modal-buttons {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 28px;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.login-modal-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 16px 28px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 17px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    min-height: 56px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+
+.login-modal-btn span {
+    display: block;
+    text-align: center;
+    width: 100%;
+}
+
+.login-modal-btn-primary {
+    background: #DB8A16;
+    color: #ffffff !important;
+    border-color: #DB8A16;
+}
+
+.login-modal-btn-primary span {
+    color: #ffffff !important;
+}
+
+.login-modal-btn-primary:hover {
+    background: #c17813;
+    color: #ffffff !important;
+    border-color: #c17813;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(219, 138, 22, 0.4);
+}
+
+.login-modal-btn-primary:hover span {
+    color: #ffffff !important;
+}
+
+.login-modal-btn-primary:active {
+    transform: translateY(0);
+}
+
+.login-modal-btn-secondary {
+    background: #ffffff;
+    color: #DB8A16 !important;
+    border-color: #DB8A16;
+}
+
+.login-modal-btn-secondary span {
+    color: #DB8A16 !important;
+}
+
+.login-modal-btn-secondary:hover {
+    background: #DB8A16;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(219, 138, 22, 0.3);
+}
+
+.login-modal-btn-secondary:hover span {
+    color: #ffffff !important;
+}
+
+.login-modal-btn-secondary:active {
+    transform: translateY(0);
+}
+
+.login-modal-benefits {
+    background: #f9fafb;
+    border-radius: 12px;
+    padding: 24px;
+    border: 1px solid #e5e7eb;
+}
+
+.login-modal-benefits h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0 0 18px 0;
+    text-align: right;
+}
+
+.login-modal-benefits ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: right;
+}
+
+.login-modal-benefits li {
+    padding: 12px 0;
+    color: #374151;
+    font-size: 15px;
+    line-height: 1.7;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-weight: 500;
+    justify-content: flex-end;
+}
+
+.login-modal-benefits li::before {
+    content: "✓";
+    color: #22c55e;
+    font-weight: bold;
+    font-size: 20px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    background: #dcfce7;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+/* מניעת גלילה כש-modal פתוח */
+body.modal-open {
+    overflow: hidden;
+}
+
+/* הודעת CTA בתוך הודעה רגילה */
+.requires-login-message {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.requires-login-message .message-content-wrapper {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    width: 100%;
+}
+
+.requires-login-message .message-cta-buttons {
+    margin-top: 18px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: center;
+}
+
+.message-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 28px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 16px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    min-width: 140px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.message-cta-login {
+    background: #DB8A16;
+    color: #ffffff !important;
+    border-color: #DB8A16;
+}
+
+.message-cta-login:hover {
+    background: #c17813;
+    color: #ffffff !important;
+    border-color: #c17813;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(219, 138, 22, 0.4);
+}
+
+.message-cta-register {
+    background: #ffffff;
+    color: #DB8A16 !important;
+    border-color: #DB8A16;
+}
+
+.message-cta-register:hover {
+    background: #DB8A16;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(219, 138, 22, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .login-modal-content {
+        width: 95%;
+        max-height: 95vh;
+        border-radius: 16px;
+    }
+    
+    .login-modal-header {
+        padding: 32px 24px 20px;
+    }
+    
+    .login-modal-icon-wrapper {
+        margin-bottom: 16px;
+    }
+    
+    .login-modal-icon {
+        width: 56px;
+        height: 56px;
+        padding: 10px;
+    }
+    
+    .login-modal-title {
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+    
+    .login-modal-subtitle {
+        font-size: 15px;
+    }
+    
+    .login-modal-body {
+        padding: 24px 20px;
+    }
+    
+    .login-modal-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .login-modal-btn {
+        width: 100%;
+        min-height: 52px;
+        font-size: 16px;
+        padding: 14px 24px;
+    }
+    
+    .login-modal-benefits {
+        padding: 20px;
+    }
+    
+    .login-modal-benefits h3 {
+        font-size: 17px;
+        margin-bottom: 14px;
+    }
+    
+    .login-modal-benefits li {
+        font-size: 14px;
+        padding: 10px 0;
+    }
+    
+    /* הודעות במובייל */
+    .puzzle-feedback-message {
+        padding: 14px 18px;
+        border-radius: 10px;
+    }
+    
+    .requires-login-message .message-cta-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .message-cta-btn {
+        width: 100%;
+        min-width: auto;
+        padding: 12px 24px;
+        font-size: 15px;
+    }
+    
+    .message-cta-login,
+    .message-cta-register {
+        color: inherit !important;
+    }
+    
+    .message-cta-login span,
+    .message-cta-register span {
+        color: inherit !important;
+    }
+}
+
+/* שיפור טופסים */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+select,
+textarea {
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #ddd;
+    padding: 10px 15px;
+    border-radius: 4px;
+    font-size: 16px; /* מונע זום אוטומטי בנייד */
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="tel"]:focus,
+select:focus,
+textarea:focus {
+    border-color: #DB8A16;
+    box-shadow: 0 0 0 3px rgba(219, 138, 22, 0.1);
+    outline: none;
+}
+
+input[type="text"]:invalid:not(:placeholder-shown),
+input[type="email"]:invalid:not(:placeholder-shown) {
+    border-color: #dc3545;
+}
+
+/* שיפור רשימות */
+.crossword_item {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.crossword_item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* הסתרת כפתורים כפולים - אם יש כפתור ריק מעל */
+#puzzle_check:empty,
+#puzzle_save:empty {
+    display: none !important;
+}
+
+/* הסתרת כפתורים כפולים - אם יש כפתור נוסף עם אותו ID */
+#puzzle_check + #puzzle_check,
+#puzzle_save + #puzzle_save {
+    display: none !important;
+}
+
+/* שיפור תצוגה בנייד */
+@media (max-width: 768px) {
+    .full_1200 {
+        padding: 0 15px;
+    }
+    
+    button, .pmpro_btn {
+        width: 100%;
+        margin: 10px 0;
+    }
+    
+    .crossword_item {
+        padding: 10px;
+    }
+}
+
+/* שיפור קריאות טקסט */
+body {
+    line-height: 1.6;
+    color: #333;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    line-height: 1.3;
+    margin-bottom: 15px;
+}
+
+/* שיפור טבלאות */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th,
+table td {
+    padding: 12px;
+    text-align: right;
+}
+
+table tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* שיפור קישורים */
+a {
+    color: #DB8A16;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: #c17813;
+    text-decoration: underline;
+}
+
+/* שיפור כרטיסים (cards) */
+.pmpro_card {
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.pmpro_card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* שיפור טעינה - skeleton loader */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s ease-in-out infinite;
+    border-radius: 4px;
+}
+
+@keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* שיפור גלילה */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #DB8A16;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #c17813;
+}
+
+/* שיפור נגישות - skip link */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    background: #DB8A16;
+    color: white;
+    padding: 8px;
+    text-decoration: none;
+    z-index: 100;
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+/* שיפור תצוגת שגיאות */
+.error-field {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1) !important;
+}
+
+.error-message-field {
+    color: #dc3545;
+    font-size: 14px;
+    margin-top: 5px;
+    display: block;
+}
+
+/* שיפור תצוגת הצלחה */
+.success-field {
+    border-color: #28a745 !important;
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1) !important;
+}
+
+/* ==========================================================
+   Breadcrumbs (פירורי לחם) - כלל האתר
+   ========================================================== */
+
+.breadcrumbs-nav {
+    padding: 1rem 0;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.breadcrumbs a {
+    color: #0073aa;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.breadcrumbs a:hover {
+    color: #005a87;
+    text-decoration: underline;
+}
+
+.breadcrumb-separator {
+    color: #999;
+}
+
+.breadcrumb-current {
+    color: #333;
+    font-weight: 500;
+}
+
+/* ==========================================================
+   Internal Navigation Links - קישורים פנימיים
+   ========================================================== */
+
+.internal-navigation-links {
+    margin: 50px 0;
+    padding: 32px;
+    background: linear-gradient(135deg, #fff9f0 0%, #ffffff 100%);
+    border-radius: 16px;
+    border: 2px solid #f3e8d3;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    direction: rtl;
+}
+
+.nav-links-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: #1f2937;
+    margin: 0 0 10px 0;
+    text-align: right;
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+}
+
+.nav-links-description {
+    font-size: 16px;
+    color: #6b7280;
+    margin: 0 0 28px 0;
+    text-align: right;
+    line-height: 1.7;
+    font-weight: 400;
+}
+
+.nav-links-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.nav-link-item {
+    margin: 0;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    color: #1f2937;
+    text-decoration: none;
+    font-size: 17px;
+    font-weight: 600;
+    padding: 18px 24px;
+    border-radius: 12px;
+    background: #ffffff;
+    border: 2px solid #e5e7eb;
+    transition: all 0.3s ease;
+    text-align: right;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+}
+
+.nav-link:hover {
+    background: #fff9f0;
+    border-color: #DB8A16;
+    color: #DB8A16;
+    transform: translateX(-4px);
+    box-shadow: 0 6px 16px rgba(219, 138, 22, 0.2);
+}
+
+.nav-link-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.nav-link-text {
+    flex: 1;
+    text-align: right;
+}
+
+.nav-link-arrow {
+    font-size: 20px;
+    color: #DB8A16;
+    flex-shrink: 0;
+    opacity: 0.6;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover .nav-link-arrow {
+    opacity: 1;
+    transform: translateX(-3px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .internal-navigation-links {
+        padding: 24px 20px;
+        margin: 40px 0;
+        border-radius: 12px;
+    }
+    
+    .nav-links-title {
+        font-size: 20px;
+        margin-bottom: 6px;
+    }
+    
+    .nav-links-description {
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+    
+    .nav-links-list {
+        gap: 12px;
+    }
+    
+    .nav-link {
+        font-size: 16px;
+        padding: 16px 20px;
+        border-radius: 10px;
+    }
+    
+    .nav-link-icon {
+        font-size: 22px;
+    }
+    
+    .nav-link-arrow {
+        font-size: 18px;
+    }
+}
+
+/* ==========================================================
+   Custom Footer - עיצוב Footer מותאם אישית
+   ========================================================== */
+
+.custom-footer {
+    background: #1f2937;
+    color: #ffffff;
+    padding: 60px 0 30px;
+    margin-top: 80px;
+}
+
+.custom-footer .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.custom-footer .footer-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    margin-bottom: 40px;
+}
+
+.custom-footer .footer-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px;
+    direction: rtl;
+}
+
+.custom-footer .footer-column {
+    text-align: right;
+}
+
+.custom-footer .footer-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 20px 0;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #DB8A16;
+}
+
+.custom-footer .footer-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.custom-footer .footer-menu li {
+    margin-bottom: 12px;
+}
+
+.custom-footer .footer-menu a {
+    color: #d1d5db;
+    text-decoration: none;
+    font-size: 15px;
+    transition: color 0.3s ease;
+    display: inline-block;
+}
+
+.custom-footer .footer-menu a:hover {
+    color: #DB8A16;
+    padding-right: 5px;
+}
+
+.custom-footer .footer-social {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 30px 0;
+    border-top: 1px solid #374151;
+    border-bottom: 1px solid #374151;
+    direction: rtl;
+}
+
+.custom-footer .social-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #d1d5db;
+    text-decoration: none;
+    font-size: 16px;
+    transition: color 0.3s ease;
+    padding: 8px 16px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.custom-footer .social-link:hover {
+    color: #DB8A16;
+    background: rgba(219, 138, 22, 0.1);
+}
+
+.custom-footer .social-link svg {
+    width: 24px;
+    height: 24px;
+}
+
+.custom-footer .sharing-buttons {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.custom-footer .share-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #d1d5db;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+.custom-footer .share-btn:hover {
+    background: #DB8A16;
+    border-color: #DB8A16;
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+.custom-footer .share-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+.custom-footer .footer-copyright {
+    text-align: center;
+    padding-top: 30px;
+    border-top: 1px solid #374151;
+    color: #9ca3af;
+    font-size: 14px;
+}
+
+.custom-footer .footer-copyright p {
+    margin: 0;
+}
+
+/* Responsive Footer */
+@media (max-width: 768px) {
+    .custom-footer {
+        padding: 40px 0 20px;
+    }
+    
+    .custom-footer .footer-links {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+    }
+    
+    .custom-footer .footer-social {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .custom-footer .sharing-buttons {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .custom-footer .footer-links {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+}
+
+/* ==========================================================
+   אינדיקציות סטטוס תשבצים
+   ========================================================== */
+
+.crossword_status_wrapper {
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.crossword-status {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+    border-radius: 50%;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.crossword-status-completed {
+    background-color: #4caf50;
+    color: #fff;
+}
+
+.crossword-status-in-progress {
+    background-color: #ff9800;
+    color: #fff;
+}
+
+.crossword-status-not-started {
+    background-color: #e0e0e0;
+    color: #999;
+}
+
+/* Pagination */
+.crosswords-pagination {
+    margin: 2rem 0;
+    text-align: center;
+}
+
+.crosswords-pagination .page-numbers {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    margin: 0 0.25rem;
+    background-color: #f5f5f5;
+    color: #333;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.crosswords-pagination .page-numbers:hover,
+.crosswords-pagination .page-numbers.current {
+    background-color: #0073aa;
+    color: #fff;
+}
+
+/* קישורי ניווט בתשבץ */
+.crossword-navigation-links {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.crossword-navigation-links .button,
+.crossword-navigation-links .button-secondary {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.crossword-navigation-links .button {
+    background-color: #0073aa;
+    color: #fff;
+}
+
+.crossword-navigation-links .button:hover {
+    background-color: #005a87;
+    color: #fff;
+}
+
+.crossword-navigation-links .button-secondary {
+    background-color: #f5f5f5;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+.crossword-navigation-links .button-secondary:hover {
+    background-color: #e0e0e0;
+    border-color: #ccc;
+}
+
+

@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>היגיון בריא - תשבצי היגיון בעברית</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            direction: rtl;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c5aa0;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #2c5aa0;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn-login {
+            background: transparent;
+            border: 1px solid #2c5aa0;
+            color: #2c5aa0;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .btn-subscribe {
+            background: #2c5aa0;
+            color: #fff;
+            padding: 0.5rem 1.5rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* A/B Toggle */
+        .ab-toggle {
+            position: fixed;
+            top: 80px;
+            left: 20px;
+            z-index: 1001;
+            background: #f0f0f0;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: 2px solid #2c5aa0;
+        }
+
+        .ab-toggle:hover {
+            background: #e0e0e0;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 85vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            padding: 4rem 1.5rem;
+        }
+
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero-content .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .btn-primary {
+            background: #fff;
+            color: #667eea;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: transform 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #fff;
+            border: 2px solid #fff;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .btn-tertiary {
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .microcopy {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-top: 1rem;
+        }
+
+        .hero-visual {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 2rem;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Section Styles */
+        section {
+            padding: 4rem 1.5rem;
+        }
+
+        .section-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            color: #2c5aa0;
+        }
+
+        /* How It Works */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #2c5aa0;
+        }
+
+        .card p {
+            color: #666;
+        }
+
+        /* Samples Section */
+        .sample-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .sample-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #2c5aa0;
+        }
+
+        .sample-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        /* Subscribe Section */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .comparison-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .comparison-card.guest {
+            border: 2px solid #ddd;
+        }
+
+        .comparison-card.member {
+            border: 2px solid #2c5aa0;
+            background: linear-gradient(135deg, #f0f4ff 0%, #e8f0ff 100%);
+        }
+
+        .comparison-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #2c5aa0;
+        }
+
+        .comparison-card ul {
+            list-style: none;
+            margin: 1rem 0;
+        }
+
+        .comparison-card li {
+            padding: 0.5rem 0;
+            padding-right: 1.5rem;
+            position: relative;
+        }
+
+        .comparison-card li:before {
+            content: "✓";
+            position: absolute;
+            right: 0;
+            color: #2c5aa0;
+            font-weight: bold;
+        }
+
+        .cta-large {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        /* Course Section */
+        .course-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .course-bullets {
+            list-style: none;
+            margin: 2rem 0;
+            text-align: right;
+        }
+
+        .course-bullets li {
+            padding: 1rem;
+            background: #f5f7fa;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+        }
+
+        /* Recommendations */
+        .recommendation-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .recommendation-card h4 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #2c5aa0;
+        }
+
+        .recommendation-card .short-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .recommendation-card .full-text {
+            display: none;
+            margin-top: 1rem;
+            color: #666;
+        }
+
+        .recommendation-card.expanded .full-text {
+            display: block;
+        }
+
+        .btn-read-more {
+            background: transparent;
+            border: none;
+            color: #2c5aa0;
+            cursor: pointer;
+            text-decoration: underline;
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Footer CTA */
+        .footer-cta {
+            background: #2c5aa0;
+            color: #fff;
+            padding: 3rem 1.5rem;
+            text-align: center;
+        }
+
+        .footer-cta h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Version B Styles */
+        body.version-b .hero-content h1 {
+            font-size: 2.5rem;
+        }
+
+        body.version-b .section-title {
+            font-size: 2rem;
+        }
+
+        body.version-b .card h3 {
+            font-size: 1.3rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            nav ul {
+                justify-content: center;
+            }
+
+            .hero-container {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+            }
+
+            .hero-buttons a {
+                width: 100%;
+                text-align: center;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .ab-toggle {
+                top: auto;
+                bottom: 20px;
+                left: 20px;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body id="body">
+    <!-- A/B Toggle -->
+    <div class="ab-toggle" onclick="toggleVersion()">גרסה A</div>
+
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo">היגיון בריא</div>
+            <nav>
+                <ul>
+                    <li><a href="#home">תשבצים</a></li>
+                    <li><a href="#training">מסלול חשיבה</a></li>
+                    <li><a href="#course">קורס</a></li>
+                    <li><a href="#games">משחקים וכלים</a></li>
+                    <li><a href="#human">הניצוץ האנושי</a></li>
+                    <li><a href="#login">התחברות</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <a href="#login" class="btn-login">התחברות</a>
+                <a href="#subscribe" class="btn-subscribe">מנוי</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1>תשבצי היגיון בעברית — פותרים, מבינים, משתפרים</h1>
+                <p class="subtitle">תשבצים מקוריים עם הסברים מלאים. דוגמאות חינמיות למתחילים | מנוי פותח את התשבץ השבועי ואת כל הארכיון | מסלול חשיבה מודרך</p>
+                <div class="hero-buttons">
+                    <a href="#samples" class="btn-primary">התחילו לפתור עכשיו</a>
+                    <a href="#subscribe" class="btn-secondary">פתחו הכל (מנוי)</a>
+                    <a href="#course" class="btn-tertiary">ללמוד לפצח (הקורס)</a>
+                </div>
+                <p class="microcopy">אורחים: תשבצי דוגמה. מנויים: התשבץ השבועי + ארכיון מלא.</p>
+            </div>
+            <div class="hero-visual">
+                <div>תשבץ ויזואלי<br>(placeholder)</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section>
+        <div class="section-container">
+            <h2 class="section-title">איך זה עובד?</h2>
+            <div class="cards-grid">
+                <div class="card">
+                    <h3>פותרים תשבץ אמיתי</h3>
+                    <p>תשבצים מקוריים בעברית שדורשים חשיבה לוגית ושפה עשירה. כל תשבץ הוא אתגר אמיתי שמפתח את החשיבה שלכם.</p>
+                </div>
+                <div class="card">
+                    <h3>ההסבר הוא חלק מהתשבץ</h3>
+                    <p>לאחר פתרון, תקבלו הסבר מפורט על כל רמז ופתרון. כך אתם לא רק פותרים, אלא גם לומדים ומשתפרים.</p>
+                </div>
+                <div class="card">
+                    <h3>מנוי = גישה מלאה</h3>
+                    <p>מנוי פותח את התשבץ השבועי החדש, את כל הארכיון, ואת מסלול החשיבה המודרך. הכל במקום אחד.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Samples Section -->
+    <section id="samples" style="background: #f5f7fa;">
+        <div class="section-container">
+            <h2 class="section-title">טעימה של דקה</h2>
+            <div class="sample-card">
+                <h3>דוגמה נבחרת</h3>
+                <p>תשבץ היגיון קצר שמציג את הסגנון והאיכות שלנו. פתרו אותו עכשיו ותראו בעצמכם.</p>
+                <div class="sample-buttons">
+                    <a href="#" class="btn-primary">פתור/י עכשיו</a>
+                    <a href="#" class="btn-secondary">לעוד דוגמאות</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Subscribe Section -->
+    <section id="subscribe">
+        <div class="section-container">
+            <h2 class="section-title">אורחים מול מנויים</h2>
+            <div class="comparison-grid">
+                <div class="comparison-card guest">
+                    <h3>אורחים</h3>
+                    <ul>
+                        <li>תשבצי דוגמה</li>
+                        <li>משחקים וכלי עזר</li>
+                        <li>גישה מוגבלת</li>
+                    </ul>
+                </div>
+                <div class="comparison-card member">
+                    <h3>מנויים</h3>
+                    <ul>
+                        <li>תשבץ שבועי חדש</li>
+                        <li>ארכיון מלא</li>
+                        <li>מסלול חשיבה מודרך</li>
+                        <li>הכל פתוח</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="cta-large">
+                <a href="#" class="btn-primary" style="display: inline-block;">אני רוצה לפתוח הכל</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Course Section -->
+    <section id="course" style="background: #f5f7fa;">
+        <div class="section-container">
+            <h2 class="section-title">רוצים להשתפר באמת?</h2>
+            <div class="course-content">
+                <ul class="course-bullets">
+                    <li>קורס מובנה שמלמד אסטרטגיות פתרון תשבצים</li>
+                    <li>תרגול מודרך עם הסברים מפורטים</li>
+                    <li>מעקב התקדמות אישי</li>
+                </ul>
+                <a href="#" class="btn-primary">לפרטי הקורס</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recommendations -->
+    <section>
+        <div class="section-container">
+            <h2 class="section-title">מה אומרים עלינו</h2>
+            <div class="recommendation-card">
+                <h4>דוד כהן</h4>
+                <p class="short-text">"התשבצים האלה שינו לי את החשיבה. כל שבוע אני מחכה לתשבץ החדש."</p>
+                <p class="full-text">התחלתי כחובבן מוחלט, ועכשיו אני פותר את כל התשבצים בקלות. ההסברים המפורטים עזרו לי להבין את הלוגיקה מאחורי כל רמז.</p>
+                <button class="btn-read-more" onclick="toggleRecommendation(this)">לקרוא עוד</button>
+            </div>
+            <div class="recommendation-card">
+                <h4>שרה לוי</h4>
+                <p class="short-text">"מסלול החשיבה המודרך הוא פשוט גאוני. אני מרגישה שאני משתפרת כל יום."</p>
+                <p class="full-text">האימונים הקצרים והממוקדים מתאימים לי בדיוק. אני עושה אותם בדרך לעבודה, וזה מתחיל לי את היום בצורה נהדרת.</p>
+                <button class="btn-read-more" onclick="toggleRecommendation(this)">לקרוא עוד</button>
+            </div>
+            <div class="recommendation-card">
+                <h4>יוסי דוד</h4>
+                <p class="short-text">"הקורס פתח לי עולם חדש. עכשיו אני מבין איך לחשוב על תשבצים."</p>
+                <p class="full-text">הקורס מובנה בצורה מעולה, עם דוגמאות ברורות ותרגול מודרך. אני ממליץ לכל מי שרוצה להשתפר באמת.</p>
+                <button class="btn-read-more" onclick="toggleRecommendation(this)">לקרוא עוד</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer CTA -->
+    <section class="footer-cta">
+        <div class="section-container">
+            <h2>יש לכם 5 דקות? נסו תשבץ דוגמה.</h2>
+            <a href="#samples" class="btn-primary" style="background: #fff; color: #2c5aa0; display: inline-block; margin-top: 1rem;">התחילו לפתור</a>
+        </div>
+    </section>
+
+    <script>
+        let currentVersion = 'a';
+
+        function toggleVersion() {
+            const body = document.getElementById('body');
+            const toggle = document.querySelector('.ab-toggle');
+            
+            if (currentVersion === 'a') {
+                body.classList.add('version-b');
+                toggle.textContent = 'גרסה B';
+                currentVersion = 'b';
+            } else {
+                body.classList.remove('version-b');
+                toggle.textContent = 'גרסה A';
+                currentVersion = 'a';
+            }
+        }
+
+        function toggleRecommendation(button) {
+            const card = button.closest('.recommendation-card');
+            card.classList.toggle('expanded');
+            button.textContent = card.classList.contains('expanded') ? 'לצמצם' : 'לקרוא עוד';
+        }
+    </script>
+</body>
+</html>

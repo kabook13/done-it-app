@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מסלול חשיבה מודרך - היגיון בריא</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            direction: rtl;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c5aa0;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #2c5aa0;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn-login {
+            background: transparent;
+            border: 1px solid #2c5aa0;
+            color: #2c5aa0;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .btn-subscribe {
+            background: #2c5aa0;
+            color: #fff;
+            padding: 0.5rem 1.5rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* A/B Toggle */
+        .ab-toggle {
+            position: fixed;
+            top: 80px;
+            left: 20px;
+            z-index: 1001;
+            background: #f0f0f0;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: 2px solid #2c5aa0;
+        }
+
+        .ab-toggle:hover {
+            background: #e0e0e0;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 3rem 1.5rem;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .page-header p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+
+        /* Guest Notice */
+        .guest-notice {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1.5rem auto;
+            max-width: 1200px;
+            text-align: center;
+            color: #856404;
+            font-weight: 500;
+        }
+
+        /* Main Content */
+        section {
+            padding: 3rem 1.5rem;
+        }
+
+        .section-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Level Tabs */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            background: #f5f7fa;
+            border: 2px solid transparent;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            background: #e8eef5;
+        }
+
+        .tab.active {
+            background: #2c5aa0;
+            color: #fff;
+            border-color: #2c5aa0;
+        }
+
+        /* Today's Training */
+        .training-block {
+            background: #fff;
+            border-radius: 15px;
+            padding: 2.5rem;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            margin-bottom: 3rem;
+        }
+
+        .training-block h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: #2c5aa0;
+            text-align: center;
+        }
+
+        .training-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .training-step {
+            background: #f5f7fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .training-step:hover {
+            border-color: #2c5aa0;
+            transform: translateY(-3px);
+        }
+
+        .training-step.completed {
+            background: #e8f5e9;
+            border-color: #4CAF50;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #2c5aa0;
+            color: #fff;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 35px;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .training-step.completed .step-number {
+            background: #4CAF50;
+        }
+
+        .training-step h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .training-step p {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .btn-step {
+            background: #2c5aa0;
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            transition: background 0.3s;
+        }
+
+        .btn-step:hover {
+            background: #1e3f73;
+        }
+
+        .training-step.completed .btn-step {
+            background: #4CAF50;
+        }
+
+        /* Progress Section */
+        .progress-block {
+            background: #fff;
+            border-radius: 15px;
+            padding: 2.5rem;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+
+        .progress-block h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: #2c5aa0;
+            text-align: center;
+        }
+
+        .progress-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: #f5f7fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #2c5aa0;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .days-sequence {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .day-box {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .day-box.completed {
+            background: #4CAF50;
+            color: #fff;
+        }
+
+        .day-box.today {
+            background: #2c5aa0;
+            color: #fff;
+            border: 3px solid #ffc107;
+        }
+
+        .day-box.upcoming {
+            background: #e0e0e0;
+            color: #999;
+        }
+
+        /* Version B Styles */
+        body.version-b .page-header h1 {
+            font-size: 2.5rem;
+        }
+
+        body.version-b .training-block h2,
+        body.version-b .progress-block h2 {
+            font-size: 1.7rem;
+        }
+
+        body.version-b .training-step h3 {
+            font-size: 1.1rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            nav ul {
+                justify-content: center;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab {
+                width: 100%;
+            }
+
+            .training-steps {
+                grid-template-columns: 1fr;
+            }
+
+            .progress-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .days-sequence {
+                gap: 0.3rem;
+            }
+
+            .day-box {
+                width: 40px;
+                height: 40px;
+                font-size: 0.9rem;
+            }
+
+            .ab-toggle {
+                top: auto;
+                bottom: 20px;
+                left: 20px;
+            }
+        }
+    </style>
+</head>
+<body id="body">
+    <!-- A/B Toggle -->
+    <div class="ab-toggle" onclick="toggleVersion()">גרסה A</div>
+
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo">היגיון בריא</div>
+            <nav>
+                <ul>
+                    <li><a href="home-v3.html">תשבצים</a></li>
+                    <li><a href="training-hub.html">מסלול חשיבה</a></li>
+                    <li><a href="#course">קורס</a></li>
+                    <li><a href="#games">משחקים וכלים</a></li>
+                    <li><a href="#human">הניצוץ האנושי</a></li>
+                    <li><a href="#login">התחברות</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <a href="#login" class="btn-login">התחברות</a>
+                <a href="#subscribe" class="btn-subscribe">מנוי</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1>מסלול חשיבה מודרך</h1>
+        <p>10–15 דקות ביום, דרך תשבצי היגיון ושפה</p>
+    </div>
+
+    <!-- Guest Notice -->
+    <div class="guest-notice">
+        מצב אורח: אורחים יכולים לבצע אימון דוגמה אחד בלבד. מנוי פותח את כל האימונים.
+    </div>
+
+    <!-- Main Content -->
+    <section>
+        <div class="section-container">
+            <!-- Level Tabs -->
+            <div class="tabs">
+                <div class="tab active" onclick="switchLevel(this, 'easy')">קל</div>
+                <div class="tab" onclick="switchLevel(this, 'medium')">בינוני</div>
+                <div class="tab" onclick="switchLevel(this, 'advanced')">מתקדם</div>
+            </div>
+
+            <!-- Today's Training -->
+            <div class="training-block">
+                <h2>האימון של היום</h2>
+                <div class="training-steps">
+                    <div class="training-step">
+                        <span class="step-number">1</span>
+                        <h3>חימום</h3>
+                        <p>2–3 דקות של תרגילי חימום קלים להכנת המוח</p>
+                        <a href="#" class="btn-step">התחילו</a>
+                    </div>
+                    <div class="training-step">
+                        <span class="step-number">2</span>
+                        <h3>אתגר מרכזי</h3>
+                        <p>10–15 דקות של תשבץ היגיון ברמה הנוכחית</p>
+                        <a href="#" class="btn-step">עברו לאתגר</a>
+                    </div>
+                    <div class="training-step">
+                        <span class="step-number">3</span>
+                        <h3>סיכום</h3>
+                        <p>דקה של סיכום והתבוננות על מה שלמדתם</p>
+                        <a href="#" class="btn-step">סיימתי אימון</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Section -->
+            <div class="progress-block">
+                <h2>ההתקדמות שלכם</h2>
+                <div class="progress-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">7</div>
+                        <div class="stat-label">ימים רצופים</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">12</div>
+                        <div class="stat-label">אימונים השבוע</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">45</div>
+                        <div class="stat-label">אימונים בסך הכל</div>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 2rem;">
+                    <h3 style="margin-bottom: 1rem; color: #666;">רצף הימים</h3>
+                    <div class="days-sequence">
+                        <div class="day-box completed">א</div>
+                        <div class="day-box completed">ב</div>
+                        <div class="day-box completed">ג</div>
+                        <div class="day-box completed">ד</div>
+                        <div class="day-box completed">ה</div>
+                        <div class="day-box completed">ו</div>
+                        <div class="day-box today">ש</div>
+                        <div class="day-box upcoming">א</div>
+                        <div class="day-box upcoming">ב</div>
+                        <div class="day-box upcoming">ג</div>
+                        <div class="day-box upcoming">ד</div>
+                        <div class="day-box upcoming">ה</div>
+                        <div class="day-box upcoming">ו</div>
+                        <div class="day-box upcoming">ש</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        let currentVersion = 'a';
+        let currentLevel = 'easy';
+
+        function toggleVersion() {
+            const body = document.getElementById('body');
+            const toggle = document.querySelector('.ab-toggle');
+            
+            if (currentVersion === 'a') {
+                body.classList.add('version-b');
+                toggle.textContent = 'גרסה B';
+                currentVersion = 'b';
+            } else {
+                body.classList.remove('version-b');
+                toggle.textContent = 'גרסה A';
+                currentVersion = 'a';
+            }
+        }
+
+        function switchLevel(clickedTab, level) {
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Add active class to clicked tab
+            clickedTab.classList.add('active');
+            currentLevel = level;
+            
+            // Here you would typically load different content based on level
+            // For prototype, we'll just update the visual feedback
+            console.log('Switched to level:', level);
+        }
+    </script>
+</body>
+</html>

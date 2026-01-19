@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>עמוד הבית - עיצוב חדש עם כל הפונקציונליות</title>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #f1f5f9;
+      font-family: "Assistant", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Hebrew", sans-serif;
+    }
+    
+    .hb-homev2 {
+      --hb-primary: #DB8A16;
+      --hb-primary-hover: #c17813;
+      --hb-primary-light: rgba(219, 138, 22, 0.08);
+      --hb-text: #0f172a;
+      --hb-text-secondary: #475569;
+      --hb-muted: #64748b;
+      --hb-border: #e2e8f0;
+      --hb-border-light: #f1f5f9;
+      --hb-ring: rgba(219,138,22,.25);
+      --hb-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --hb-shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --hb-radius-lg: 16px;
+      --hb-radius-xl: 24px;
+      --hb-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      
+      font-family: "Assistant", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Hebrew", sans-serif;
+      direction: rtl;
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 clamp(16px, 4vw, 32px);
+      color: var(--hb-text);
+    }
+    
+    .hb-homev2-boot { display: none; }
+    
+    .hb-homev2-hero {
+      padding: clamp(48px, 8vw, 80px) 0 clamp(40px, 6vw, 64px);
+      text-align: center;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(219, 138, 22, 0.12) 0%, transparent 60%),
+        radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.08) 0%, transparent 60%),
+        linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(248, 250, 252, 1) 50%, rgba(241, 245, 249, 1) 100%);
+      border-radius: var(--hb-radius-xl);
+      margin-bottom: clamp(32px, 5vw, 48px);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.04);
+    }
+    
+    .hb-homev2-hero::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, var(--hb-primary), transparent);
+      opacity: 0.6;
+    }
+    
+    .hb-homev2-hero-title {
+      font-size: clamp(36px, 7vw, 64px);
+      font-weight: 800;
+      background: linear-gradient(135deg, #0f172a 0%, #DB8A16 50%, #3b82f6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 0 0 16px 0;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+    }
+    
+    .hb-homev2-hero-subtitle {
+      font-size: clamp(19px, 2.8vw, 24px);
+      background: linear-gradient(135deg, #DB8A16 0%, #c17813 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 0 0 28px 0;
+      font-weight: 600;
+    }
+    
+    .hb-homev2-hero-intro {
+      font-size: clamp(17px, 2.2vw, 19px);
+      color: var(--hb-text-secondary);
+      margin: 28px auto 0;
+      max-width: 680px;
+      line-height: 1.75;
+    }
+    
+    .hb-homev2-wizard {
+      padding: clamp(40px, 6vw, 64px) 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+      gap: clamp(20px, 4vw, 32px);
+    }
+    
+    .hb-homev2-wizard-card {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.95) 100%) !important;
+      border: 2px solid var(--hb-border) !important;
+      border-radius: var(--hb-radius-lg) !important;
+      padding: clamp(36px, 6vw, 52px) clamp(28px, 5vw, 36px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      transition: var(--hb-transition);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      text-align: center;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    
+    .hb-homev2-wizard-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--hb-primary), transparent);
+      opacity: 0;
+      transition: var(--hb-transition);
+    }
+    
+    .hb-homev2-wizard-card::after {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(219, 138, 22, 0.08) 0%, transparent 70%);
+      opacity: 0;
+      transition: var(--hb-transition);
+    }
+    
+    .hb-homev2-wizard-card:hover::before {
+      opacity: 0.8;
+    }
+    
+    .hb-homev2-wizard-card:hover::after {
+      opacity: 1;
+    }
+    
+    .hb-homev2-wizard-card:hover {
+      box-shadow: 0 12px 40px rgba(219, 138, 22, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+      transform: translateY(-4px);
+    }
+    
+    .hb-homev2-wizard-selected {
+      border-color: var(--hb-primary) !important;
+      background: linear-gradient(180deg, var(--hb-primary-light) 0%, rgba(255, 255, 255, 0.95) 100%) !important;
+      box-shadow: var(--hb-shadow-md);
+    }
+    
+    .hb-homev2-wizard-selected::before {
+      opacity: 1 !important;
+    }
+    
+    .hb-homev2-wizard-card h3 {
+      font-size: clamp(22px, 3.5vw, 28px);
+      font-weight: 700;
+      color: var(--hb-text);
+      margin: 0 0 12px 0;
+    }
+    
+    .hb-homev2-wizard-card p {
+      font-size: clamp(15px, 2vw, 17px);
+      color: var(--hb-text-secondary);
+      margin: 0;
+    }
+    
+    .hb-homev2-section-title {
+      margin: 0 0 clamp(32px, 5vw, 48px) 0;
+      font-size: clamp(24px, 4vw, 40px);
+      font-weight: 700;
+      background: linear-gradient(135deg, #0f172a 0%, #DB8A16 50%, #3b82f6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-align: center;
+      position: relative;
+    }
+    
+    .hb-homev2-section-title:after {
+      content: "";
+      display: block;
+      width: 64px;
+      height: 4px;
+      margin: 20px auto 0;
+      border-radius: 999px;
+      background: linear-gradient(90deg, transparent, var(--hb-primary), transparent);
+      opacity: 0.8;
+      box-shadow: 0 0 10px rgba(219, 138, 22, 0.3);
+    }
+    
+    .hb-homev2-btn-primary {
+      background: linear-gradient(135deg, #DB8A16 0%, #C17813 100%) !important;
+      color: #fff !important;
+      border: 1px solid rgba(0,0,0,.06) !important;
+      box-shadow: 0 10px 24px rgba(219, 138, 22, 0.25), 0 0 20px rgba(219, 138, 22, 0.1);
+      border-radius: 999px;
+      padding: 12px 24px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .hb-homev2-btn-primary::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.5s ease;
+    }
+    
+    .hb-homev2-btn-primary:hover::before {
+      left: 100%;
+    }
+    
+    .hb-homev2-btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 32px rgba(219, 138, 22, 0.35), 0 0 30px rgba(219, 138, 22, 0.15);
+    }
+    
+    .hb-homev2-action-tray {
+      padding: clamp(28px, 5vw, 56px) 0;
+      background: transparent;
+      border-top: 1px solid rgba(219,138,22,.12);
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: opacity 0.3s ease, max-height 0.4s ease, padding 0.4s ease;
+    }
+    
+    .hb-homev2-action-tray.hb-homev2-section-visible {
+      max-height: 5000px;
+      opacity: 1;
+      padding: clamp(28px, 5vw, 56px) 0;
+    }
+    
+    .hb-homev2-action-tray-header { 
+      display: none; 
+      text-align: center; 
+      margin: 0 0 22px 0; 
+    }
+    
+    .hb-homev2-action-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 14px;
+      max-width: 980px;
+      margin: 0 auto;
+    }
+    
+    .hb-homev2-action-card {
+      border-radius: var(--hb-radius-lg);
+      border: 2px solid var(--hb-border);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      padding: clamp(20px, 3vw, 24px);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.95) 100%);
+      transition: var(--hb-transition);
+      text-decoration: none;
+      color: var(--hb-text);
+      display: block;
+      position: relative;
+      overflow: hidden;
+      text-align: right;
+    }
+    
+    .hb-homev2-action-card::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(219, 138, 22, 0.08) 0%, transparent 70%);
+      opacity: 0;
+      transition: var(--hb-transition);
+    }
+    
+    .hb-homev2-action-card::after {
+      content: "→";
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 20px;
+      color: var(--hb-muted);
+      transition: var(--hb-transition);
+      z-index: 1;
+    }
+    
+    .hb-homev2-action-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(219, 138, 22, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+      border-color: var(--hb-primary);
+    }
+    
+    .hb-homev2-action-card:hover::before {
+      opacity: 1;
+    }
+    
+    .hb-homev2-action-card:hover::after {
+      transform: translateY(-50%) translateX(-4px);
+      color: var(--hb-primary);
+    }
+    
+    .hb-homev2-action-texts h4 {
+      margin: 0 0 6px 0;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    
+    .hb-homev2-action-texts p {
+      margin: 0;
+      color: var(--hb-muted);
+      font-size: 14px;
+    }
+    
+    .hb-homev2-action-tag {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 2px;
+      background: transparent;
+      border: 1px solid var(--hb-border);
+      color: var(--hb-muted);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      z-index: 2;
+    }
+    
+    .hb-homev2-loginbar {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      border: 2px solid var(--hb-ring);
+      border-radius: var(--hb-radius-lg);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.95) 100%);
+      margin: 0 auto 40px;
+      max-width: 900px;
+      box-shadow: 0 12px 32px rgba(219,138,22,0.15), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .hb-homev2-loginbar::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--hb-primary), transparent);
+      opacity: 0.6;
+    }
+    
+    .hb-homev2-loginbar:hover {
+      box-shadow: 0 16px 40px rgba(219,138,22,0.25), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+      transform: translateY(-2px);
+    }
+    
+    .hb-homev2-loginbar-content {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      flex: 1;
+    }
+    
+    .hb-homev2-loginbar-icon {
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+    
+    .hb-homev2-loginbar-text {
+      color: var(--hb-text);
+      font-size: clamp(15px, 1.9vw, 16px);
+      line-height: 1.7;
+      text-align: right;
+    }
+    
+    .hb-homev2-daily-puzzle {
+      padding: clamp(40px, 6vw, 64px) 0;
+    }
+    
+    .hb-homev2-daily-wrap {
+      margin: 24px auto 0;
+      max-width: 980px;
+      border: 2px solid var(--hb-border);
+      border-radius: var(--hb-radius-lg);
+      padding: clamp(20px, 3vw, 28px);
+      box-shadow: var(--hb-shadow);
+      background: #fff;
+      max-height: 600px;
+      overflow: auto;
+    }
+    
+    .hb-homev2-centerbox {
+      max-width: 820px;
+      margin: 0 auto;
+    }
+    
+    .hb-homev2-lead {
+      margin: 0 0 18px;
+      color: var(--hb-muted);
+      font-size: 16px;
+    }
+    
+    @media (max-width: 768px) {
+      .hb-homev2-wizard {
+        grid-template-columns: 1fr;
+      }
+      .hb-homev2-action-grid {
+        grid-template-columns: 1fr;
+      }
+      .hb-homev2-loginbar {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="hb-homev2">
+    <div class="hb-homev2-boot" 
+         data-logged-in="0"
+         data-samples-url="#"
+         data-wordle-url="#"
+         data-course-url="#"
+         data-games-url="#"
+         data-sub-url="#"
+         data-human-spark-url="#"
+         data-word-finder-url="#"
+         data-blog-url="#"
+         data-auto-crossword-url="#"
+         data-weekly-url="#"
+         data-account-url="#"></div>
+    
+    <section class="hb-homev2-hero">
+      <div class="hb-homev2-hero-content">
+        <h1 class="hb-homev2-hero-title">הגיון בריא</h1>
+        <p class="hb-homev2-hero-subtitle">בית לתשבצי היגיון, משחקי חשיבה ושיפור יכולות קוגניטיביות</p>
+        <p class="hb-homev2-hero-intro">
+          ברוכים הבאים לאתר של עדי עפר — בית לתשבצי היגיון מקוריים, קורס היגיון שמלמד את שיטת החשיבה, משחקי חשיבה וכלים לשיפור יכולות קוגניטיביות.
+          <br>כל התכנים כאן הם פרי יצירה שלי, מתוך מחויבות לאיכות ולחשיבה מעמיקה. בחרו רמה (מתחילים / מתקדמים / מומחים) כדי לקבל סט כלים מותאם.
+        </p>
+      </div>
+    </section>
+    
+    <section class="hb-homev2-weekly-teaser">
+      <div class="hb-homev2-loginbar">
+        <div class="hb-homev2-loginbar-content">
+          <div class="hb-homev2-loginbar-icon">🗓️</div>
+          <div class="hb-homev2-loginbar-text">
+            <strong>תשבץ היגיון שבועי:</strong> מדי שבוע עולה תשבץ היגיון חדש ומאתגר. מנויים מקבלים גישה לתשבץ השבועי, לארכיון המלא עם כל התשבצים הקודמים, ולשמירת התקדמות אישית.
+          </div>
+        </div>
+        <div>
+          <a class="hb-homev2-btn-primary" href="#">התחברות ומעבר לתשבץ</a>
+        </div>
+      </div>
+    </section>
+    
+    <section class="hb-homev2-wizard">
+      <button class="hb-homev2-wizard-card" data-route="beginner" type="button">
+        <h3>מתחילים</h3>
+        <p>מסלול מושלם למי שזה עתה מתחיל</p>
+      </button>
+      <button class="hb-homev2-wizard-card" data-route="intermediate" type="button">
+        <h3>מתקדמים</h3>
+        <p>למשתמשים עם ניסיון</p>
+      </button>
+      <button class="hb-homev2-wizard-card" data-route="expert" type="button">
+        <h3>מומחים</h3>
+        <p>למשתמשים מנוסים</p>
+      </button>
+    </section>
+    
+    <section class="hb-homev2-daily-puzzle" id="daily-puzzle" style="max-height: 0; overflow: hidden; opacity: 0; padding: 0;">
+      <h2 class="hb-homev2-section-title">חידה יומית</h2>
+      <div class="hb-homev2-centerbox">
+        <p class="hb-homev2-lead">רוצים דקה של חשיבה? פתחו את חידת ההיגיון היומית.</p>
+        <div style="display:flex; gap:12px; justify-content:center; margin-top: 14px;">
+          <button type="button" class="hb-homev2-btn-primary hb-homev2-daily-toggle">פתח/סגור חידה</button>
+        </div>
+        <div class="hb-homev2-daily-wrap" hidden>
+          <p style="text-align: right; color: var(--hb-muted);">תוכן חידה יומית יופיע כאן...</p>
+        </div>
+      </div>
+    </section>
+    
+    <section class="hb-homev2-weekly-club" id="weekly-club" style="max-height: 0; overflow: hidden; opacity: 0; padding: 0;">
+      <h2 class="hb-homev2-section-title">תשבץ היגיון שבועי</h2>
+      <div class="hb-homev2-weekly-content hb-homev2-centerbox">
+        <p class="hb-homev2-lead">
+          <strong>תשבץ חדש מדי שבוע!</strong> מנויים מקבלים גישה לתשבץ השבועי, לארכיון המלא עם כל התשבצים הקודמים, ולשמירת התקדמות אישית. כל תשבץ כולל הסברים מפורטים שמלמדים את דרך החשיבה.
+        </p>
+        <div style="display:flex; gap:12px; justify-content:center; margin-top: 14px;">
+          <a class="hb-homev2-btn-primary" href="#">התחברות</a>
+          <a class="hb-homev2-btn-primary" href="#">מה כולל המנוי?</a>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+  <script>
+  (function() {
+    'use strict';
+
+    function initHBHomeV2(root) {
+      root = root || document;
+
+      const boot = root.querySelector('.hb-homev2-boot') || document.querySelector('.hb-homev2-boot');
+      if (!boot) return;
+
+      const scope = boot.closest('.hb-homev2') || document;
+
+      if (scope.__hbHomeV2Bound) return;
+      scope.__hbHomeV2Bound = true;
+
+      const isLoggedIn = boot.getAttribute('data-logged-in') === '1';
+      const getUrl = function(key) {
+        return boot.getAttribute('data-' + key.replace(/_/g, '-')) || '#';
+      };
+
+      const routes = {
+        beginner: {
+          title: "מתחילים",
+          subtitle: "סט כלים עדין להתחלה טובה",
+          actions: [
+            { text: "חידה יומית", desc: "דקה של חשיבה כל יום", href: "#daily-puzzle" },
+            { text: "תשבצי היגיון לדוגמה", desc: "טעימה לפני שמעמיקים", dataAttr: "samples-url" },
+            { text: "מילת היום", desc: "אתגר יומי קצר", dataAttr: "wordle-url" },
+            { text: "קורס תשבצי היגיון", desc: "לומדים את השיטה", dataAttr: "course-url" },
+            { text: "משחקי חשיבה", desc: "גיוון קצר בין תשבצים", dataAttr: "games-url" }
+          ]
+        },
+        intermediate: {
+          title: "מתקדמים",
+          subtitle: "למי שכבר פתר ורוצה עקביות",
+          actions: [
+            { text: "התשבץ השבועי", desc: "מנויים + ארכיון", dataAttr: "weekly-url", tag: "שבועי" },
+            { text: "מידע / הצטרפות למנוי", desc: "כל הפרטים במקום אחד", dataAttr: "sub-url" },
+            { text: "פרוייקט הניצוץ האנושי", desc: "איך AI מתמודד עם הגדרות היגיון?", dataAttr: "human-spark-url" },
+            { text: "מציאת מילים", desc: "עוזר כשנתקעים", dataAttr: "word-finder-url" },
+            { text: "בלוג", desc: "טיפים, מחשבה ושיטה", dataAttr: "blog-url" },
+            { text: "תשבץ אוטומטי", desc: "תשבץ רגיל (לא תשבץ היגיון)", dataAttr: "auto-crossword-url" }
+          ]
+        },
+        expert: {
+          title: "מומחים",
+          subtitle: "למי שמכוון לרמה גבוהה",
+          actions: [
+            { text: "התשבץ השבועי", desc: "אתגר קבוע + ארכיון", dataAttr: "weekly-url", tag: "שבועי" },
+            { text: "פרוייקט הניצוץ האנושי", desc: "איך AI מתמודד עם הגדרות היגיון?", dataAttr: "human-spark-url" },
+            { text: "קורס תשבצי היגיון", desc: "דקויות, טכניקות, תבניות", dataAttr: "course-url" },
+            { text: "מציאת מילים", desc: "כלי עבודה לפתרון", dataAttr: "word-finder-url" }
+          ]
+        }
+      };
+
+      let actionTray = scope.querySelector('.hb-homev2-action-tray');
+
+      function createActionTray(routeConfig) {
+        if (!routeConfig || !routeConfig.actions) return '';
+
+        let html = `
+          <div class="hb-homev2-action-tray-header">
+            <h3 class="hb-homev2-action-tray-title">${routeConfig.title}</h3>
+            <p class="hb-homev2-action-tray-subtitle">${routeConfig.subtitle || ''}</p>
+          </div>
+          <div class="hb-homev2-action-grid">
+        `;
+
+        routeConfig.actions.forEach(function(action) {
+          let href = action.href || '';
+          if (action.dataAttr && !href) href = getUrl(action.dataAttr);
+
+          if (action.dataAttr === 'weekly-url') {
+            href = isLoggedIn ? getUrl('weekly-url') : getUrl('account-url');
+          }
+          if (!href) return;
+
+          const tag = action.tag ? `<span class="hb-homev2-action-tag">${action.tag}</span>` : '';
+          const desc = action.desc || '';
+
+          html += `
+            <a class="hb-homev2-action-card" href="${href}">
+              ${tag}
+              <div class="hb-homev2-action-top">
+                <div class="hb-homev2-action-texts">
+                  <h4>${action.text}</h4>
+                  <p>${desc}</p>
+                </div>
+              </div>
+            </a>
+          `;
+        });
+
+        html += '</div>';
+        return html;
+      }
+
+      function setVisible(selector, on) {
+        const el = scope.querySelector(selector) || document.querySelector(selector);
+        if (!el) return;
+        if (on) {
+          el.style.maxHeight = '5000px';
+          el.style.opacity = '1';
+          el.style.padding = 'clamp(40px, 6vw, 64px) 0';
+        } else {
+          el.style.maxHeight = '0';
+          el.style.opacity = '0';
+          el.style.padding = '0';
+        }
+      }
+
+      function ensureTray() {
+        if (actionTray) return actionTray;
+
+        const wizard = scope.querySelector('.hb-homev2-wizard') || document.querySelector('.hb-homev2-wizard');
+        actionTray = document.createElement('section');
+        actionTray.className = 'hb-homev2-action-tray';
+
+        if (wizard && wizard.parentNode) {
+          wizard.insertAdjacentElement('afterend', actionTray);
+        } else {
+          (scope.querySelector('.hb-homev2') || document.body).appendChild(actionTray);
+        }
+        return actionTray;
+      }
+
+      scope.addEventListener('click', function(e) {
+        const btn = e.target.closest('.hb-homev2-wizard-card');
+        if (!btn) return;
+
+        const routeId = btn.getAttribute('data-route');
+        if (!routeId || !routes[routeId]) return;
+
+        const all = scope.querySelectorAll('.hb-homev2-wizard-card');
+        all.forEach(c => c.classList.remove('hb-homev2-wizard-selected'));
+        btn.classList.add('hb-homev2-wizard-selected');
+
+        setVisible('#daily-puzzle', routeId === 'beginner');
+        setVisible('#weekly-club', routeId === 'intermediate' || routeId === 'expert');
+
+        const tray = ensureTray();
+        tray.innerHTML = createActionTray(routes[routeId]);
+        tray.classList.add('hb-homev2-section-visible');
+
+        setTimeout(function() {
+          tray.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 60);
+      });
+
+      scope.addEventListener('click', function(e){
+        const t = e.target.closest('.hb-homev2-daily-toggle');
+        if (!t) return;
+        const wrap = scope.querySelector('.hb-homev2-daily-wrap');
+        if (!wrap) return;
+        wrap.hidden = !wrap.hidden;
+        if (!wrap.hidden) wrap.scrollIntoView({behavior:'smooth', block:'start'});
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function() { initHBHomeV2(document); });
+    } else {
+      initHBHomeV2(document);
+    }
+
+  })();
+  </script>
+</body>
+</html>

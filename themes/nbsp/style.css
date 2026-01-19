@@ -1,0 +1,189 @@
+/*
+Theme Name: NBSP
+Template: twentytwentyone
+*/
+
+/* Variables */
+:root {
+	--branding--logo--max-width: 180px;
+	--branding--logo--max-height: 100px;
+	--branding--logo--max-width-mobile: 96px;
+	--branding--logo--max-height-mobile: 96px;
+}
+
+
+
+*, :after, :before {
+    box-sizing: border-box !important;
+}
+
+.full_page{width: 100%;}
+.full_page_50_p{width: 50%;	display: flex;}
+.full_908{width: 100%;max-width:908px;margin: 0 auto;}
+.full_page_50_p.right{justify-content: flex-end;}
+.full_page_50_p.left{justify-content: flex-start;}
+.full_1200{width: 100%;max-width:1200px;margin: 0 auto;}
+.full_1400{width: 100%;max-width:1400px;margin: 0 auto;}
+.full_1050{width: 100%;max-width:1050px;margin: 0 auto;}
+.full_600 { width: 50%;}
+
+#primary, .content-area {max-width: 1200px;width: 100%;margin: 0 auto;padding: 0 0 0 0;}
+a:hover{color:#ff460e !important;}
+.site-header {box-shadow: none;}
+.row { display: flex; }
+.col { flex: 1; }
+p {margin: 10px 0 !important;font-size: 17px;font-stretch: normal;font-style: normal;line-height: 24px;letter-spacing: -0.04px;}
+.one_of_2, .one_of_3, .one_of_4, .one_of_5,.one_of_6, .two_of_3,  .one_third {
+	position: relative;
+	display: flex;
+	width: 50%;
+	flex-direction: column;
+}
+.one_of_3 {width: 32%;}
+.one_of_4 {width: 24%; box-sizing: border-box;}
+.hidden_data {display: none;}
+.half {flex: 1;}
+.one_of_two.reverse { flex-direction: row-reverse;}
+.one_line a{line-height: 14px !important;display: flex; align-items: center;}
+.one_line{display: flex;align-items: center;}
+.one_line a img {margin: 0 10px;}
+.full_width {position: relative;display: flex;width: 100%;height: auto;	flex-direction: column;	justify-content: center;}
+.link .the_link a{color:#067941;}
+.low_720{display:none;}
+.big_720{display:block}
+
+header#masthead { padding: 10px 10px 10px 10px;}
+
+/*--------------------------------------------------------------
+## Crossword Item
+--------------------------------------------------------------*/
+.singular.single-crossword H1.entry-title { font-size: 50px;font-weight: bold;}
+header.entry-header.alignwide.one_line { justify-content: center;}
+.puzzle {
+    background-color: #fff;
+    border: 2px solid #000;
+    padding: 0;
+	direction: rtl;
+	display: inline-block;
+	
+}
+
+.puzzle_cel {
+    background-color: #fff;
+    border: 1px solid #000;
+    color: #000;
+    height: 40px;
+    width: 40px;
+	display: flex;
+    flex-direction: column;
+}
+
+
+
+.puzzle_line {
+    display: flex;
+	flex-direction: row;
+	width: 100%;
+}
+.puzzle_cel_letter_val {
+    height: 27px;
+    padding: 0;
+    margin: 0;
+    display: flex;
+}
+
+.puzzle_cel_letter input {
+    max-width: 30px;
+    padding: 0 !important;
+    margin: 0 !important;
+	font-size: 29px;
+    text-align: center;
+}
+.puzzle_cel_letter input[type=text]{
+    border: none;
+    border-radius: none;
+    line-height: 20px;
+    padding: 0;
+    margin: 0 ;
+}
+.puzzle_cel.black_cell {
+    background-color: #000;
+}
+.puzzle_cel_number {
+    width: 100%;
+	height: 11px;
+}
+.puzzle_cel_letter {
+    width: 100%;
+    min-width: 30px;
+	height: 27px !important;
+}
+.puzzle_cel_number_val {
+    font-size: 12px;
+	line-height: 12px;
+}
+
+.puzzle_submit {
+    margin: 20px 0 0 0;
+}
+
+.one_line{display:flex;}
+
+.definitions.definitions_r {
+    padding-left: 30px;
+}
+.definitions .title {
+    font-weight: bold;
+}
+.definitions_title {
+    font-size: 50px;
+    text-align: center;
+    font-weight: bold;
+}
+.puzzle_cel.border_left {
+    border-left-width: 2px;
+	border-left-style: dotted;
+}
+.puzzle_cel.border_bottom {
+    border-bottom-width: 2px;
+	border-bottom-style: dotted;
+}
+
+/*--------------------------------------------------------------
+## Home Page
+--------------------------------------------------------------*/
+
+.crossword_item{margin-bottom: 25px;}
+.crossword_data{padding-right: 20px;}
+
+/*--------------------------------------------------------------
+## media print
+--------------------------------------------------------------*/
+@media print {
+    .puzzle_cel.black_cell {
+		background-color: #000 !important;
+        print-color-adjust: exact; 
+    }
+	body {
+      -webkit-print-color-adjust: exact;
+	}
+	.puzzle_rep {page-break-after: always;}
+	.puzzle_submit{display:none;}
+	.puzzle_cel_letter {display: none;}
+	.puzzle_cel_number_val {   font-size: 14px;  line-height: 17px;}
+	.puzzle_cel {border: 2px solid #000;}
+
+}
+
+/*--------------------------------------------------------------
+## My Crossword Page
+--------------------------------------------------------------*/
+
+.crossword_ref {
+    padding: 0 10px;
+}
+
+
+
+
+

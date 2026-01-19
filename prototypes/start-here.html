@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>התחילו כאן - היגיון בריא</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            direction: rtl;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c5aa0;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #2c5aa0;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn-login {
+            background: transparent;
+            border: 1px solid #2c5aa0;
+            color: #2c5aa0;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .btn-subscribe {
+            background: #2c5aa0;
+            color: #fff;
+            padding: 0.5rem 1.5rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* A/B Toggle */
+        .ab-toggle {
+            position: fixed;
+            top: 80px;
+            left: 20px;
+            z-index: 1001;
+            background: #f0f0f0;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: 2px solid #2c5aa0;
+        }
+
+        .ab-toggle:hover {
+            background: #e0e0e0;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 4rem 1.5rem;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .page-header p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+
+        /* Main Content */
+        section {
+            padding: 4rem 1.5rem;
+        }
+
+        .section-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Path Cards */
+        .paths-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .path-card {
+            background: #fff;
+            border-radius: 15px;
+            padding: 2.5rem;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 3px solid transparent;
+        }
+
+        .path-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .path-card.new {
+            border-color: #4CAF50;
+        }
+
+        .path-card.regular {
+            border-color: #2196F3;
+        }
+
+        .path-card.improve {
+            border-color: #FF9800;
+        }
+
+        .path-card h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #2c5aa0;
+        }
+
+        .path-card p {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .path-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .btn-primary {
+            background: #2c5aa0;
+            color: #fff;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            text-align: center;
+            transition: background 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: #1e3f73;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #2c5aa0;
+            border: 2px solid #2c5aa0;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: #2c5aa0;
+            color: #fff;
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            background: #f5f7fa;
+            border-radius: 15px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .faq-section h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: #2c5aa0;
+            text-align: center;
+        }
+
+        .faq-item {
+            background: #fff;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .faq-item h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .faq-item p {
+            color: #666;
+            line-height: 1.8;
+        }
+
+        /* Final CTA */
+        .final-cta {
+            text-align: center;
+            padding: 3rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border-radius: 15px;
+        }
+
+        .final-cta h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .final-cta p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        /* Version B Styles */
+        body.version-b .page-header h1 {
+            font-size: 2.5rem;
+        }
+
+        body.version-b .path-card h2 {
+            font-size: 1.7rem;
+        }
+
+        body.version-b .faq-section h2 {
+            font-size: 1.7rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            nav ul {
+                justify-content: center;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .paths-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .path-card {
+                padding: 2rem;
+            }
+
+            .ab-toggle {
+                top: auto;
+                bottom: 20px;
+                left: 20px;
+            }
+
+            .faq-section {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body id="body">
+    <!-- A/B Toggle -->
+    <div class="ab-toggle" onclick="toggleVersion()">גרסה A</div>
+
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo">היגיון בריא</div>
+            <nav>
+                <ul>
+                    <li><a href="home-v3.html">תשבצים</a></li>
+                    <li><a href="training-hub.html">מסלול חשיבה</a></li>
+                    <li><a href="#course">קורס</a></li>
+                    <li><a href="#games">משחקים וכלים</a></li>
+                    <li><a href="#human">הניצוץ האנושי</a></li>
+                    <li><a href="#login">התחברות</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <a href="#login" class="btn-login">התחברות</a>
+                <a href="#subscribe" class="btn-subscribe">מנוי</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1>התחילו כאן</h1>
+        <p>בחרו את המסלול שמתאים לכם</p>
+    </div>
+
+    <!-- Main Content -->
+    <section>
+        <div class="section-container">
+            <div class="paths-grid">
+                <!-- Path 1: New User -->
+                <div class="path-card new">
+                    <h2>אני חדש/ה</h2>
+                    <p>רק התחלתם? זה המקום הנכון. התחילו עם תשבצי דוגמה חינמיים כדי להכיר את הסגנון והשיטה שלנו.</p>
+                    <div class="path-buttons">
+                        <a href="home-v3.html#samples" class="btn-primary">לתשבצי דוגמה</a>
+                    </div>
+                </div>
+
+                <!-- Path 2: Regular Solver -->
+                <div class="path-card regular">
+                    <h2>אני פותר/ת קבוע</h2>
+                    <p>אתם כבר מכירים את התשבצים שלנו? מנוי יפתח לכם את התשבץ השבועי החדש ואת כל הארכיון.</p>
+                    <div class="path-buttons">
+                        <a href="home-v3.html#subscribe" class="btn-primary">התשבץ השבועי + ארכיון</a>
+                    </div>
+                </div>
+
+                <!-- Path 3: Want to Improve -->
+                <div class="path-card improve">
+                    <h2>אני רוצה להשתפר</h2>
+                    <p>רוצים לקחת את הפתרון שלכם לשלב הבא? הקורס ומסלול החשיבה המודרך יעזרו לכם להשתפר בצורה מובנית.</p>
+                    <div class="path-buttons">
+                        <a href="training-hub.html" class="btn-primary">מסלול חשיבה</a>
+                        <a href="home-v3.html#course" class="btn-secondary">קורס</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Section -->
+            <div class="faq-section">
+                <h2>שאלות נפוצות</h2>
+                <div class="faq-item">
+                    <h3>איך מתחילים?</h3>
+                    <p>פשוט מאוד! התחילו עם תשבץ דוגמה חינמי. אם אהבתם, תוכלו להירשם למנוי כדי לקבל את התשבץ השבועי ואת כל הארכיון.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>מה ההבדל בין מנוי למסלול חשיבה?</h3>
+                    <p>מנוי נותן גישה לתשבצים השבועיים ולארכיון המלא. מסלול החשיבה הוא תוכנית אימון מודרכת שמלמדת אסטרטגיות פתרון ומשפרת את החשיבה שלכם.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>האם יש דוגמאות חינמיות?</h3>
+                    <p>כן! יש לנו מספר תשבצי דוגמה חינמיים שתוכלו לפתור מיד. זה יעזור לכם להבין את הסגנון והאיכות שלנו.</p>
+                </div>
+            </div>
+
+            <!-- Final CTA -->
+            <div class="final-cta">
+                <h2>מוכנים להתחיל?</h2>
+                <p>בחרו את המסלול שמתאים לכם והתחילו לפתור</p>
+                <a href="home-v3.html#samples" class="btn-primary" style="background: #fff; color: #667eea; display: inline-block;">התחילו עכשיו</a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        let currentVersion = 'a';
+
+        function toggleVersion() {
+            const body = document.getElementById('body');
+            const toggle = document.querySelector('.ab-toggle');
+            
+            if (currentVersion === 'a') {
+                body.classList.add('version-b');
+                toggle.textContent = 'גרסה B';
+                currentVersion = 'b';
+            } else {
+                body.classList.remove('version-b');
+                toggle.textContent = 'גרסה A';
+                currentVersion = 'a';
+            }
+        }
+    </script>
+</body>
+</html>

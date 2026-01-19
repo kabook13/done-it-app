@@ -1,0 +1,61 @@
+{
+  "project": {
+    "name": "higayonbarie.co.il",
+    "description": "אתר תשבצי היגיון ומשחקי חשיבה",
+    "version": "1.0.0",
+    "last_updated": "2025-01-27"
+  },
+  "wordpress": {
+    "version": "Latest",
+    "theme": "hello-theme-child",
+    "parent_theme": "hello-elementor"
+  },
+  "plugins": {
+    "custom": [
+      "goodlife-wordle",
+      "goodlife-cipher",
+      "goodlife-matchsticks",
+      "goodlife-pangram",
+      "goodlife-wikiguess",
+      "goodlife-wordhole",
+      "goodlife-wordsearch",
+      "Goodlife - Connections",
+      "hb-cue",
+      "hb-cue-guide",
+      "hb-cue-prompt",
+      "hb-logic-lab",
+      "hb-logic-lab-flow",
+      "hb-logic-sheet",
+      "hb-video-cues-youtube",
+      "hb-video-tutor"
+    ]
+  },
+  "paths": {
+    "plugins": "plugins/",
+    "themes": "themes/",
+    "backup": "backup/",
+    "config": "config/",
+    "docs": "docs/"
+  },
+  "development": {
+    "local_path": "F:\\cursor\\files\\higayonbarie-site",
+    "editor": "Cursor",
+    "php_version": "7.4+"
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

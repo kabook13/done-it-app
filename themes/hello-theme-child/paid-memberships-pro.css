@@ -1,0 +1,67 @@
+/* ========================================================== */
+/* Paid Memberships Pro RTL Customizations - קוד מלא */
+/* ========================================================== */
+
+/* יישור לימין של כותרות ועמודות טבלת המנויים הראשית */
+.pmpro_levels table.pmpro_levels_table th,
+.pmpro_levels table.pmpro_levels_table tbody td {
+    text-align: right !important; 
+}
+
+/* יישור לימין של תיאורי המנויים */
+.pmpro_levels table.pmpro_levels_table tbody td ul,
+.pmpro_levels table.pmpro_levels_table tbody td > p {
+    text-align: right;
+    padding-right: 15px; 
+    list-style-position: inside; 
+}
+
+/* הסתרת הנקודה המיותרת אחרי כותרות המנוי */
+.pmpro_levels table.pmpro_levels_table tbody td:nth-child(2):after {
+    display: none !important;
+}
+
+/* **הסתרת טקסט המחיר המשובש** */
+.pmpro_levels_table .pmpro_levels_table_col-price span.pmpro_cost,
+.pmpro_level-price { 
+    /* מסתיר את הטקסט המלא שאינו מתורגם כמו "23.00 per and then for 999 more" */
+    display: none !important; 
+} 
+
+/* יישור עמודות טופס החיוב לימין בצ'קאאוט */
+#pmpro_section-billing-fields label,
+#pmpro_section-user-fields label {
+    text-align: right !important;
+    display: block !important;
+}
+#pmpro_section-billing-fields input,
+#pmpro_section-user-fields input,
+#pmpro_section-billing-fields select {
+    text-align: right;
+}
+/* תיקון שדה המדינה */
+.pmpro_checkout .pmpro_checkout-fields .pmpro_checkout-field-bcountry {
+    float: right;
+    clear: none; 
+}
+
+
+/* ========================================================== */
+/* עיצוב טבלת השוואת התוכניות (הטבלה הידנית באלמנטור) */
+/* ========================================================== */
+
+.pmpro_comparison_table_wrap {
+    direction: rtl;
+    text-align: right;
+    margin-top: 40px;
+}
+.pmpro_comparison_table th,
+.pmpro_comparison_table td {
+    text-align: right !important;
+    font-size: 0.9em;
+    padding: 10px 5px !important;
+}
+.pmpro_comparison_table td i.dashicons {
+    float: left; 
+    margin-left: 5px; 
+}
