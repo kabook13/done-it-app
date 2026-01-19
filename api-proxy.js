@@ -51,12 +51,19 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 // Serve static files from current directory
 app.use(express.static(__dirname));
 
+// Serve static files from assets folder (for icon.png and other assets)
+const assetsBaseDir = process.env.RENDER 
+    ? '/opt/render/project/src/assets'
+    : path.join(__dirname, 'assets');
+app.use('/assets', express.static(assetsBaseDir));
+console.log(`📁 [SERVER] Assets base directory: ${assetsBaseDir}`);
+
 // Serve static files from assets/journal directory (case-sensitive for Linux)
 // Use Render path if on Render, otherwise use relative path for local development
 const assetsDir = process.env.RENDER 
     ? '/opt/render/project/src/assets/journal'
     : path.join(__dirname, 'assets', 'journal');
-console.log(`📁 [SERVER] Assets directory path: ${assetsDir}`);
+console.log(`📁 [SERVER] Assets journal directory path: ${assetsDir}`);
 console.log(`📁 [SERVER] Running on Render: ${!!process.env.RENDER}`);
 app.use('/assets/journal', express.static(assetsDir, {
     setHeaders: (res, path) => {
