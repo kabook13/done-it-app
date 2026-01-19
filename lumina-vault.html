@@ -1,0 +1,3036 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#9333EA">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Done-It">
+    <meta name="description" content="Done-It - מערכת ניהול אישית עם כספת מאובטחת">
+    <title>Done-It | Personal OS</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        :root {
+            --primary: #9333EA;
+            --primary-dark: #7C3AED;
+            --primary-light: #A855F7;
+            --primary-pink: #EC4899;
+            --primary-glow: rgba(147, 51, 234, 0.3);
+            --primary-pink-glow: rgba(236, 72, 153, 0.3);
+            --bg: linear-gradient(135deg, #FAF5FF 0%, #FDF4FF 50%, #0F172A 100%);
+            --bg-solid: #FAF5FF;
+            --card: rgba(255, 255, 255, 0.95);
+            --card-glass: rgba(255, 255, 255, 0.8);
+            --text: #0F172A;
+            --text-secondary: #64748B;
+            --border: rgba(226, 232, 240, 0.8);
+            --red: #EF4444;
+            --yellow: #F59E0B;
+            --green: #10B981; /* kept for P3 priority, but using purple now */
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --shadow-glow: 0 0 20px var(--primary-glow);
+        }
+        
+        [data-theme="dark"] {
+            --bg: linear-gradient(135deg, #0F172A 0%, #1E1B2E 50%, #0F172A 100%);
+            --bg-solid: #0F172A;
+            --card: rgba(30, 27, 46, 0.95);
+            --card-glass: rgba(30, 27, 46, 0.8);
+            --text: #F1F5F9;
+            --text-secondary: #94A3B8;
+            --border: rgba(51, 65, 85, 0.8);
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.4);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+        }
+        
+        * {
+            -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Assistant', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            background-attachment: fixed;
+            color: var(--text);
+            transition: background 0.5s ease, color 0.3s ease;
+            overscroll-behavior: none;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* Modern Glass Card Effect */
+        .apple-card {
+            background: var(--card-glass);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-md);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .apple-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+            opacity: 0.6;
+        }
+        
+        .apple-card:hover {
+            box-shadow: var(--shadow-xl), var(--shadow-glow);
+            transform: translateY(-4px) scale(1.01);
+            border-color: var(--primary-light);
+        }
+        
+        .apple-card:active {
+            transform: translateY(-2px) scale(0.99);
+        }
+        
+        .tab-active {
+            color: var(--primary);
+            font-weight: 700;
+            position: relative;
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.1), rgba(236, 72, 153, 0.05));
+        }
+        
+        .tab-active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 20%;
+            right: 20%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--primary-pink) 100%);
+            border-radius: 3px 3px 0 0;
+            box-shadow: 0 -2px 8px var(--primary-glow);
+        }
+        
+        .p1 { 
+            border-right: 4px solid var(--red);
+            background: linear-gradient(90deg, rgba(239, 68, 68, 0.05), transparent);
+        }
+        .p2 { 
+            border-right: 4px solid var(--yellow);
+            background: linear-gradient(90deg, rgba(245, 158, 11, 0.05), transparent);
+        }
+        .p3 { 
+            border-right: 4px solid var(--primary);
+            background: linear-gradient(90deg, rgba(147, 51, 234, 0.05), transparent);
+        }
+        
+        .hidden { display: none !important; }
+        
+        input, textarea {
+            outline: none;
+            background: transparent;
+            color: var(--text);
+            transition: all 0.3s ease;
+        }
+        
+        input:focus, textarea:focus {
+            background: rgba(16, 185, 129, 0.03);
+        }
+        
+        input::placeholder, textarea::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.6;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .slide-in {
+            animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Smooth transitions */
+        main {
+            transition: opacity 0.2s ease;
+        }
+        
+        /* Modern Search bar */
+        .search-container {
+            position: relative;
+        }
+        
+        .search-container input {
+            background: var(--card-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1.5px solid var(--border);
+            border-radius: 16px;
+            padding: 14px 48px 14px 16px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+        
+        .search-container input:focus {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-md), 0 0 0 3px var(--primary-glow);
+            background: var(--card);
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 18px;
+            pointer-events: none;
+        }
+        
+        /* Modern Priority buttons */
+        .priority-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            text-align: center !important;
+            direction: ltr !important; /* Force LTR for numbers */
+        }
+        
+        .priority-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .priority-btn:active::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .priority-btn.active {
+            transform: scale(1.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Modern Task item */
+        .task-item {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            direction: rtl !important;
+            text-align: right !important;
+        }
+        
+        .task-item > div {
+            direction: rtl !important;
+            text-align: right !important;
+        }
+        
+        .task-item span {
+            direction: rtl !important;
+            text-align: right !important;
+        }
+        
+        /* Force RTL for all task text */
+        #tasks-container .task-item,
+        #tasks-container .task-item * {
+            direction: rtl !important;
+            text-align: right !important;
+        }
+        
+        .task-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 0;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            border-radius: 16px 0 0 16px;
+            transition: width 0.3s ease;
+            opacity: 0.1;
+        }
+        
+        .task-item:hover::before {
+            width: 4px;
+        }
+        
+        .task-item:active {
+            transform: scale(0.98);
+        }
+        
+        /* Swipe to delete hint */
+        .swipe-hint {
+            font-size: 10px;
+            color: var(--text-secondary);
+            text-align: center;
+            padding: 8px;
+        }
+        
+        /* Modern Dark mode toggle */
+        .theme-toggle {
+            width: 48px;
+            height: 48px;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--card-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1.5px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow);
+            font-size: 20px;
+        }
+        
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(15deg);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary);
+        }
+        
+        .theme-toggle:active {
+            transform: scale(0.95) rotate(0deg);
+        }
+        
+        /* Vault lock animation */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        .shake {
+            animation: shake 0.4s ease;
+        }
+        
+        /* Loading spinner */
+        .spinner {
+            border: 2px solid var(--border);
+            border-top: 2px solid var(--primary);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Safe area for notched devices */
+        @supports (padding: max(0px)) {
+            body {
+                padding-left: max(0px, env(safe-area-inset-left));
+                padding-right: max(0px, env(safe-area-inset-right));
+            }
+        }
+        
+        /* Modern Filter chips */
+        .filter-chip {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            background: var(--card-glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1.5px solid var(--border);
+            color: var(--text-secondary);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+            text-align: center !important;
+            direction: rtl !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        
+        /* Force alignment for all filter chips and their content */
+        #filter-chips,
+        #filter-chips *,
+        #filter-chips button,
+        #filter-chips .filter-chip {
+            text-align: center !important;
+            direction: rtl !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        
+        /* Force alignment for priority buttons */
+        .priority-btn,
+        #p-1, #p-2, #p-3 {
+            text-align: center !important;
+            direction: rtl !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        
+        .filter-chip::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .filter-chip:hover::before {
+            left: 100%;
+        }
+        
+        .filter-chip.active {
+            background: linear-gradient(135deg, var(--primary), var(--primary-pink));
+            color: white;
+            border-color: var(--primary);
+            box-shadow: var(--shadow-md), var(--shadow-glow);
+            transform: translateY(-2px);
+        }
+        
+        .filter-chip:active {
+            transform: scale(0.95);
+        }
+        
+        /* Done-It branding accent */
+        .done-it-accent {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-pink) 100%);
+        }
+        
+        /* Success animation for completed tasks */
+        @keyframes checkmark {
+            0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+            50% { transform: scale(1.2) rotate(0deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        
+        .task-done .w-3 {
+            animation: checkmark 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        /* Modern App Grid Items */
+        #apps-grid a {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #apps-grid a::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(147, 51, 234, 0.2), transparent);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        #apps-grid a:hover::before {
+            width: 200px;
+            height: 200px;
+        }
+        
+        #apps-grid a:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        /* Modern Modal */
+        #note-modal, #settings-modal {
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        
+        #note-modal .apple-card, #settings-modal .apple-card {
+            animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        /* Smooth scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+        
+        /* Input focus effects */
+        input:focus, textarea:focus {
+            border-color: var(--primary) !important;
+        }
+        
+        /* Priority button improvements */
+        .priority-btn {
+            box-shadow: var(--shadow);
+            text-align: center !important;
+            direction: ltr !important; /* Force LTR for numbers */
+        }
+        
+        .priority-btn:hover {
+            box-shadow: var(--shadow-md);
+        }
+        
+        .priority-btn.active {
+            box-shadow: var(--shadow-lg);
+        }
+        
+        /* Enhanced header styling */
+        header {
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Enhanced navigation */
+        nav {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+        
+        /* Better spacing for sections */
+        main {
+            padding: 1.5rem 1.25rem;
+        }
+        
+        /* Enhanced card titles */
+        h3.text-xs {
+            letter-spacing: 0.05em;
+            font-weight: 700;
+        }
+        
+        /* Better empty state */
+        #tasks-empty {
+            padding: 3rem 1rem;
+        }
+        
+        /* Enhanced vault section */
+        #vault-auth {
+            padding: 3rem 2rem;
+        }
+        
+        #vault-auth span.text-4xl {
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+        }
+        
+        /* Better note cards */
+        .note-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .note-card:hover {
+            transform: translateX(-4px);
+        }
+        
+        /* Enhanced button hover states */
+        button:not(.priority-btn):not(.theme-toggle):hover {
+            transform: translateY(-2px);
+        }
+        
+        button:not(.priority-btn):not(.theme-toggle):active {
+            transform: translateY(0);
+        }
+        
+        /* Subtle background pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(147, 51, 234, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        body > * {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Celebration Animations */
+        @keyframes confetti {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+        
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: var(--primary);
+            animation: confetti 3s ease-out forwards;
+            pointer-events: none;
+            z-index: 9999;
+        }
+        
+        @keyframes celebrate {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        
+        .celebrate {
+            animation: celebrate 0.6s ease;
+        }
+        
+        /* Achievement Badge */
+        .achievement-badge {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.1), rgba(236, 72, 153, 0.1));
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .achievement-badge.unlocked {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.2), rgba(236, 72, 153, 0.2));
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+        
+        .achievement-badge.locked {
+            opacity: 0.4;
+            filter: grayscale(100%);
+        }
+        
+        .achievement-badge.unlocked::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Progress Bar */
+        .progress-bar {
+            background: linear-gradient(90deg, var(--primary), var(--primary-pink));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+            min-height: 8px;
+        }
+        
+        /* Insight Card */
+        .insight-card {
+            padding: 12px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.05), rgba(236, 72, 153, 0.05));
+            border-right: 3px solid var(--primary);
+            font-size: 13px;
+            animation: fadeIn 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* Streak fire animation */
+        @keyframes fire {
+            0%, 100% { transform: scale(1) rotate(-2deg); }
+            50% { transform: scale(1.1) rotate(2deg); }
+        }
+        
+        #streak-count {
+            animation: fire 2s ease-in-out infinite;
+        }
+        
+        /* Progress bar animation */
+        .progress-bar {
+            animation: progressGrow 0.8s ease-out;
+        }
+        
+        @keyframes progressGrow {
+            from { height: 0; }
+        }
+        
+        /* Achievement hover effect */
+        .achievement-badge.unlocked:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 0 30px var(--primary-glow);
+        }
+        
+        /* Gift Item Styles */
+        .gift-item {
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .gift-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.05), rgba(236, 72, 153, 0.05));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 24px;
+        }
+        
+        .gift-item:hover::before {
+            opacity: 1;
+        }
+        
+        .gift-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-xl), var(--shadow-glow);
+        }
+        
+        .gift-item:active {
+            transform: scale(0.98);
+        }
+        
+        /* Gift opening animation */
+        @keyframes giftOpen {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05) rotate(2deg); }
+            100% { transform: scale(1); }
+        }
+        
+        .gift-item.opening {
+            animation: giftOpen 0.5s ease;
+        }
+        
+        /* New gift indicator */
+        .gift-item.ring-2 {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(147, 51, 234, 0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(147, 51, 234, 0); }
+        }
+    </style>
+</head>
+<body class="pb-24" data-theme="light">
+
+    <header class="p-6 pb-3 flex justify-between items-center bg-white/80 dark:bg-[#0F172A]/80 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50 sticky top-0 z-50 transition-all">
+        <h1 class="text-3xl font-800 tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
+            Done<span class="bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">-It</span>
+            <span class="text-purple-500 text-xl ml-2 inline-block animate-pulse">✓</span>
+        </h1>
+        <div class="flex items-center gap-4">
+            <div id="header-days" class="text-xs font-semibold text-slate-500 dark:text-slate-400 text-left px-3 py-1.5 rounded-full bg-slate-100/50 dark:bg-slate-800/50 backdrop-blur-sm"></div>
+            <button onclick="toggleTheme()" class="theme-toggle" aria-label="החלף מצב">
+                <span id="theme-icon">🌙</span>
+            </button>
+        </div>
+    </header>
+
+    <nav class="flex bg-white/80 dark:bg-[#0F172A]/80 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50 sticky top-[73px] z-40 transition-all shadow-sm overflow-x-auto">
+        <button onclick="showTab('apps')" id="btn-apps" class="flex-1 py-4 text-sm text-slate-400 min-w-[80px]">אפליקציות</button>
+        <button onclick="showTab('tasks')" id="btn-tasks" class="flex-1 py-4 text-sm tab-active min-w-[80px]">משימות</button>
+        <button onclick="showTab('spaces')" id="btn-spaces" class="flex-1 py-4 text-sm text-slate-400 min-w-[80px]">עולמות</button>
+        <button onclick="showTab('gifts')" id="btn-gifts" class="flex-1 py-4 text-sm text-slate-400 min-w-[80px]">💝 ממני</button>
+        <button onclick="showTab('vault')" id="btn-vault" class="flex-1 py-4 text-sm text-slate-400 min-w-[80px]">הכספת</button>
+    </nav>
+
+    <!-- Apps Tab -->
+    <main id="tab-apps" class="p-5 hidden space-y-4 fade-in">
+        <div class="apple-card p-4 space-y-3">
+            <h3 class="text-xs font-bold text-slate-400 uppercase mb-3">אפליקציות מהירות</h3>
+            <div class="grid grid-cols-3 gap-3" id="apps-grid">
+                <!-- Apps will be rendered here -->
+            </div>
+        </div>
+        
+        <!-- Quick Add AI Tools -->
+        <div class="apple-card p-4 space-y-3">
+            <h3 class="text-xs font-bold text-slate-400 uppercase mb-3">🤖 הוספה מהירה - כלי AI</h3>
+            <div class="grid grid-cols-2 gap-2">
+                <button onclick="quickAddAI('ChatGPT', 'https://chat.openai.com', '🤖')" class="p-3 bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-xl text-sm font-bold hover:bg-green-500/20 active:scale-95 transition-all">
+                    <div class="text-2xl mb-1">🤖</div>
+                    <div class="text-xs">ChatGPT</div>
+                </button>
+                <button onclick="quickAddAI('Claude', 'https://claude.ai', '🧠')" class="p-3 bg-gradient-to-br from-orange-500/10 to-amber-500/10 border border-orange-500/20 rounded-xl text-sm font-bold hover:bg-orange-500/20 active:scale-95 transition-all">
+                    <div class="text-2xl mb-1">🧠</div>
+                    <div class="text-xs">Claude</div>
+                </button>
+                <button onclick="quickAddAI('Gemini', 'https://gemini.google.com', '💎')" class="p-3 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/20 rounded-xl text-sm font-bold hover:bg-blue-500/20 active:scale-95 transition-all">
+                    <div class="text-2xl mb-1">💎</div>
+                    <div class="text-xs">Gemini</div>
+                </button>
+                <button onclick="quickAddAI('Midjourney', 'https://www.midjourney.com', '🎨')" class="p-3 bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-xl text-sm font-bold hover:bg-purple-500/20 active:scale-95 transition-all">
+                    <div class="text-2xl mb-1">🎨</div>
+                    <div class="text-xs">Midjourney</div>
+                </button>
+                <button onclick="quickAddAI('DALL-E', 'https://openai.com/dall-e-2', '🖼️')" class="p-3 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 rounded-xl text-sm font-bold hover:bg-indigo-500/20 active:scale-95 transition-all">
+                    <div class="text-2xl mb-1">🖼️</div>
+                    <div class="text-xs">DALL-E</div>
+                </button>
+                <button onclick="quickAddAI('Runway', 'https://runwayml.com', '🎬')" class="p-3 bg-gradient-to-br from-red-500/10 to-rose-500/10 border border-red-500/20 rounded-xl text-sm font-bold hover:bg-red-500/20 active:scale-95 transition-all">
+                    <div class="text-2xl mb-1">🎬</div>
+                    <div class="text-xs">Runway</div>
+                </button>
+                <button onclick="quickAddAI('Canva AI', 'https://www.canva.com', '✂️')" class="p-3 bg-gradient-to-br from-teal-500/10 to-cyan-500/10 border border-teal-500/20 rounded-xl text-sm font-bold hover:bg-teal-500/20 active:scale-95 transition-all">
+                    <div class="text-2xl mb-1">✂️</div>
+                    <div class="text-xs">Canva AI</div>
+                </button>
+                <button onclick="quickAddAI('Perplexity', 'https://www.perplexity.ai', '🔍')" class="p-3 bg-gradient-to-br from-slate-500/10 to-gray-500/10 border border-slate-500/20 rounded-xl text-sm font-bold hover:bg-slate-500/20 active:scale-95 transition-all">
+                    <div class="text-2xl mb-1">🔍</div>
+                    <div class="text-xs">Perplexity</div>
+                </button>
+            </div>
+            <p class="text-[10px] text-slate-400 text-center mt-2">💡 לחץ על כלי AI כדי להוסיף אותו מיד</p>
+        </div>
+        
+        <div class="apple-card p-4 space-y-3">
+            <h3 class="text-xs font-bold text-slate-400 uppercase mb-3">➕ הוספת אפליקציה מותאמת אישית</h3>
+            <input type="text" id="app-name-input" placeholder="שם האפליקציה (למשל: פייסבוק)" 
+                   class="w-full p-4 bg-slate-100/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl text-sm mb-3 border border-slate-200/50 dark:border-slate-700/50 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all">
+            <input type="url" id="app-url-input" placeholder="כתובת URL (למשל: https://facebook.com)" 
+                   class="w-full p-4 bg-slate-100/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl text-sm mb-3 border border-slate-200/50 dark:border-slate-700/50 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all">
+            <div class="flex gap-2">
+                <input type="text" id="app-icon-input" placeholder="אימוג'י או אייקון" 
+                       class="flex-1 p-4 bg-slate-100/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl text-sm text-center text-2xl border border-slate-200/50 dark:border-slate-700/50 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+                       maxlength="2">
+                <button onclick="addApp()" class="flex-1 bg-gradient-to-r from-purple-600 to-pink-500 text-white py-3 rounded-xl font-bold text-sm shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 active:scale-95 transition-all">הוספה</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Tasks Tab -->
+    <main id="tab-tasks" class="p-5 space-y-6 fade-in">
+        <!-- Search Bar -->
+        <div class="search-container">
+            <input type="text" id="task-search" placeholder="חיפוש משימות..." 
+                   class="w-full p-4 bg-white dark:bg-[#1C1C1E] rounded-xl border border-slate-200 dark:border-[#38383A] text-sm"
+                   oninput="filterTasks()">
+            <span class="search-icon">🔍</span>
+        </div>
+        
+        <!-- Filter Chips -->
+        <div class="flex gap-2 overflow-x-auto pb-2" id="filter-chips">
+            <button onclick="setFilter('all')" class="filter-chip active" id="filter-all">הכל</button>
+            <button onclick="setFilter('active')" class="filter-chip" id="filter-active">פעיל</button>
+            <button onclick="setFilter('done')" class="filter-chip" id="filter-done">הושלם</button>
+            <button onclick="setFilter('p1')" class="filter-chip" id="filter-p1">עדיפות 1</button>
+            <button onclick="setFilter('p2')" class="filter-chip" id="filter-p2">עדיפות 2</button>
+            <button onclick="setFilter('p3')" class="filter-chip" id="filter-p3">עדיפות 3</button>
+        </div>
+        
+        <!-- New Task Card -->
+        <div class="apple-card p-4 space-y-3">
+            <h3 class="text-xs font-bold text-slate-400 uppercase">משימה חדשה</h3>
+            <input type="text" id="task-input" placeholder="מה צריך לעשות?" 
+                   class="w-full text-lg border-b-2 border-slate-200/50 dark:border-slate-700/50 pb-3 focus:border-purple-500 focus:pb-4 transition-all"
+                   onkeypress="if(event.key === 'Enter') addTask()">
+            
+            <!-- Task Reminder Section -->
+            <div class="space-y-2">
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" id="task-reminder-enabled" onchange="toggleTaskReminder()" class="w-4 h-4 rounded border-slate-300 text-purple-600 focus:ring-purple-500">
+                    <label for="task-reminder-enabled" class="text-sm font-bold text-slate-700 dark:text-slate-300">⏰ תזכורת</label>
+                </div>
+                <div id="task-reminder-fields" class="hidden space-y-2 pl-6">
+                    <div class="flex gap-2">
+                        <input type="date" id="task-reminder-date" 
+                               class="flex-1 p-2 bg-slate-100/80 dark:bg-slate-800/80 rounded-lg text-sm border border-slate-200/50 dark:border-slate-700/50 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all">
+                        <input type="time" id="task-reminder-time" 
+                               class="flex-1 p-2 bg-slate-100/80 dark:bg-slate-800/80 rounded-lg text-sm border border-slate-200/50 dark:border-slate-700/50 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all">
+                    </div>
+                    <p class="text-[10px] text-slate-400">תזכורת תישלח ביום ובשעה שנבחרו</p>
+                </div>
+            </div>
+            
+            <div class="flex justify-between items-center pt-2">
+                <div class="flex gap-2">
+                    <button onclick="setTaskP(1)" id="p-1" class="priority-btn w-8 h-8 rounded-full border-2 border-red-500 text-red-500 text-[10px] font-bold" title="עדיפות גבוהה" style="display: flex !important; align-items: center !important; justify-content: center !important; text-align: center !important; direction: rtl !important;">1</button>
+                    <button onclick="setTaskP(2)" id="p-2" class="priority-btn w-8 h-8 rounded-full border-2 border-yellow-500 text-yellow-500 text-[10px] font-bold" title="עדיפות בינונית" style="display: flex !important; align-items: center !important; justify-content: center !important; text-align: center !important; direction: rtl !important;">2</button>
+                    <button onclick="setTaskP(3)" id="p-3" class="priority-btn w-8 h-8 rounded-full border-2 border-purple-500 text-purple-500 text-[10px] font-bold bg-purple-50 dark:bg-purple-900/20 active" title="עדיפות נמוכה" style="display: flex !important; align-items: center !important; justify-content: center !important; text-align: center !important; direction: rtl !important;">3</button>
+                </div>
+                <button onclick="addTask()" class="bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 active:scale-95 text-white px-8 py-3 rounded-full font-bold text-sm shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 transition-all relative overflow-hidden group">
+                    <span class="relative z-10">הוספה</span>
+                    <span class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Tasks Container -->
+        <div id="tasks-container" class="space-y-3"></div>
+        <div id="tasks-empty" class="hidden text-center py-12 text-slate-400">
+            <span class="text-4xl block mb-2">✨</span>
+            <p>אין משימות להצגה</p>
+        </div>
+    </main>
+
+    <!-- Spaces Tab -->
+    <main id="tab-spaces" class="p-5 hidden space-y-4">
+        <div id="spaces-grid" class="grid grid-cols-2 gap-4">
+            <button onclick="enterSpace('עבורי', '🌿')" class="apple-card p-8 text-center group hover:scale-105 transition-all duration-300">
+                <span class="text-5xl block mb-3 transform group-hover:scale-110 transition-transform duration-300">🌿</span>
+                <span class="font-bold text-lg bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">עבורי</span>
+            </button>
+            <button onclick="enterSpace('הבית ודורי', '🏠')" class="apple-card p-8 text-center group hover:scale-105 transition-all duration-300">
+                <span class="text-5xl block mb-3 transform group-hover:scale-110 transition-transform duration-300">🏠</span>
+                <span class="font-bold text-lg bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">הבית ודורי</span>
+            </button>
+            <button onclick="enterSpace('פרויקטים', '💡')" class="apple-card p-8 text-center group hover:scale-105 transition-all duration-300">
+                <span class="text-5xl block mb-3 transform group-hover:scale-110 transition-transform duration-300">💡</span>
+                <span class="font-bold text-lg bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">פרויקטים</span>
+            </button>
+            <button onclick="enterSpace('משאלות', '✨')" class="apple-card p-8 text-center group hover:scale-105 transition-all duration-300">
+                <span class="text-5xl block mb-3 transform group-hover:scale-110 transition-transform duration-300">✨</span>
+                <span class="font-bold text-lg bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">משאלות</span>
+            </button>
+        </div>
+
+        <div id="space-view" class="hidden space-y-4">
+            <button onclick="exitSpace()" class="text-purple-600 dark:text-purple-400 font-bold text-sm active:opacity-70">← חזרה לעולמות</button>
+            <h2 id="space-title" class="text-2xl font-bold"></h2>
+            <div class="search-container">
+                <input type="text" id="notes-search" placeholder="חיפוש ברשימות..." 
+                       class="w-full p-3 bg-white dark:bg-[#1C1C1E] rounded-xl border border-slate-200 dark:border-[#38383A] text-sm"
+                       oninput="renderNotes()">
+                <span class="search-icon">🔍</span>
+            </div>
+            <div id="notes-container" class="space-y-3"></div>
+            <button onclick="createNewNote()" class="w-full border-2 border-dashed border-slate-300/50 dark:border-slate-700/50 p-5 rounded-2xl text-slate-500 dark:text-slate-400 font-semibold text-sm hover:border-purple-400 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-purple-50/50 dark:hover:bg-purple-900/10 active:scale-98 transition-all duration-300">+ רשימה חדשה</button>
+        </div>
+    </main>
+
+    <!-- Progress Tab -->
+    <main id="tab-progress" class="p-5 hidden space-y-6 fade-in">
+        <!-- Streak Card -->
+        <div class="apple-card p-6 text-center relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-transparent"></div>
+            <div class="relative">
+                <div class="text-6xl mb-4" style="filter: drop-shadow(0 0 10px rgba(236, 72, 153, 0.5)); animation: fire 2s ease-in-out infinite;">🔥</div>
+                <h3 class="text-3xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent" id="streak-count">0</h3>
+                <p class="text-sm text-slate-500 dark:text-slate-400 font-semibold">יום רצף של השלמת משימות!</p>
+                <p class="text-xs text-slate-400 mt-2" id="streak-message">התחל להשלמת משימות כדי להתחיל רצף</p>
+            </div>
+        </div>
+
+        <!-- Achievements -->
+        <div class="apple-card p-4 space-y-3">
+            <h3 class="text-xs font-bold text-slate-400 uppercase mb-3">🏆 הישגים</h3>
+            <div id="achievements-grid" class="grid grid-cols-3 gap-3">
+                <!-- Achievements will be rendered here -->
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-2 gap-4">
+            <div class="apple-card p-4 text-center">
+                <div class="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent" id="total-tasks">0</div>
+                <p class="text-xs text-slate-500 mt-1">סה"כ משימות</p>
+            </div>
+            <div class="apple-card p-4 text-center">
+                <div class="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent" id="completed-tasks">0</div>
+                <p class="text-xs text-slate-500 mt-1">הושלמו</p>
+            </div>
+            <div class="apple-card p-4 text-center">
+                <div class="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent" id="completion-rate">0%</div>
+                <p class="text-xs text-slate-500 mt-1">אחוז השלמה</p>
+            </div>
+            <div class="apple-card p-4 text-center">
+                <div class="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent" id="total-notes">0</div>
+                <p class="text-xs text-slate-500 mt-1">רשימות</p>
+            </div>
+        </div>
+
+        <!-- Progress Chart -->
+        <div class="apple-card p-4">
+            <h3 class="text-xs font-bold text-slate-400 uppercase mb-4">📈 התקדמות שבועית</h3>
+            <div id="progress-chart" class="h-32 flex items-end justify-between gap-2">
+                <!-- Chart bars will be rendered here -->
+            </div>
+        </div>
+
+        <!-- Smart Insights -->
+        <div class="apple-card p-4 space-y-3">
+            <h3 class="text-xs font-bold text-slate-400 uppercase mb-3">💡 תובנות</h3>
+            <div id="insights-container" class="space-y-2">
+                <!-- Insights will be rendered here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Gifts Tab - הודעות ומתנות ממני -->
+    <main id="tab-gifts" class="p-5 hidden space-y-6 fade-in">
+        <div class="apple-card p-6 text-center relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-transparent"></div>
+            <div class="relative">
+                <div class="text-5xl mb-3">💝</div>
+                <h2 class="text-2xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">מתנות ממני</h2>
+                <p class="text-sm text-slate-500 dark:text-slate-400">הודעות, תזכורות ומתנות קטנות</p>
+            </div>
+        </div>
+
+        <!-- Gifts Container -->
+        <div id="gifts-container" class="space-y-4">
+            <!-- Gifts will be rendered here -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="gifts-empty" class="hidden text-center py-12">
+            <span class="text-6xl block mb-4">🎁</span>
+            <p class="text-slate-400 text-lg mb-2">אין מתנות כרגע</p>
+            <p class="text-slate-500 text-sm">מתנות חדשות יופיעו כאן</p>
+        </div>
+
+        <!-- Admin Panel (hidden by default, accessible via special code) -->
+        <div id="gifts-admin" class="hidden apple-card p-4 space-y-3 mt-6 border-2 border-purple-300 dark:border-purple-700">
+            <div class="flex justify-between items-center mb-2">
+                <h3 class="text-xs font-bold text-slate-400 uppercase">ניהול מתנות</h3>
+                <button onclick="toggleGiftsAdmin()" class="text-xs text-slate-400 hover:text-purple-600">הסתר</button>
+            </div>
+            <input type="text" id="gift-title-input" placeholder="כותרת המתנה/הודעה" 
+                   class="w-full p-3 bg-slate-100/80 dark:bg-slate-800/80 rounded-xl text-sm border border-slate-200/50 dark:border-slate-700/50">
+            <textarea id="gift-message-input" placeholder="ההודעה או התוכן..." 
+                      class="w-full p-3 bg-slate-100/80 dark:bg-slate-800/80 rounded-xl text-sm min-h-[100px] border border-slate-200/50 dark:border-slate-700/50 resize-none"></textarea>
+            <div class="flex gap-2">
+                <input type="text" id="gift-icon-input" placeholder="אימוג'י" 
+                       class="w-16 p-3 bg-slate-100/80 dark:bg-slate-800/80 rounded-xl text-center text-2xl border border-slate-200/50 dark:border-slate-700/50"
+                       maxlength="2">
+                <input type="date" id="gift-date-input" 
+                       class="flex-1 p-3 bg-slate-100/80 dark:bg-slate-800/80 rounded-xl text-sm border border-slate-200/50 dark:border-slate-700/50">
+            </div>
+            <div class="flex gap-2">
+                <button onclick="addGift()" class="flex-1 bg-gradient-to-r from-purple-600 to-pink-500 text-white py-3 rounded-xl font-bold text-sm shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 active:scale-95 transition-all">➕ הוסף מתנה</button>
+                <button onclick="clearAllGifts()" class="px-4 bg-red-500/10 text-red-600 dark:text-red-400 py-3 rounded-xl font-bold text-sm active:scale-95 transition-all">🗑️</button>
+            </div>
+            <p class="text-[10px] text-slate-400 text-center mt-2">💡 טיפ: השאר תאריך ריק כדי שהמתנה תופיע מיד</p>
+        </div>
+
+        <!-- Secret Button to Access Admin (triple tap on title) -->
+        <div class="text-center mt-4">
+            <button id="secret-admin-btn" class="text-xs text-slate-300 hover:text-purple-500 transition opacity-0 hover:opacity-100" style="user-select: none;">🔧</button>
+        </div>
+    </main>
+
+    <!-- Vault Tab -->
+    <main id="tab-vault" class="p-5 hidden">
+        <div id="vault-auth" class="apple-card p-8 text-center space-y-4">
+            <span class="text-4xl block">🔐</span>
+            <h2 class="text-xl font-bold">הכספת נעולה</h2>
+            <input type="password" id="vault-pass" placeholder="הקישי סיסמה" 
+                   class="w-full p-4 bg-slate-100/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl text-center border border-slate-200/50 dark:border-slate-700/50 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+                   onkeypress="if(event.key === 'Enter') unlockVault()">
+            <button onclick="unlockVault()" class="w-full bg-gradient-to-r from-slate-900 to-slate-800 dark:from-white dark:to-slate-100 dark:text-slate-900 text-white py-4 rounded-2xl font-bold shadow-xl hover:shadow-2xl active:scale-95 transition-all duration-300">פתיחה</button>
+            <p class="text-xs text-slate-400">המידע מוצפן ומאובטח</p>
+        </div>
+        <div id="vault-content" class="hidden space-y-4 fade-in">
+            <div class="flex justify-between items-center">
+                <h2 class="text-2xl font-bold">הכספת</h2>
+                <div class="flex gap-2">
+                    <button onclick="showChangePasswordModal()" class="text-purple-600 dark:text-purple-400 text-xs font-bold active:opacity-70">🔑 שנה סיסמה</button>
+                    <button onclick="lockVault()" class="text-red-500 text-xs font-bold active:opacity-70">🔒 נעילה מחדש</button>
+                </div>
+            </div>
+            <textarea id="vault-text" class="apple-card w-full h-96 p-4 text-sm resize-none" 
+                      placeholder="מידע רגיש, קודים, מספרי דרכון..."></textarea>
+            <div class="flex gap-2">
+                <button onclick="exportVault()" class="flex-1 bg-gradient-to-r from-purple-600 to-pink-500 text-white py-3 rounded-xl font-bold shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 active:scale-95 transition-all">📥 ייצוא</button>
+                <button onclick="importVault()" class="flex-1 bg-slate-200/80 dark:bg-slate-800/80 backdrop-blur-sm text-slate-900 dark:text-white py-3 rounded-xl font-bold hover:bg-slate-300/80 dark:hover:bg-slate-700/80 active:scale-95 transition-all">📤 ייבוא</button>
+            </div>
+            <input type="file" id="vault-file-input" accept=".txt,.json" class="hidden" onchange="handleVaultImport(event)">
+        </div>
+    </main>
+
+    <!-- Note Modal -->
+    <div id="note-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-[100] p-6" onclick="if(event.target === this) closeNoteModal()">
+        <div class="apple-card w-full max-h-[80vh] flex flex-col p-6 overflow-hidden slide-in" onclick="event.stopPropagation()">
+            <input type="text" id="note-title-input" placeholder="כותרת הרשימה" 
+                   class="text-xl font-bold mb-4 border-b-2 border-slate-200/50 dark:border-slate-700/50 pb-3 focus:border-purple-500 focus:pb-4 transition-all">
+            <textarea id="note-body-input" class="flex-1 text-sm resize-none mb-4 min-h-[200px] p-3 rounded-xl border border-slate-200/50 dark:border-slate-700/50 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all" 
+                      placeholder="כאן כותבים את הכל..."></textarea>
+            
+            <!-- Reminder Section -->
+            <div class="mb-4 space-y-2">
+                <div class="flex items-center gap-2 mb-2">
+                    <input type="checkbox" id="note-reminder-enabled" onchange="toggleNoteReminder()" class="w-4 h-4 rounded border-slate-300 text-purple-600 focus:ring-purple-500">
+                    <label for="note-reminder-enabled" class="text-sm font-bold text-slate-700 dark:text-slate-300">⏰ תזכורת</label>
+                </div>
+                <div id="note-reminder-fields" class="hidden space-y-2 pl-6">
+                    <div class="flex gap-2">
+                        <input type="date" id="note-reminder-date" 
+                               class="flex-1 p-2 bg-slate-100/80 dark:bg-slate-800/80 rounded-lg text-sm border border-slate-200/50 dark:border-slate-700/50 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all">
+                        <input type="time" id="note-reminder-time" 
+                               class="flex-1 p-2 bg-slate-100/80 dark:bg-slate-800/80 rounded-lg text-sm border border-slate-200/50 dark:border-slate-700/50 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all">
+                    </div>
+                    <p class="text-[10px] text-slate-400">תזכורת תישלח ביום ובשעה שנבחרו</p>
+                </div>
+            </div>
+            
+            <div class="flex gap-2">
+                <button onclick="saveNote()" class="flex-1 bg-gradient-to-r from-purple-600 to-pink-500 text-white py-3 rounded-xl font-bold shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 active:scale-95 transition-all">שמירה</button>
+                <button onclick="closeNoteModal()" class="flex-1 bg-slate-100/80 dark:bg-slate-800/80 backdrop-blur-sm py-3 rounded-xl font-bold hover:bg-slate-200/80 dark:hover:bg-slate-700/80 active:scale-95 transition-all">ביטול</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div id="change-password-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-[100] p-6" onclick="if(event.target === this) closeChangePasswordModal()">
+        <div class="apple-card w-full max-w-md mx-auto p-6 space-y-4 slide-in" onclick="event.stopPropagation()">
+            <h2 class="text-xl font-bold mb-4">🔑 שינוי סיסמת הכספת</h2>
+            <div class="space-y-3">
+                <div>
+                    <label class="text-xs text-slate-400 mb-1 block">סיסמה נוכחית</label>
+                    <input type="password" id="current-pass-input" placeholder="הקישי את הסיסמה הנוכחית" 
+                           class="w-full p-3 bg-slate-100/80 dark:bg-slate-800/80 rounded-xl text-sm border border-slate-200/50 dark:border-slate-700/50 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 mb-1 block">סיסמה חדשה</label>
+                    <input type="password" id="new-pass-input" placeholder="הקישי סיסמה חדשה" 
+                           class="w-full p-3 bg-slate-100/80 dark:bg-slate-800/80 rounded-xl text-sm border border-slate-200/50 dark:border-slate-700/50 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 mb-1 block">אימות סיסמה חדשה</label>
+                    <input type="password" id="confirm-pass-input" placeholder="הקישי שוב את הסיסמה החדשה" 
+                           class="w-full p-3 bg-slate-100/80 dark:bg-slate-800/80 rounded-xl text-sm border border-slate-200/50 dark:border-slate-700/50 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+                           onkeypress="if(event.key === 'Enter') changeVaultPassword()">
+                </div>
+            </div>
+            <div class="flex gap-2 pt-2">
+                <button onclick="changeVaultPassword()" class="flex-1 bg-gradient-to-r from-purple-600 to-pink-500 text-white py-3 rounded-xl font-bold shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 active:scale-95 transition-all">שמור סיסמה</button>
+                <button onclick="closeChangePasswordModal()" class="flex-1 bg-slate-100/80 dark:bg-slate-800/80 backdrop-blur-sm py-3 rounded-xl font-bold hover:bg-slate-200/80 dark:hover:bg-slate-700/80 active:scale-95 transition-all">ביטול</button>
+            </div>
+            <p class="text-[10px] text-slate-400 text-center mt-2">💡 הסיסמה נשמרת במכשיר שלך בלבד</p>
+        </div>
+    </div>
+
+    <!-- Settings/Backup Modal -->
+    <div id="settings-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-[100] p-6" onclick="if(event.target === this) closeSettings()">
+        <div class="apple-card w-full max-w-md mx-auto p-6 space-y-4 slide-in" onclick="event.stopPropagation()">
+            <h2 class="text-xl font-bold mb-4">הגדרות וגיבוי</h2>
+            <button onclick="exportAllData()" class="w-full bg-gradient-to-r from-purple-600 to-pink-500 text-white py-3 rounded-xl font-bold shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 active:scale-95 transition-all">📥 ייצוא כל הנתונים</button>
+            <button onclick="importAllData()" class="w-full bg-slate-200/80 dark:bg-slate-800/80 backdrop-blur-sm text-slate-900 dark:text-white py-3 rounded-xl font-bold hover:bg-slate-300/80 dark:hover:bg-slate-700/80 active:scale-95 transition-all">📤 ייבוא נתונים</button>
+            <button onclick="clearAllData()" class="w-full bg-red-500 text-white py-3 rounded-xl font-bold active:opacity-80">🗑️ מחיקת כל הנתונים</button>
+            <input type="file" id="data-file-input" accept=".json" class="hidden" onchange="handleDataImport(event)">
+            <button onclick="closeSettings()" class="w-full bg-slate-100 dark:bg-[#2C2C2E] py-3 rounded-xl font-bold active:opacity-80 mt-4">סגירה</button>
+        </div>
+    </div>
+
+    <script>
+        // --- Data & State ---
+        let tasks = JSON.parse(localStorage.getItem('lumina_tasks')) || [];
+        let spacesData = JSON.parse(localStorage.getItem('lumina_spaces_v3')) || { 
+            'עבורי': [], 
+            'הבית ודורי': [], 
+            'פרויקטים': [], 
+            'משאלות': [] 
+        };
+        let apps = JSON.parse(localStorage.getItem('lumina_apps')) || [
+            { id: 1, name: 'פייסבוק', url: 'https://facebook.com', icon: '📘' },
+            { id: 2, name: 'אינסטגרם', url: 'https://instagram.com', icon: '📷' },
+            { id: 3, name: 'וואטסאפ', url: 'https://web.whatsapp.com', icon: '💬' },
+            { id: 4, name: 'יוטיוב', url: 'https://youtube.com', icon: '📺' },
+            { id: 5, name: 'גימייל', url: 'https://gmail.com', icon: '📧' },
+            { id: 6, name: 'גוגל', url: 'https://google.com', icon: '🔍' }
+        ];
+        let progressData = JSON.parse(localStorage.getItem('lumina_progress')) || {
+            streak: 0,
+            lastCompletedDate: null,
+            achievements: {},
+            weeklyProgress: {}
+        };
+        
+        // Initialize progress data if needed
+        if (!progressData.achievements) progressData.achievements = {};
+        if (!progressData.weeklyProgress) progressData.weeklyProgress = {};
+        
+        // Gifts data - מתנות ממני
+        let gifts = JSON.parse(localStorage.getItem('lumina_gifts')) || [];
+        let giftsAdminVisible = false;
+        let secretTapCount = 0;
+        let currentSpace = '';
+        let currentNoteIndex = -1;
+        let selectedPriority = 3;
+        let currentFilter = 'all';
+        let searchQuery = '';
+        
+        // Vault password - stored in localStorage with basic obfuscation
+        function getVaultPassword() {
+            const stored = localStorage.getItem('lumina_vault_pass_hash');
+            if (!stored) {
+                // Default password: 1983
+                const defaultPass = btoa('1983' + 'lumina_salt_2024');
+                localStorage.setItem('lumina_vault_pass_hash', defaultPass);
+                return '1983';
+            }
+            // In a real app, you'd use proper hashing. This is just obfuscation.
+            try {
+                return atob(stored).replace('lumina_salt_2024', '');
+            } catch {
+                return '1983';
+            }
+        }
+        
+        function setVaultPassword(newPass) {
+            localStorage.setItem('lumina_vault_pass_hash', btoa(newPass + 'lumina_salt_2024'));
+        }
+        
+        let VAULT_PASS = getVaultPassword();
+        window.VAULT_PASS = VAULT_PASS; // Make it accessible globally for password change
+
+        // --- Theme Management ---
+        function initTheme() {
+            const saved = localStorage.getItem('lumina_theme') || 'light';
+            document.body.setAttribute('data-theme', saved);
+            updateThemeIcon(saved);
+        }
+        
+        function toggleTheme() {
+            const current = document.body.getAttribute('data-theme');
+            const newTheme = current === 'light' ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('lumina_theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+        
+        function updateThemeIcon(theme) {
+            document.getElementById('theme-icon').textContent = theme === 'light' ? '🌙' : '☀️';
+        }
+
+        // --- Navigation ---
+        function showTab(tab) {
+            document.querySelectorAll('main').forEach(m => {
+                m.classList.add('hidden');
+                m.classList.remove('fade-in');
+            });
+            document.querySelectorAll('nav button').forEach(b => {
+                b.classList.remove('tab-active', 'text-slate-400');
+                b.classList.add('text-slate-400');
+            });
+            const targetTab = document.getElementById('tab-' + tab);
+            targetTab.classList.remove('hidden');
+            targetTab.classList.add('fade-in');
+            document.getElementById('btn-' + tab).classList.add('tab-active');
+            document.getElementById('btn-' + tab).classList.remove('text-slate-400');
+            
+            if(tab === 'tasks') renderTasks();
+            if(tab === 'spaces') exitSpace();
+            if(tab === 'apps') renderApps();
+            if(tab === 'progress') renderProgress();
+            if(tab === 'gifts') renderGifts();
+        }
+
+        // --- Tasks Logic ---
+        function setTaskP(p) {
+            selectedPriority = p;
+            [1,2,3].forEach(i => {
+                const btn = document.getElementById('p-'+i);
+                btn.classList.remove('bg-red-50', 'bg-yellow-50', 'bg-purple-50', 'bg-red-900/20', 'bg-yellow-900/20', 'bg-purple-900/20', 'active');
+            });
+            const btn = document.getElementById('p-'+p);
+            const colors = {1: 'red', 2: 'yellow', 3: 'purple'};
+            const color = colors[p];
+            const isDark = document.body.getAttribute('data-theme') === 'dark';
+            btn.classList.add(`bg-${color}-${isDark ? '900/20' : '50'}`, 'active');
+        }
+
+        function addTask() {
+            const input = document.getElementById('task-input');
+            if(!input.value.trim()) return;
+            
+            // Get reminder data
+            const reminderEnabled = document.getElementById('task-reminder-enabled').checked;
+            let reminder = null;
+            if (reminderEnabled) {
+                const reminderDate = document.getElementById('task-reminder-date').value;
+                const reminderTime = document.getElementById('task-reminder-time').value;
+                if (reminderDate && reminderTime) {
+                    reminder = {
+                        enabled: true,
+                        date: reminderDate,
+                        time: reminderTime,
+                        datetime: new Date(`${reminderDate}T${reminderTime}`).toISOString()
+                    };
+                }
+            }
+            
+            const taskId = Date.now();
+            tasks.push({ 
+                id: taskId, 
+                title: input.value.trim(), 
+                p: selectedPriority, 
+                done: false,
+                createdAt: new Date().toISOString(),
+                reminder: reminder
+            });
+            
+            // Reminder will be checked by checkTaskReminders() every 5 seconds
+            // No need to schedule with setTimeout (won't work when page is closed)
+            if (reminder) {
+                console.log('✅ Task with reminder added:', input.value.trim(), 'Reminder:', new Date(reminder.datetime).toLocaleString('he-IL'));
+            }
+            
+            input.value = '';
+            
+            // Reset reminder fields
+            document.getElementById('task-reminder-enabled').checked = false;
+            document.getElementById('task-reminder-fields').classList.add('hidden');
+            document.getElementById('task-reminder-date').value = '';
+            document.getElementById('task-reminder-time').value = '';
+            
+            saveTasks();
+        }
+        
+        function toggleTaskReminder() {
+            const enabled = document.getElementById('task-reminder-enabled').checked;
+            const fields = document.getElementById('task-reminder-fields');
+            if (enabled) {
+                fields.classList.remove('hidden');
+                // Set default to tomorrow if no date
+                if (!document.getElementById('task-reminder-date').value) {
+                    const tomorrow = new Date();
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    document.getElementById('task-reminder-date').value = tomorrow.toISOString().split('T')[0];
+                }
+                if (!document.getElementById('task-reminder-time').value) {
+                    document.getElementById('task-reminder-time').value = '09:00';
+                }
+            } else {
+                fields.classList.add('hidden');
+            }
+        }
+        
+        function scheduleTaskReminder(taskId, reminder) {
+            // Don't use setTimeout - it won't work when page is closed
+            // Instead, rely on checkTaskReminders() which runs periodically
+            console.log('Task reminder scheduled:', taskId, 'for', reminder.datetime);
+            // The reminder will be checked by checkTaskReminders() every 10 seconds
+        }
+        
+        async function showTaskReminder(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (!task || task.done) {
+                console.log('Task not found or already done:', taskId);
+                return;
+            }
+            
+            const title = '⏰ תזכורת משימה: ' + task.title;
+            const body = `זמן לטפל במשימה: ${task.title}`;
+            const tag = `task-reminder-${taskId}`;
+            
+            // Always log these critical steps
+            console.log('🔔 Attempting to show task reminder:', title);
+            console.log('🔔 Notification permission:', Notification.permission);
+            console.log('🔔 Service Worker available:', 'serviceWorker' in navigator);
+            
+            // First, try Service Worker (best option - no site name)
+            if ('serviceWorker' in navigator) {
+                try {
+                    const registration = await navigator.serviceWorker.ready;
+                    console.log('🔔 Service Worker ready:', registration ? 'YES' : 'NO');
+                    if (!registration) {
+                        throw new Error('Service Worker registration not ready');
+                    }
+                    
+                    if (Notification.permission === 'granted') {
+                        console.log('🔔 Showing notification via Service Worker...');
+                        const notificationOptions = {
+                            body: body,
+                            icon: '/done-it-app/icon-192.png',
+                            badge: '/done-it-app/icon-192.png',
+                            tag: tag,
+                            requireInteraction: false,
+                            silent: false,
+                            vibrate: [200, 100, 200],
+                            data: {
+                                url: '/done-it-app/lumina-vault.html',
+                                taskId: taskId
+                            }
+                        };
+                        console.log('🔔 Notification options:', notificationOptions);
+                        await registration.showNotification(title, notificationOptions);
+                        console.log('✅✅✅ Task reminder sent via Service Worker:', task.title);
+                        return;
+                    } else {
+                        console.log('Notification permission not granted, requesting...');
+                        const permission = await Notification.requestPermission();
+                        if (permission === 'granted') {
+                            await registration.showNotification(title, {
+                                body: body,
+                                icon: '/done-it-app/icon-192.png',
+                                badge: '/done-it-app/icon-192.png',
+                                tag: tag,
+                                requireInteraction: false,
+                                silent: false,
+                                vibrate: [200, 100, 200],
+                                data: {
+                                    url: '/done-it-app/lumina-vault.html',
+                                    taskId: taskId
+                                }
+                            });
+                            console.log('✅ Task reminder sent via Service Worker (after permission):', task.title);
+                            return;
+                        }
+                    }
+                } catch (e) {
+                    console.error('❌ Service Worker notification failed:', e);
+                }
+            }
+            
+            // Fallback to regular Notification API
+            if ('Notification' in window) {
+                console.log('🔔 Trying Notification API fallback...');
+                if (Notification.permission === 'granted') {
+                    try {
+                        console.log('🔔 Creating Notification object...');
+                        const notification = new Notification(title, {
+                            body: body,
+                            icon: '/done-it-app/icon-192.png',
+                            badge: '/done-it-app/icon-192.png',
+                            tag: tag,
+                            requireInteraction: false,
+                            silent: false,
+                            vibrate: [200, 100, 200]
+                        });
+                        console.log('✅✅✅ Task reminder sent via Notification API:', task.title);
+                        console.log('🔔 Notification object:', notification);
+                        return;
+                    } catch (e) {
+                        console.error('❌ Error showing notification:', e);
+                    }
+                } else if (Notification.permission === 'default') {
+                    const permission = await Notification.requestPermission();
+                    if (permission === 'granted') {
+                        const notification = new Notification(title, {
+                            body: body,
+                            icon: '/done-it-app/icon-192.png',
+                            badge: '/done-it-app/icon-192.png',
+                            tag: tag,
+                            requireInteraction: false,
+                            silent: false,
+                            vibrate: [200, 100, 200]
+                        });
+                        console.log('✅ Task reminder sent via Notification API (after permission):', task.title);
+                        return;
+                    }
+                }
+            }
+            
+            // Last resort: alert (always works)
+            console.warn('⚠️ Using alert fallback for task:', task.title);
+            try {
+                alert(`⏰ תזכורת: ${task.title}`);
+            } catch (e) {
+                console.error('Even alert failed:', e);
+            }
+        }
+        
+        function checkTaskReminders() {
+            // Check all tasks for reminders that should fire
+            const now = new Date();
+            const checkedReminders = JSON.parse(localStorage.getItem('lumina_checked_task_reminders') || '[]');
+            
+            // Always log - critical for debugging
+            console.log('⏰ Checking task reminders at', now.toLocaleTimeString('he-IL'), 'Total tasks:', tasks.length);
+            
+            tasks.forEach(task => {
+                if (task.reminder && task.reminder.enabled && task.reminder.datetime && !task.done) {
+                    const reminderTime = new Date(task.reminder.datetime);
+                    const reminderKey = `task-${task.id}-${task.reminder.datetime}`;
+                    const timeDiff = now.getTime() - reminderTime.getTime();
+                    
+                    // Always log reminder checks for debugging
+                    console.log('🔍 Checking reminder for task:', task.title, {
+                        reminderTime: reminderTime.toISOString(),
+                        now: now.toISOString(),
+                        timeDiff: timeDiff,
+                        shouldShow: reminderTime <= now && timeDiff < 3600000,
+                        alreadyShown: checkedReminders.includes(reminderKey)
+                    });
+                    
+                    // If reminder time passed but not more than 1 hour ago, show it
+                    if (reminderTime <= now && timeDiff < 3600000) {
+                        // Check if we already showed this reminder
+                        if (!checkedReminders.includes(reminderKey)) {
+                            console.log('✅ Triggering task reminder:', task.title, 'at', reminderTime.toLocaleString('he-IL'));
+                            showTaskReminder(task.id).catch(err => {
+                                console.error('❌ Failed to show task reminder:', err);
+                                // Fallback: at least log it
+                                alert(`⏰ תזכורת: ${task.title}`);
+                            });
+                            checkedReminders.push(reminderKey);
+                            // Keep only last 100 checked reminders
+                            if (checkedReminders.length > 100) {
+                                checkedReminders.shift();
+                            }
+                            localStorage.setItem('lumina_checked_task_reminders', JSON.stringify(checkedReminders));
+                        } else {
+                            console.log('⏭️ Reminder already shown for:', task.title);
+                        }
+                    }
+                }
+            });
+        }
+
+        function toggleTask(id) {
+            const task = tasks.find(t => t.id === id);
+            const wasDone = task.done;
+            tasks = tasks.map(t => {
+                if (t.id === id) {
+                    const newDone = !t.done;
+                    return {
+                        ...t, 
+                        done: newDone,
+                        completedAt: newDone && !wasDone ? new Date().toISOString() : t.completedAt
+                    };
+                }
+                return t;
+            });
+            saveTasks();
+            
+            // Celebration if task was completed (was not done, now is done)
+            if (!wasDone && tasks.find(t => t.id === id).done) {
+                celebrateTaskCompletion();
+                updateStreak();
+                checkAchievements();
+            }
+        }
+
+        function deleteTask(id) {
+            tasks = tasks.filter(t => t.id !== id);
+            saveTasks();
+        }
+
+        function saveTasks() {
+            localStorage.setItem('lumina_tasks', JSON.stringify(tasks));
+            renderTasks();
+        }
+
+        function filterTasks() {
+            searchQuery = document.getElementById('task-search').value.toLowerCase();
+            renderTasks();
+        }
+
+        function setFilter(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-chip').forEach(chip => chip.classList.remove('active'));
+            document.getElementById('filter-' + filter).classList.add('active');
+            renderTasks();
+        }
+
+        function renderTasks() {
+            const container = document.getElementById('tasks-container');
+            const empty = document.getElementById('tasks-empty');
+            container.innerHTML = '';
+            
+            let filtered = [...tasks];
+            
+            // Apply search filter
+            if (searchQuery) {
+                filtered = filtered.filter(t => t.title.toLowerCase().includes(searchQuery));
+            }
+            
+            // Apply status/priority filter
+            if (currentFilter === 'active') {
+                filtered = filtered.filter(t => !t.done);
+            } else if (currentFilter === 'done') {
+                filtered = filtered.filter(t => t.done);
+            } else if (currentFilter.startsWith('p')) {
+                const p = parseInt(currentFilter.replace('p', ''));
+                filtered = filtered.filter(t => t.p === p);
+            }
+            
+            // Sort: undone first, then by priority
+            filtered.sort((a,b) => {
+                if (a.done !== b.done) return a.done - b.done;
+                return a.p - b.p;
+            });
+            
+            if (filtered.length === 0) {
+                container.classList.add('hidden');
+                empty.classList.remove('hidden');
+            } else {
+                container.classList.remove('hidden');
+                empty.classList.add('hidden');
+                filtered.forEach(t => {
+                    const taskEl = document.createElement('div');
+                    taskEl.className = `apple-card p-4 flex items-center justify-between p${t.p} task-item ${t.done ? 'opacity-40' : ''} fade-in`;
+                    const hasReminder = t.reminder && t.reminder.enabled;
+                    const reminderIcon = hasReminder ? '<span class="text-yellow-500 text-xs mr-1" title="יש תזכורת">⏰</span>' : '';
+                    
+                    taskEl.innerHTML = `
+                        <div class="flex items-center gap-3 cursor-pointer flex-1" onclick="toggleTask(${t.id})" style="direction: rtl !important; text-align: right !important;">
+                            <div class="w-6 h-6 rounded-full border-2 border-purple-600 flex items-center justify-center flex-shrink-0">
+                                ${t.done ? '<div class="w-3 h-3 bg-gradient-to-r from-purple-600 to-pink-500 rounded-full"></div>' : ''}
+                            </div>
+                            <div class="flex items-center gap-1 flex-1" style="direction: rtl !important; text-align: right !important;">
+                                <span class="font-medium ${t.done ? 'line-through' : ''}" style="text-align: right !important; direction: rtl !important;">${t.title}</span>
+                                ${reminderIcon}
+                            </div>
+                            ${hasReminder && t.reminder.date ? `<span class="text-[10px] text-slate-400 mr-2" style="direction: rtl !important; text-align: right !important;">${new Date(t.reminder.date).toLocaleDateString('he-IL')} ${t.reminder.time || ''}</span>` : ''}
+                        </div>
+                        <button onclick="deleteTask(${t.id})" class="text-slate-300 hover:text-red-500 active:scale-90 transition ml-2">✕</button>
+                    `;
+                    container.appendChild(taskEl);
+                });
+            }
+        }
+
+        // --- Apps Logic ---
+        function addApp() {
+            const name = document.getElementById('app-name-input').value.trim();
+            const url = document.getElementById('app-url-input').value.trim();
+            const icon = document.getElementById('app-icon-input').value.trim() || '🔗';
+            
+            if (!name || !url) {
+                alert('נא למלא שם וכתובת URL');
+                return;
+            }
+            
+            // Validate URL
+            let finalUrl = url;
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                finalUrl = 'https://' + url;
+            }
+            
+            // Check if app already exists
+            if (apps.some(app => app.name.toLowerCase() === name.toLowerCase() || app.url === finalUrl)) {
+                if (!confirm('אפליקציה עם שם או כתובת דומה כבר קיימת. להוסיף בכל זאת?')) {
+                    return;
+                }
+            }
+            
+            apps.push({
+                id: Date.now(),
+                name: name,
+                url: finalUrl,
+                icon: icon
+            });
+            
+            saveApps();
+            
+            // Clear inputs
+            document.getElementById('app-name-input').value = '';
+            document.getElementById('app-url-input').value = '';
+            document.getElementById('app-icon-input').value = '';
+        }
+        
+        function quickAddAI(name, url, icon) {
+            // Check if already exists
+            if (apps.some(app => app.name.toLowerCase() === name.toLowerCase() || app.url === url)) {
+                alert(`${name} כבר קיים ברשימה!`);
+                return;
+            }
+            
+            apps.push({
+                id: Date.now(),
+                name: name,
+                url: url,
+                icon: icon
+            });
+            
+            saveApps();
+            
+            // Visual feedback
+            const button = event.target.closest('button');
+            if (button) {
+                button.classList.add('ring-2', 'ring-green-500');
+                setTimeout(() => {
+                    button.classList.remove('ring-2', 'ring-green-500');
+                }, 1000);
+            }
+        }
+        
+        function deleteApp(id) {
+            if (confirm('למחוק את האפליקציה?')) {
+                apps = apps.filter(a => a.id !== id);
+                saveApps();
+            }
+        }
+        
+        function saveApps() {
+            localStorage.setItem('lumina_apps', JSON.stringify(apps));
+            renderApps();
+        }
+        
+        function renderApps() {
+            const container = document.getElementById('apps-grid');
+            container.innerHTML = '';
+            
+            apps.forEach(app => {
+                const appEl = document.createElement('a');
+                appEl.href = app.url;
+                appEl.target = '_blank';
+                appEl.rel = 'noopener noreferrer';
+                appEl.className = 'apple-card flex flex-col items-center justify-center p-6 rounded-2xl active:scale-95 transition-all relative group overflow-hidden';
+                appEl.innerHTML = `
+                    <span class="text-4xl mb-3 transform group-hover:scale-110 transition-transform duration-300">${app.icon}</span>
+                    <span class="text-xs font-bold text-center bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">${app.name}</span>
+                    <button onclick="event.preventDefault(); deleteApp(${app.id})" 
+                            class="absolute top-2 left-2 w-6 h-6 rounded-full bg-gradient-to-r from-red-500 to-red-600 text-white text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center shadow-lg hover:scale-110">
+                        ✕
+                    </button>
+                `;
+                container.appendChild(appEl);
+            });
+        }
+
+        // --- Spaces & Notes Logic ---
+        function enterSpace(name, icon) {
+            currentSpace = name;
+            document.getElementById('spaces-grid').classList.add('hidden');
+            document.getElementById('space-view').classList.remove('hidden');
+            document.getElementById('space-title').innerText = icon + " " + name;
+            renderNotes();
+        }
+
+        function exitSpace() {
+            document.getElementById('spaces-grid').classList.remove('hidden');
+            document.getElementById('space-view').classList.add('hidden');
+        }
+
+        function createNewNote() {
+            currentNoteIndex = -1;
+            document.getElementById('note-title-input').value = '';
+            document.getElementById('note-body-input').value = '';
+            document.getElementById('note-reminder-enabled').checked = false;
+            document.getElementById('note-reminder-fields').classList.add('hidden');
+            document.getElementById('note-reminder-date').value = '';
+            document.getElementById('note-reminder-time').value = '';
+            document.getElementById('note-modal').classList.remove('hidden');
+        }
+
+        function openNote(index) {
+            currentNoteIndex = index;
+            const note = spacesData[currentSpace][index];
+            document.getElementById('note-title-input').value = note.title;
+            document.getElementById('note-body-input').value = note.body;
+            
+            // Load reminder data if exists
+            if (note.reminder && note.reminder.enabled) {
+                document.getElementById('note-reminder-enabled').checked = true;
+                document.getElementById('note-reminder-fields').classList.remove('hidden');
+                if (note.reminder.date) {
+                    document.getElementById('note-reminder-date').value = note.reminder.date;
+                }
+                if (note.reminder.time) {
+                    document.getElementById('note-reminder-time').value = note.reminder.time;
+                }
+            } else {
+                document.getElementById('note-reminder-enabled').checked = false;
+                document.getElementById('note-reminder-fields').classList.add('hidden');
+                document.getElementById('note-reminder-date').value = '';
+                document.getElementById('note-reminder-time').value = '';
+            }
+            
+            document.getElementById('note-modal').classList.remove('hidden');
+        }
+        
+        function toggleNoteReminder() {
+            const enabled = document.getElementById('note-reminder-enabled').checked;
+            const fields = document.getElementById('note-reminder-fields');
+            if (enabled) {
+                fields.classList.remove('hidden');
+                // Set default to tomorrow if no date
+                if (!document.getElementById('note-reminder-date').value) {
+                    const tomorrow = new Date();
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    document.getElementById('note-reminder-date').value = tomorrow.toISOString().split('T')[0];
+                }
+                if (!document.getElementById('note-reminder-time').value) {
+                    document.getElementById('note-reminder-time').value = '09:00';
+                }
+            } else {
+                fields.classList.add('hidden');
+            }
+        }
+
+        function saveNote() {
+            const title = document.getElementById('note-title-input').value || 'רשימה ללא כותרת';
+            const body = document.getElementById('note-body-input').value;
+            
+            // Get reminder data
+            const reminderEnabled = document.getElementById('note-reminder-enabled').checked;
+            let reminder = null;
+            if (reminderEnabled) {
+                const reminderDate = document.getElementById('note-reminder-date').value;
+                const reminderTime = document.getElementById('note-reminder-time').value;
+                if (reminderDate && reminderTime) {
+                    reminder = {
+                        enabled: true,
+                        date: reminderDate,
+                        time: reminderTime,
+                        datetime: new Date(`${reminderDate}T${reminderTime}`).toISOString()
+                    };
+                    // Reminder will be checked by checkNoteReminders() every 5 seconds
+                    // No need to schedule with setTimeout (won't work when page is closed)
+                    console.log('✅ Note with reminder saved:', title, 'Reminder:', new Date(reminder.datetime).toLocaleString('he-IL'));
+                }
+            }
+            
+            const noteData = {
+                title, 
+                body, 
+                date: currentNoteIndex === -1 ? new Date().toLocaleDateString('he-IL') : (spacesData[currentSpace][currentNoteIndex]?.date || new Date().toLocaleDateString('he-IL')),
+                updatedAt: new Date().toISOString()
+            };
+            
+            if (reminder) {
+                noteData.reminder = reminder;
+            }
+            
+            if(currentNoteIndex === -1) {
+                spacesData[currentSpace].push(noteData);
+            } else {
+                // Preserve existing reminder if not changed
+                if (!reminder && spacesData[currentSpace][currentNoteIndex]?.reminder) {
+                    noteData.reminder = spacesData[currentSpace][currentNoteIndex].reminder;
+                }
+                spacesData[currentSpace][currentNoteIndex] = noteData;
+            }
+            
+            localStorage.setItem('lumina_spaces_v3', JSON.stringify(spacesData));
+            closeNoteModal();
+            renderNotes();
+        }
+        
+        // Removed scheduleNoteReminder - using periodic checks instead
+        // This ensures reminders work even when page is closed
+        
+        async function showNoteReminder(space, noteIndex) {
+            const note = spacesData[space][noteIndex];
+            if (!note) {
+                console.log('Note not found:', space, noteIndex);
+                return;
+            }
+            
+            const title = '⏰ תזכורת: ' + note.title;
+            const body = note.body.substring(0, 100) + (note.body.length > 100 ? '...' : '');
+            const tag = `note-reminder-${space}-${noteIndex}`;
+            
+            // Always log these critical steps
+            console.log('🔔 Attempting to show note reminder:', title);
+            console.log('🔔 Notification permission:', Notification.permission);
+            console.log('🔔 Service Worker available:', 'serviceWorker' in navigator);
+            
+            // First, try Service Worker (best option - no site name)
+            if ('serviceWorker' in navigator) {
+                try {
+                    const registration = await navigator.serviceWorker.ready;
+                    console.log('🔔 Service Worker ready:', registration ? 'YES' : 'NO');
+                    if (!registration) {
+                        throw new Error('Service Worker registration not ready');
+                    }
+                    
+                    if (Notification.permission === 'granted') {
+                        console.log('🔔 Showing notification via Service Worker...');
+                        const notificationOptions = {
+                            body: body,
+                            icon: '/done-it-app/icon-192.png',
+                            badge: '/done-it-app/icon-192.png',
+                            tag: tag,
+                            requireInteraction: false,
+                            silent: false,
+                            vibrate: [200, 100, 200],
+                            data: {
+                                url: '/done-it-app/lumina-vault.html',
+                                space: space,
+                                noteIndex: noteIndex
+                            }
+                        };
+                        console.log('🔔 Notification options:', notificationOptions);
+                        await registration.showNotification(title, notificationOptions);
+                        console.log('✅✅✅ Note reminder sent via Service Worker:', note.title);
+                        return;
+                    } else {
+                        console.log('Notification permission not granted, requesting...');
+                        const permission = await Notification.requestPermission();
+                        if (permission === 'granted') {
+                            await registration.showNotification(title, {
+                                body: body,
+                                icon: '/done-it-app/icon-192.png',
+                                badge: '/done-it-app/icon-192.png',
+                                tag: tag,
+                                requireInteraction: false,
+                                silent: false,
+                                vibrate: [200, 100, 200],
+                                data: {
+                                    url: '/done-it-app/lumina-vault.html',
+                                    space: space,
+                                    noteIndex: noteIndex
+                                }
+                            });
+                            console.log('✅ Note reminder sent via Service Worker (after permission):', note.title);
+                            return;
+                        }
+                    }
+                } catch (e) {
+                    console.error('❌ Service Worker notification failed:', e);
+                }
+            }
+            
+            // Fallback to regular Notification API
+            if ('Notification' in window) {
+                console.log('🔔 Trying Notification API fallback...');
+                if (Notification.permission === 'granted') {
+                    try {
+                        console.log('🔔 Creating Notification object...');
+                        const notification = new Notification(title, {
+                            body: body,
+                            icon: '/done-it-app/icon-192.png',
+                            badge: '/done-it-app/icon-192.png',
+                            tag: tag,
+                            requireInteraction: false,
+                            silent: false,
+                            vibrate: [200, 100, 200]
+                        });
+                        console.log('✅✅✅ Note reminder sent via Notification API:', note.title);
+                        console.log('🔔 Notification object:', notification);
+                        return;
+                    } catch (e) {
+                        console.error('❌ Error showing notification:', e);
+                    }
+                } else if (Notification.permission === 'default') {
+                    const permission = await Notification.requestPermission();
+                    if (permission === 'granted') {
+                        const notification = new Notification(title, {
+                            body: body,
+                            icon: '/done-it-app/icon-192.png',
+                            badge: '/done-it-app/icon-192.png',
+                            tag: tag,
+                            requireInteraction: false,
+                            silent: false,
+                            vibrate: [200, 100, 200]
+                        });
+                        console.log('✅ Note reminder sent via Notification API (after permission):', note.title);
+                        return;
+                    }
+                }
+            }
+            
+            // Last resort: alert (always works)
+            console.warn('⚠️ Using alert fallback for note:', note.title);
+            try {
+                alert(`⏰ תזכורת: ${note.title}`);
+            } catch (e) {
+                console.error('Even alert failed:', e);
+            }
+        }
+        
+        function checkNoteReminders() {
+            // Check all notes for reminders that should fire
+            const now = new Date();
+            const checkedReminders = JSON.parse(localStorage.getItem('lumina_checked_note_reminders') || '[]');
+            
+            // Always log - critical for debugging
+            console.log('⏰ Checking note reminders at', now.toLocaleTimeString('he-IL'));
+            
+            let totalNotesWithReminders = 0;
+            Object.keys(spacesData).forEach(space => {
+                spacesData[space].forEach((note, index) => {
+                    if (note.reminder && note.reminder.enabled && note.reminder.datetime) {
+                        totalNotesWithReminders++;
+                        const reminderTime = new Date(note.reminder.datetime);
+                        const reminderKey = `note-${space}-${index}-${note.reminder.datetime}`;
+                        const timeDiff = now.getTime() - reminderTime.getTime();
+                        
+                        // Always log reminder checks for debugging
+                        console.log('🔍 Checking reminder for note:', note.title, {
+                            space: space,
+                            reminderTime: reminderTime.toISOString(),
+                            now: now.toISOString(),
+                            timeDiff: timeDiff,
+                            shouldShow: reminderTime <= now && timeDiff < 3600000,
+                            alreadyShown: checkedReminders.includes(reminderKey)
+                        });
+                        
+                        // If reminder time passed but not more than 1 hour ago, show it
+                        if (reminderTime <= now && timeDiff < 3600000) {
+                            // Check if we already showed this reminder
+                            if (!checkedReminders.includes(reminderKey)) {
+                                console.log('✅ Triggering note reminder:', note.title, 'at', reminderTime.toLocaleString('he-IL'));
+                                showNoteReminder(space, index).catch(err => {
+                                    console.error('❌ Failed to show note reminder:', err);
+                                    // Fallback: at least log it
+                                    alert(`⏰ תזכורת: ${note.title}`);
+                                });
+                                checkedReminders.push(reminderKey);
+                                // Keep only last 100 checked reminders
+                                if (checkedReminders.length > 100) {
+                                    checkedReminders.shift();
+                                }
+                                localStorage.setItem('lumina_checked_note_reminders', JSON.stringify(checkedReminders));
+                            }
+                        }
+                    }
+                });
+            });
+            
+            console.log('📋 Total notes with reminders:', totalNotesWithReminders);
+        }
+
+        function deleteNote(e, index) {
+            e.stopPropagation();
+            if(confirm('למחוק את הרשימה?')) {
+                spacesData[currentSpace].splice(index, 1);
+                localStorage.setItem('lumina_spaces_v3', JSON.stringify(spacesData));
+                renderNotes();
+            }
+        }
+
+        function renderNotes() {
+            const container = document.getElementById('notes-container');
+            const searchInput = document.getElementById('notes-search');
+            const searchQuery = searchInput ? searchInput.value.toLowerCase() : '';
+            container.innerHTML = '';
+            
+            let filteredNotes = [...spacesData[currentSpace]];
+            
+            // Apply search filter
+            if (searchQuery) {
+                filteredNotes = filteredNotes.filter(note => 
+                    note.title.toLowerCase().includes(searchQuery) || 
+                    note.body.toLowerCase().includes(searchQuery)
+                );
+            }
+            
+            if (filteredNotes.length === 0 && spacesData[currentSpace].length > 0) {
+                container.innerHTML = '<div class="text-center py-8 text-slate-400"><p>לא נמצאו רשימות התואמות לחיפוש</p></div>';
+                return;
+            }
+            
+            filteredNotes.forEach((note, originalIndex) => {
+                // Find original index for delete function
+                const actualIndex = spacesData[currentSpace].findIndex(n => n === note);
+                const noteEl = document.createElement('div');
+                noteEl.className = 'apple-card p-4 flex justify-between items-center cursor-pointer hover:bg-slate-50 dark:hover:bg-[#2C2C2E] active:scale-98 transition fade-in';
+                noteEl.onclick = () => openNote(actualIndex);
+                const hasReminder = note.reminder && note.reminder.enabled;
+                const reminderIcon = hasReminder ? '<span class="text-yellow-500 text-xs mr-1" title="יש תזכורת">⏰</span>' : '';
+                
+                noteEl.innerHTML = `
+                    <div class="flex-1">
+                        <div class="flex items-center gap-1">
+                            <h4 class="font-bold text-sm">${note.title}</h4>
+                            ${reminderIcon}
+                        </div>
+                        <p class="text-[10px] text-slate-400 mt-1">עודכן ב-${note.date}${hasReminder && note.reminder.date ? ` | תזכורת: ${new Date(note.reminder.date).toLocaleDateString('he-IL')} ${note.reminder.time || ''}` : ''}</p>
+                    </div>
+                    <button onclick="deleteNote(event, ${actualIndex})" class="text-slate-200 hover:text-red-500 active:scale-90 transition ml-2">✕</button>
+                `;
+                container.appendChild(noteEl);
+            });
+        }
+
+        function closeNoteModal() {
+            // Reset reminder fields
+            document.getElementById('note-reminder-enabled').checked = false;
+            document.getElementById('note-reminder-fields').classList.add('hidden');
+            document.getElementById('note-reminder-date').value = '';
+            document.getElementById('note-reminder-time').value = '';
+            document.getElementById('note-modal').classList.add('hidden');
+        }
+
+        // --- Gifts Logic - מתנות ממני ---
+        function renderGifts() {
+            const container = document.getElementById('gifts-container');
+            const empty = document.getElementById('gifts-empty');
+            container.innerHTML = '';
+            
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            // Filter gifts that should be visible (no date or date <= today)
+            const visibleGifts = gifts.filter(gift => {
+                if (!gift.revealDate) return true; // No date = show immediately
+                const revealDate = new Date(gift.revealDate);
+                revealDate.setHours(0, 0, 0, 0);
+                return revealDate <= today;
+            }).sort((a, b) => {
+                // Sort by date (newest first) or by creation date
+                if (a.revealDate && b.revealDate) {
+                    return new Date(b.revealDate) - new Date(a.revealDate);
+                }
+                return (b.createdAt || 0) - (a.createdAt || 0);
+            });
+            
+            if (visibleGifts.length === 0) {
+                container.classList.add('hidden');
+                empty.classList.remove('hidden');
+            } else {
+                container.classList.remove('hidden');
+                empty.classList.add('hidden');
+                
+                visibleGifts.forEach((gift, index) => {
+                    const giftEl = document.createElement('div');
+                    giftEl.className = 'apple-card p-5 relative overflow-hidden gift-item fade-in';
+                    giftEl.style.animationDelay = (index * 0.1) + 's';
+                    
+                    const isNew = !gift.viewed;
+                    if (isNew) {
+                        giftEl.classList.add('ring-2', 'ring-purple-400', 'ring-opacity-50');
+                    }
+                    
+                    giftEl.innerHTML = `
+                        <div class="flex items-start gap-4">
+                            <div class="text-4xl flex-shrink-0 ${isNew ? 'animate-bounce' : ''}" style="filter: ${isNew ? 'drop-shadow(0 0 8px rgba(236, 72, 153, 0.6))' : 'none'};">
+                                ${gift.icon || '💝'}
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-start justify-between mb-2">
+                                    <h3 class="text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">${gift.title}</h3>
+                                    ${isNew ? '<span class="text-xs bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1 rounded-full animate-pulse shadow-lg">חדש! ✨</span>' : ''}
+                                </div>
+                                <p class="text-sm text-slate-600 dark:text-slate-300 whitespace-pre-wrap leading-relaxed mt-2">${gift.message}</p>
+                                ${gift.revealDate ? `<p class="text-[10px] text-slate-400 mt-3 flex items-center gap-1">
+                                    <span>📅</span>
+                                    <span>למתנה מיום ${new Date(gift.revealDate).toLocaleDateString('he-IL')}</span>
+                                </p>` : ''}
+                                ${gift.viewedAt ? `<p class="text-[10px] text-slate-400 mt-1">נפתח ב-${new Date(gift.viewedAt).toLocaleDateString('he-IL')}</p>` : ''}
+                            </div>
+                            ${giftsAdminVisible ? `<button onclick="event.stopPropagation(); deleteGift(${gift.id})" class="text-slate-300 hover:text-red-500 active:scale-90 transition ml-2 flex-shrink-0">✕</button>` : ''}
+                        </div>
+                    `;
+                    
+                    giftEl.onclick = () => {
+                        if (!gift.viewed) {
+                            giftEl.classList.add('opening');
+                            setTimeout(() => {
+                                gift.viewed = true;
+                                gift.viewedAt = new Date().toISOString();
+                                localStorage.setItem('lumina_gifts', JSON.stringify(gifts));
+                                celebrateGiftOpening();
+                                renderGifts();
+                            }, 300);
+                        }
+                    };
+                    
+                    container.appendChild(giftEl);
+                });
+            }
+            
+            // Setup secret admin access
+            setupSecretAdminAccess();
+        }
+        
+        function celebrateGiftOpening() {
+            // Special celebration for opening a gift
+            const colors = ['#9333EA', '#EC4899', '#F472B6', '#C084FC'];
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.top = Math.random() * 20 + '%';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.width = (Math.random() * 10 + 8) + 'px';
+                    confetti.style.height = confetti.style.width;
+                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0%';
+                    confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                    confetti.style.animationDuration = (Math.random() * 2 + 3) + 's';
+                    document.body.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 5000);
+                }, i * 20);
+            }
+            
+            // Haptic feedback
+            if (navigator.vibrate) {
+                navigator.vibrate([200, 100, 200, 100, 200]);
+            }
+        }
+        
+        function addGift() {
+            const title = document.getElementById('gift-title-input').value.trim();
+            const message = document.getElementById('gift-message-input').value.trim();
+            const icon = document.getElementById('gift-icon-input').value.trim() || '💝';
+            const date = document.getElementById('gift-date-input').value;
+            
+            if (!title || !message) {
+                alert('נא למלא כותרת והודעה');
+                return;
+            }
+            
+            gifts.push({
+                id: Date.now(),
+                title: title,
+                message: message,
+                icon: icon,
+                revealDate: date || null,
+                createdAt: new Date().toISOString(),
+                viewed: false
+            });
+            
+            saveGifts();
+            
+            // Clear inputs
+            document.getElementById('gift-title-input').value = '';
+            document.getElementById('gift-message-input').value = '';
+            document.getElementById('gift-icon-input').value = '';
+            document.getElementById('gift-date-input').value = '';
+            
+            alert('מתנה נוספה בהצלחה! 💝');
+        }
+        
+        function deleteGift(id) {
+            if (confirm('למחוק את המתנה?')) {
+                gifts = gifts.filter(g => g.id !== id);
+                saveGifts();
+            }
+        }
+        
+        function clearAllGifts() {
+            if (confirm('למחוק את כל המתנות? זה לא ניתן לשחזור!')) {
+                if (confirm('בטוח בטוח?')) {
+                    gifts = [];
+                    saveGifts();
+                }
+            }
+        }
+        
+        function saveGifts() {
+            localStorage.setItem('lumina_gifts', JSON.stringify(gifts));
+            renderGifts();
+        }
+        
+        function toggleGiftsAdmin() {
+            giftsAdminVisible = !giftsAdminVisible;
+            const adminPanel = document.getElementById('gifts-admin');
+            if (giftsAdminVisible) {
+                adminPanel.classList.remove('hidden');
+            } else {
+                adminPanel.classList.add('hidden');
+            }
+            renderGifts();
+        }
+        
+        function setupSecretAdminAccess() {
+            const titleEl = document.querySelector('#tab-gifts h2');
+            const secretBtn = document.getElementById('secret-admin-btn');
+            
+            if (titleEl && !giftsAdminVisible) {
+                titleEl.style.cursor = 'pointer';
+                titleEl.onclick = () => {
+                    secretTapCount++;
+                    if (secretTapCount >= 5) {
+                        toggleGiftsAdmin();
+                        secretTapCount = 0;
+                        if (secretBtn) secretBtn.style.opacity = '1';
+                    }
+                    setTimeout(() => { 
+                        if (secretTapCount < 5) secretTapCount = 0; 
+                    }, 2000);
+                };
+            }
+            
+            if (secretBtn) {
+                secretBtn.onclick = () => toggleGiftsAdmin();
+            }
+        }
+
+        // --- Vault Logic ---
+        function unlockVault() {
+            const input = document.getElementById('vault-pass');
+            const pass = input.value;
+            if(pass === VAULT_PASS) {
+                document.getElementById('vault-auth').classList.add('hidden');
+                document.getElementById('vault-content').classList.remove('hidden');
+                const vaultData = localStorage.getItem('lumina_vault_data');
+                document.getElementById('vault-text').value = vaultData ? atob(vaultData) : '';
+                input.value = '';
+            } else {
+                input.classList.add('shake');
+                setTimeout(() => input.classList.remove('shake'), 400);
+                input.value = '';
+                alert('סיסמה שגויה');
+            }
+        }
+
+        function lockVault() {
+            const text = document.getElementById('vault-text').value;
+            if (text) {
+                localStorage.setItem('lumina_vault_data', btoa(text));
+            }
+            document.getElementById('vault-auth').classList.remove('hidden');
+            document.getElementById('vault-content').classList.add('hidden');
+            document.getElementById('vault-pass').value = '';
+        }
+        
+        function showChangePasswordModal() {
+            document.getElementById('change-password-modal').classList.remove('hidden');
+            document.getElementById('current-pass-input').value = '';
+            document.getElementById('new-pass-input').value = '';
+            document.getElementById('confirm-pass-input').value = '';
+            setTimeout(() => document.getElementById('current-pass-input').focus(), 100);
+        }
+        
+        function closeChangePasswordModal() {
+            document.getElementById('change-password-modal').classList.add('hidden');
+        }
+        
+        function changeVaultPassword() {
+            const currentPass = document.getElementById('current-pass-input').value;
+            const newPass = document.getElementById('new-pass-input').value;
+            const confirmPass = document.getElementById('confirm-pass-input').value;
+            
+            // Validate current password
+            if (currentPass !== VAULT_PASS) {
+                alert('סיסמה נוכחית שגויה');
+                document.getElementById('current-pass-input').classList.add('shake');
+                setTimeout(() => document.getElementById('current-pass-input').classList.remove('shake'), 400);
+                return;
+            }
+            
+            // Validate new password
+            if (!newPass || newPass.length < 3) {
+                alert('סיסמה חדשה חייבת להכיל לפחות 3 תווים');
+                document.getElementById('new-pass-input').classList.add('shake');
+                setTimeout(() => document.getElementById('new-pass-input').classList.remove('shake'), 400);
+                return;
+            }
+            
+            // Validate confirmation
+            if (newPass !== confirmPass) {
+                alert('סיסמה חדשה ואימות הסיסמה לא תואמים');
+                document.getElementById('confirm-pass-input').classList.add('shake');
+                setTimeout(() => document.getElementById('confirm-pass-input').classList.remove('shake'), 400);
+                return;
+            }
+            
+            // Change password
+            setVaultPassword(newPass);
+            window.VAULT_PASS = newPass; // Update the global variable
+            
+            alert('סיסמה שונתה בהצלחה! 🔑');
+            closeChangePasswordModal();
+        }
+
+        function exportVault() {
+            const text = document.getElementById('vault-text').value;
+            if (!text) {
+                alert('אין תוכן לייצוא');
+                return;
+            }
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `doneit-vault-${new Date().toISOString().split('T')[0]}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importVault() {
+            document.getElementById('vault-file-input').click();
+        }
+
+        function handleVaultImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById('vault-text').value = e.target.result;
+                localStorage.setItem('lumina_vault_data', btoa(e.target.result));
+                alert('הנתונים יובאו בהצלחה');
+            };
+            reader.readAsText(file);
+        }
+
+        // --- Backup & Restore ---
+        function exportAllData() {
+            const data = {
+                tasks: tasks,
+                spaces: spacesData,
+                vault: localStorage.getItem('lumina_vault_data') || '',
+                exportDate: new Date().toISOString()
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `doneit-backup-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importAllData() {
+            document.getElementById('data-file-input').click();
+        }
+
+        function handleDataImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (confirm('זה יחליף את כל הנתונים הנוכחיים. להמשיך?')) {
+                        if (data.tasks) {
+                            tasks = data.tasks;
+                            localStorage.setItem('lumina_tasks', JSON.stringify(tasks));
+                        }
+                        if (data.spaces) {
+                            spacesData = data.spaces;
+                            localStorage.setItem('lumina_spaces_v3', JSON.stringify(spacesData));
+                        }
+                        if (data.vault) {
+                            localStorage.setItem('lumina_vault_data', data.vault);
+                        }
+                        alert('הנתונים יובאו בהצלחה!');
+                        renderTasks();
+                        if (currentSpace) renderNotes();
+                    }
+                } catch (err) {
+                    alert('שגיאה בקריאת הקובץ');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function clearAllData() {
+            if (confirm('זה ימחק את כל הנתונים! להמשיך?')) {
+                if (confirm('בטוח בטוח?')) {
+                    localStorage.clear();
+                    tasks = [];
+                    spacesData = { 'עבורי': [], 'הבית ודורי': [], 'פרויקטים': [], 'משאלות': [] };
+                    renderTasks();
+                    alert('כל הנתונים נמחקו');
+                }
+            }
+        }
+
+        function openSettings() {
+            document.getElementById('settings-modal').classList.remove('hidden');
+        }
+
+        function closeSettings() {
+            document.getElementById('settings-modal').classList.add('hidden');
+        }
+
+        // --- Auto-save vault ---
+        let vaultSaveTimeout;
+        document.addEventListener('DOMContentLoaded', () => {
+            const vaultText = document.getElementById('vault-text');
+            if (vaultText) {
+                vaultText.addEventListener('input', () => {
+                    clearTimeout(vaultSaveTimeout);
+                    vaultSaveTimeout = setTimeout(() => {
+                        const text = vaultText.value;
+                        if (text) {
+                            localStorage.setItem('lumina_vault_data', btoa(text));
+                        }
+                    }, 1000);
+                });
+            }
+        });
+
+        // --- Progress & Achievements System ---
+        function celebrateTaskCompletion() {
+            // Create confetti with more variety
+            const colors = ['#9333EA', '#EC4899', '#A855F7', '#F472B6', '#C084FC', '#F9A8D4'];
+            const shapes = ['●', '◆', '▲', '★'];
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.top = Math.random() * 20 + '%';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.width = (Math.random() * 8 + 6) + 'px';
+                    confetti.style.height = confetti.style.width;
+                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0%';
+                    confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    document.body.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 4000);
+                }, i * 30);
+            }
+            
+            // Haptic feedback (if available)
+            if (navigator.vibrate) {
+                navigator.vibrate([100, 50, 100]);
+            }
+            
+            // Add celebration sound effect (optional - using Web Audio API)
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.2);
+            } catch (e) {
+                // Audio not supported, continue silently
+            }
+        }
+        
+        function updateStreak() {
+            const today = new Date().toDateString();
+            const lastDate = progressData.lastCompletedDate ? new Date(progressData.lastCompletedDate).toDateString() : null;
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayStr = yesterday.toDateString();
+            
+            if (lastDate === today) {
+                // Already completed today
+                return;
+            } else if (lastDate === yesterdayStr) {
+                // Continue streak
+                progressData.streak++;
+            } else if (lastDate === null) {
+                // First time
+                progressData.streak = 1;
+            } else {
+                // Streak broken, start over
+                progressData.streak = 1;
+            }
+            
+            progressData.lastCompletedDate = new Date().toISOString();
+            localStorage.setItem('lumina_progress', JSON.stringify(progressData));
+            if (document.getElementById('tab-progress') && !document.getElementById('tab-progress').classList.contains('hidden')) {
+                renderProgress();
+            }
+        }
+        
+        function checkAchievements() {
+            const completed = tasks.filter(t => t.done).length;
+            const total = tasks.length;
+            // Check perfect day
+            const today = new Date().toDateString();
+            const todayTasks = tasks.filter(t => {
+                if (!t.createdAt) return false;
+                return new Date(t.createdAt).toDateString() === today;
+            });
+            const todayCompleted = todayTasks.filter(t => t.done).length;
+            const perfectDay = todayTasks.length > 0 && todayCompleted === todayTasks.length;
+            
+            const achievements = {
+                'first_task': { unlocked: completed >= 1, icon: '🎯', name: 'משימה ראשונה', desc: 'השלמת משימה אחת' },
+                'ten_tasks': { unlocked: completed >= 10, icon: '🌟', name: 'עשר משימות', desc: 'השלמת 10 משימות' },
+                'fifty_tasks': { unlocked: completed >= 50, icon: '💎', name: 'חמישים משימות', desc: 'השלמת 50 משימות' },
+                'hundred_tasks': { unlocked: completed >= 100, icon: '👑', name: 'מאה משימות', desc: 'השלמת 100 משימות' },
+                'streak_3': { unlocked: progressData.streak >= 3, icon: '🔥', name: 'רצף של 3', desc: '3 ימים רצופים' },
+                'streak_7': { unlocked: progressData.streak >= 7, icon: '🔥🔥', name: 'שבוע רצוף', desc: '7 ימים רצופים' },
+                'streak_30': { unlocked: progressData.streak >= 30, icon: '🔥🔥🔥', name: 'חודש רצוף', desc: '30 ימים רצופים' },
+                'perfect_day': { unlocked: perfectDay, icon: '✨', name: 'יום מושלם', desc: 'השלמת כל המשימות ביום' },
+                'notes_master': { unlocked: Object.values(spacesData).flat().length >= 10, icon: '📝', name: 'מאסטר רשימות', desc: '10 רשימות' }
+            };
+            
+            let newAchievement = false;
+            Object.keys(achievements).forEach(key => {
+                if (achievements[key].unlocked && !progressData.achievements[key]) {
+                    progressData.achievements[key] = true;
+                    newAchievement = true;
+                }
+            });
+            
+            if (newAchievement) {
+                localStorage.setItem('lumina_progress', JSON.stringify(progressData));
+                celebrateAchievement();
+            }
+        }
+        
+        function celebrateAchievement() {
+            // Show achievement notification with animation
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-20 left-1/2 transform -translate-x-1/2 z-[9999] apple-card p-6 text-center';
+            notification.style.background = 'linear-gradient(135deg, rgba(147, 51, 234, 0.95), rgba(236, 72, 153, 0.95))';
+            notification.style.backdropFilter = 'blur(20px)';
+            notification.style.border = '2px solid rgba(255,255,255,0.3)';
+            notification.style.boxShadow = '0 20px 40px rgba(147, 51, 234, 0.4)';
+            notification.style.animation = 'modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+            notification.innerHTML = `
+                <div class="text-6xl mb-3 animate-bounce">🏆</div>
+                <div class="font-bold text-xl text-white mb-1">הישג חדש!</div>
+                <div class="text-sm text-white/80">כל הכבוד על ההתקדמות!</div>
+            `;
+            document.body.appendChild(notification);
+            
+            // Confetti for achievement
+            celebrateTaskCompletion();
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translate(-50%, -20px) scale(0.9)';
+                notification.style.transition = 'all 0.5s ease';
+                setTimeout(() => notification.remove(), 500);
+            }, 3000);
+        }
+        
+        function renderProgress() {
+            // Update streak
+            document.getElementById('streak-count').textContent = progressData.streak || 0;
+            const streakMessages = {
+                0: 'התחל להשלמת משימות כדי להתחיל רצף',
+                1: 'יום ראשון! המשך כך!',
+                3: 'רצף של 3 ימים - מעולה!',
+                7: 'שבוע רצוף - מדהים!',
+                14: 'שבועיים רצופים - אתה על אש!',
+                30: 'חודש רצוף - אתה אלוף!'
+            };
+            const streakMsg = streakMessages[progressData.streak] || streakMessages[0];
+            document.getElementById('streak-message').textContent = streakMsg;
+            
+            // Update stats
+            const completed = tasks.filter(t => t.done).length;
+            const total = tasks.length;
+            const rate = total > 0 ? Math.round((completed / total) * 100) : 0;
+            const totalNotes = Object.values(spacesData).flat().length;
+            
+            document.getElementById('total-tasks').textContent = total;
+            document.getElementById('completed-tasks').textContent = completed;
+            document.getElementById('completion-rate').textContent = rate + '%';
+            document.getElementById('total-notes').textContent = totalNotes;
+            
+            // Render achievements
+            renderAchievements();
+            
+            // Render progress chart
+            renderProgressChart();
+            
+            // Render insights
+            generateInsights();
+        }
+        
+        function renderAchievements() {
+            const container = document.getElementById('achievements-grid');
+            container.innerHTML = '';
+            
+            const achievements = [
+                { key: 'first_task', icon: '🎯', name: 'ראשונה', unlocked: progressData.achievements?.first_task },
+                { key: 'ten_tasks', icon: '🌟', name: '10 משימות', unlocked: progressData.achievements?.ten_tasks },
+                { key: 'fifty_tasks', icon: '💎', name: '50 משימות', unlocked: progressData.achievements?.fifty_tasks },
+                { key: 'hundred_tasks', icon: '👑', name: '100 משימות', unlocked: progressData.achievements?.hundred_tasks },
+                { key: 'streak_3', icon: '🔥', name: '3 ימים', unlocked: progressData.achievements?.streak_3 },
+                { key: 'streak_7', icon: '🔥🔥', name: '7 ימים', unlocked: progressData.achievements?.streak_7 },
+                { key: 'streak_30', icon: '🔥🔥🔥', name: '30 ימים', unlocked: progressData.achievements?.streak_30 },
+                { key: 'notes_master', icon: '📝', name: '10 רשימות', unlocked: progressData.achievements?.notes_master },
+                { key: 'perfect_day', icon: '✨', name: 'יום מושלם', unlocked: progressData.achievements?.perfect_day }
+            ];
+            
+            achievements.forEach(ach => {
+                const badge = document.createElement('div');
+                badge.className = `achievement-badge ${ach.unlocked ? 'unlocked' : 'locked'}`;
+                badge.innerHTML = `
+                    <div class="text-2xl mb-1">${ach.icon}</div>
+                    <div class="text-[10px] font-bold text-center">${ach.name}</div>
+                `;
+                container.appendChild(badge);
+            });
+        }
+        
+        function renderProgressChart() {
+            const container = document.getElementById('progress-chart');
+            container.innerHTML = '';
+            
+            // Get last 7 days
+            const days = ['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ש'];
+            const today = new Date();
+            
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toDateString();
+                
+                // Count completed tasks for this day
+                const dayTasks = tasks.filter(t => {
+                    if (!t.completedAt) return false;
+                    return new Date(t.completedAt).toDateString() === dateStr;
+                }).length;
+                
+                const maxTasks = Math.max(1, ...Array.from({length: 7}, (_, idx) => {
+                    const d = new Date(today);
+                    d.setDate(d.getDate() - (6 - idx));
+                    return tasks.filter(t => {
+                        if (!t.completedAt) return false;
+                        return new Date(t.completedAt).toDateString() === d.toDateString();
+                    }).length;
+                }));
+                
+                const height = maxTasks > 0 ? (dayTasks / maxTasks) * 100 : 0;
+                
+                const bar = document.createElement('div');
+                bar.className = 'flex-1 flex flex-col items-center group';
+                bar.innerHTML = `
+                    <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-t-lg relative overflow-hidden group-hover:bg-slate-300 dark:group-hover:bg-slate-600 transition-colors" style="height: 100px;">
+                        <div class="progress-bar absolute bottom-0 w-full rounded-t-lg" style="height: ${height}%"></div>
+                        <div class="absolute inset-0 flex items-end justify-center pb-1">
+                            <span class="text-[10px] font-bold text-white opacity-0 group-hover:opacity-100 transition-opacity">${dayTasks}</span>
+                        </div>
+                    </div>
+                    <div class="text-[10px] text-slate-500 dark:text-slate-400 mt-1 font-semibold">${days[date.getDay()]}</div>
+                    <div class="text-[8px] text-slate-400 dark:text-slate-500">${dayTasks}</div>
+                `;
+                container.appendChild(bar);
+            }
+        }
+        
+        function generateInsights() {
+            const container = document.getElementById('insights-container');
+            container.innerHTML = '';
+            
+            const insights = [];
+            const completed = tasks.filter(t => t.done).length;
+            const total = tasks.length;
+            const rate = total > 0 ? (completed / total) * 100 : 0;
+            
+            if (progressData.streak > 0) {
+                insights.push({
+                    icon: '🔥',
+                    text: `רצף מדהים של ${progressData.streak} ימים! המשך כך!`
+                });
+            }
+            
+            if (rate >= 80 && total > 0) {
+                insights.push({
+                    icon: '⭐',
+                    text: `אחוז השלמה מעולה: ${Math.round(rate)}%! אתה על אש!`
+                });
+            } else if (rate < 50 && total > 5) {
+                insights.push({
+                    icon: '💪',
+                    text: `יש לך ${total - completed} משימות ממתינות. בואו נסיים אותן!`
+                });
+            }
+            
+            const todayTasks = tasks.filter(t => {
+                if (!t.completedAt) return false;
+                return new Date(t.completedAt).toDateString() === new Date().toDateString();
+            }).length;
+            
+            if (todayTasks > 0) {
+                insights.push({
+                    icon: '🎉',
+                    text: `היום השלמת ${todayTasks} משימות! כל הכבוד!`
+                });
+            }
+            
+            const p1Tasks = tasks.filter(t => !t.done && t.p === 1).length;
+            if (p1Tasks > 0) {
+                insights.push({
+                    icon: '⚠️',
+                    text: `יש לך ${p1Tasks} משימות עדיפות גבוהה (עדיפות 1) שצריך לטפל בהן`
+                });
+            }
+            
+            if (insights.length === 0) {
+                insights.push({
+                    icon: '🌱',
+                    text: 'התחל להשלמת משימות כדי לראות תובנות כאן'
+                });
+            }
+            
+            insights.forEach(insight => {
+                const card = document.createElement('div');
+                card.className = 'insight-card';
+                card.innerHTML = `
+                    <span class="text-lg">${insight.icon}</span>
+                    <span class="mr-2">${insight.text}</span>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // --- Initialization ---
+        function init() {
+            initTheme();
+            const met = new Date('2021-01-23');
+            const diff = Math.floor((new Date() - met) / (1000 * 60 * 60 * 24));
+            document.getElementById('header-days').innerText = diff.toLocaleString() + " ימים יחד";
+            renderTasks();
+            renderApps();
+            checkAchievements();
+            renderGifts();
+            
+            // Register Service Worker for background notifications
+            if ('serviceWorker' in navigator) {
+                console.log('🔧 Registering Service Worker...');
+                navigator.serviceWorker.register('/done-it-app/service-worker.js')
+                    .then(registration => {
+                        console.log('✅ Service Worker registered successfully:', registration);
+                        console.log('🔧 Service Worker scope:', registration.scope);
+                        console.log('🔧 Service Worker state:', registration.active?.state || registration.installing?.state || registration.waiting?.state);
+                        
+                        // Wait for Service Worker to be ready
+                        return navigator.serviceWorker.ready.then(() => {
+                            console.log('✅ Service Worker is ready!');
+                            return registration;
+                        });
+                    })
+                    .then(registration => {
+                        // Request notification permission
+                        if ('Notification' in window) {
+                            console.log('🔔 Current notification permission:', Notification.permission);
+                            if (Notification.permission === 'default') {
+                                console.log('🔔 Requesting notification permission...');
+                                return Notification.requestPermission();
+                            }
+                            return Notification.permission;
+                        }
+                        return 'not-supported';
+                    })
+                    .then(permission => {
+                        console.log('🔔 Final notification permission:', permission);
+                        if (permission === 'granted') {
+                            console.log('✅✅✅ Notification permission GRANTED! Notifications should work.');
+                        } else if (permission === 'denied') {
+                            console.warn('⚠️ Notification permission DENIED. User must enable it in browser settings.');
+                        } else {
+                            console.warn('⚠️ Notification permission:', permission);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('❌ Service Worker registration failed:', error);
+                        console.error('❌ Error details:', error.message, error.stack);
+                        // Fallback: request notification permission without Service Worker
+                        if ('Notification' in window && Notification.permission === 'default') {
+                            console.log('🔔 Trying fallback: requesting notification permission without Service Worker...');
+                            Notification.requestPermission().then(permission => {
+                                console.log('🔔 Fallback permission result:', permission);
+                                if (permission === 'granted') {
+                                    console.log('✅ Notification permission granted (fallback)');
+                                }
+                            });
+                        }
+                    });
+            } else {
+                console.warn('⚠️ Service Worker not supported in this browser');
+                // Fallback: request notification permission without Service Worker
+                if ('Notification' in window && Notification.permission === 'default') {
+                    console.log('🔔 Requesting notification permission (no Service Worker)...');
+                    Notification.requestPermission().then(permission => {
+                        console.log('🔔 Permission result:', permission);
+                        if (permission === 'granted') {
+                            console.log('✅ Notification permission granted');
+                        }
+                    });
+                }
+            }
+            
+            // Log all existing reminders for debugging
+            console.log('📋 Initializing reminders...');
+            const tasksWithReminders = tasks.filter(t => t.reminder && t.reminder.enabled && !t.done);
+            console.log('Tasks with reminders:', tasksWithReminders.length);
+            tasksWithReminders.forEach(task => {
+                const reminderTime = new Date(task.reminder.datetime);
+                const now = new Date();
+                const timeUntilReminder = reminderTime.getTime() - now.getTime();
+                const minutesUntil = Math.floor(timeUntilReminder / 60000);
+                console.log('  - Task:', task.title, 'Reminder:', reminderTime.toLocaleString('he-IL'), `(${minutesUntil > 0 ? 'בעוד ' + minutesUntil + ' דקות' : 'עבר'})`);
+            });
+            
+            // Mobile-specific: Show alert if notifications are not enabled
+            if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                setTimeout(() => {
+                    if ('Notification' in window && Notification.permission === 'denied') {
+                        console.warn('⚠️⚠️⚠️ MOBILE: Notification permission is DENIED!');
+                        console.warn('⚠️ To enable: Settings → Site Settings → Notifications → Allow');
+                    } else if ('Notification' in window && Notification.permission === 'default') {
+                        console.log('📱 MOBILE: Notification permission not yet requested');
+                    } else if ('Notification' in window && Notification.permission === 'granted') {
+                        console.log('✅ MOBILE: Notification permission GRANTED - notifications should work!');
+                    }
+                }, 2000);
+            }
+            
+            // Don't use scheduleTaskReminder (setTimeout) - rely on periodic checks instead
+            // This ensures reminders work even if page is closed and reopened
+            
+            // Check for note reminders immediately
+            checkNoteReminders();
+            // Check for task reminders immediately
+            checkTaskReminders();
+            
+            // Send reminders to Service Worker for background checking
+            setTimeout(() => {
+                sendRemindersToServiceWorker();
+            }, 1000);
+            
+            // Check reminders every 3 seconds when app is open (very frequent for better reliability)
+            // On mobile, browsers throttle intervals when tab is in background, so we check frequently
+            const reminderInterval = setInterval(() => {
+                // Only check if app is visible (to save battery)
+                if (!document.hidden) {
+                    const checkTime = new Date().toLocaleTimeString('he-IL');
+                    console.log('⏰ Checking reminders at', checkTime, '(app visible)');
+                    checkNoteReminders();
+                    checkTaskReminders();
+                } else {
+                    // Even when hidden, check occasionally (mobile browsers allow this)
+                    const checkTime = new Date().toLocaleTimeString('he-IL');
+                    console.log('⏰ Checking reminders at', checkTime, '(app hidden - mobile may throttle)');
+                    checkNoteReminders();
+                    checkTaskReminders();
+                }
+            }, 3000); // Check every 3 seconds for better responsiveness
+            
+            // Store interval ID for potential cleanup
+            window.reminderInterval = reminderInterval;
+            
+            // Test reminder immediately (for debugging)
+            console.log('🧪 Reminder system initialized');
+            console.log('🧪 Current time:', new Date().toLocaleString('he-IL'));
+            console.log('🧪 To test: addTask() with reminder in 1 minute');
+            
+            // Also check immediately on visibility change (when user returns to app)
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) {
+                    console.log('👁️ App became visible - checking reminders immediately');
+                    checkNoteReminders();
+                    checkTaskReminders();
+                } else {
+                    console.log('👁️ App went to background - sending reminders to Service Worker');
+                    // Send reminders to Service Worker when app goes to background
+                    sendRemindersToServiceWorker();
+                }
+            });
+            
+            // Function to send reminders to Service Worker for background checking
+            async function sendRemindersToServiceWorker() {
+                if ('serviceWorker' in navigator) {
+                    try {
+                        const registration = await navigator.serviceWorker.ready;
+                        const tasksWithReminders = tasks.filter(t => t.reminder && t.reminder.enabled && !t.done);
+                        const notesWithReminders = [];
+                        Object.keys(spacesData).forEach(space => {
+                            spacesData[space].forEach((note, index) => {
+                                if (note.reminder && note.reminder.enabled && note.reminder.datetime) {
+                                    notesWithReminders.push({ space, index, reminder: note.reminder });
+                                }
+                            });
+                        });
+                        
+                        registration.active?.postMessage({
+                            type: 'UPDATE_REMINDERS',
+                            tasks: tasksWithReminders.map(t => ({
+                                id: t.id,
+                                title: t.title,
+                                reminder: t.reminder
+                            })),
+                            notes: notesWithReminders
+                        });
+                        console.log('📤 Sent reminders to Service Worker:', tasksWithReminders.length, 'tasks,', notesWithReminders.length, 'notes');
+                    } catch (e) {
+                        console.error('❌ Failed to send reminders to Service Worker:', e);
+                    }
+                }
+            }
+            
+            // Listen for messages from Service Worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.addEventListener('message', (event) => {
+                    if (event.data && event.data.type === 'CHECK_REMINDERS') {
+                        console.log('📨 Received CHECK_REMINDERS message from Service Worker');
+                        checkNoteReminders();
+                        checkTaskReminders();
+                    }
+                });
+            }
+            
+            // Also listen for page focus (when user switches back to app)
+            window.addEventListener('focus', () => {
+                console.log('🎯 Window focused - checking reminders immediately');
+                checkNoteReminders();
+                checkTaskReminders();
+            });
+            
+            // Check when page loads (in case it was closed and reopened)
+            window.addEventListener('pageshow', (event) => {
+                console.log('📄 Page shown - checking reminders and sending to Service Worker');
+                checkNoteReminders();
+                checkTaskReminders();
+                // Send reminders to Service Worker
+                setTimeout(() => {
+                    sendRemindersToServiceWorker();
+                }, 500);
+            });
+            
+            // Initialize progress if tab is visible
+            setTimeout(() => {
+                if (!document.getElementById('tab-progress').classList.contains('hidden')) {
+                    renderProgress();
+                }
+            }, 100);
+            
+        }
+
+        init();
+    </script>
+</body>
+</html>
