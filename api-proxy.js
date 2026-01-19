@@ -43,16 +43,15 @@ if (!process.env.OPENAI_API_KEY) {
     console.log(`✅ OpenAI API Key loaded successfully from ${apiKeySource}`);
 }
 
+// Force serve the assets folder (ABOVE all other routes and middlewares)
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
+// Also serve the root directory for manifest and HTML files
+app.use(express.static(__dirname));
+
 // Increase body size limit to handle large files
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
-
-// Serve static files from assets folder (MUST be BEFORE all other routes)
-app.use('/assets', express.static(path.join(__dirname, 'assets')));
-
-// Serve static files from current directory
-app.use(express.static(__dirname));
 
 // Define assets directory for journal files
 const assetsDir = path.join(__dirname, 'assets', 'journal');
