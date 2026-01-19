@@ -48,40 +48,27 @@ app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
+// Define assets directory for journal files
+const assetsDir = path.join(__dirname, 'assets', 'journal');
+
+// Serve static files from assets folder (MUST be before other routes)
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
+console.log(`📁 [SERVER] Serving assets from: ${path.join(__dirname, 'assets')}`);
+
 // Serve static files from current directory
 app.use(express.static(__dirname));
-
-// Serve static files from assets folder (for icon.png and other assets)
-const assetsBaseDir = process.env.RENDER 
-    ? '/opt/render/project/src/assets'
-    : path.join(__dirname, 'assets');
-app.use('/assets', express.static(assetsBaseDir));
-console.log(`📁 [SERVER] Assets base directory: ${assetsBaseDir}`);
-
-// Serve static files from assets/journal directory (case-sensitive for Linux)
-// Use Render path if on Render, otherwise use relative path for local development
-const assetsDir = process.env.RENDER 
-    ? '/opt/render/project/src/assets/journal'
-    : path.join(__dirname, 'assets', 'journal');
-console.log(`📁 [SERVER] Assets journal directory path: ${assetsDir}`);
-console.log(`📁 [SERVER] Running on Render: ${!!process.env.RENDER}`);
-app.use('/assets/journal', express.static(assetsDir, {
-    setHeaders: (res, path) => {
-        console.log(`📤 [SERVER] Serving static file: ${path}`);
-    }
-}));
 
 // Ensure assets/journal directory exists (synchronous check for production)
 const fsSync = require('fs');
 if (!fsSync.existsSync(assetsDir)) {
     try {
         fsSync.mkdirSync(assetsDir, { recursive: true });
-        console.log('✅ Assets directory created:', assetsDir);
+        console.log('✅ Assets journal directory created:', assetsDir);
     } catch (error) {
-        console.error('❌ Error creating assets directory:', error);
+        console.error('❌ Error creating assets journal directory:', error);
     }
 } else {
-    console.log('✅ Assets directory exists:', assetsDir);
+    console.log('✅ Assets journal directory exists:', assetsDir);
 }
 
 // Helper function to save Base64 image/video to file
