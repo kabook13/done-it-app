@@ -106,18 +106,33 @@ async function saveMediaFile(base64Data, mediaType) {
 // API endpoint for uploading media files
 app.post('/api/upload-media', async (req, res) => {
     try {
+        console.log('📤 [UPLOAD-MEDIA] Upload request received:', {
+            hasBase64Data: !!req.body.base64Data,
+            mediaType: req.body.mediaType
+        });
+        
         const { base64Data, mediaType } = req.body;
         
         if (!base64Data) {
+            console.error('❌ [UPLOAD-MEDIA] No base64 data provided');
             return res.status(400).json({ error: 'No base64 data provided' });
         }
         
         const filePath = await saveMediaFile(base64Data, mediaType);
         
-        console.log('✅ Media file saved:', filePath);
-        res.json({ filePath: filePath });
+        // Extract filename from path for explicit response
+        const filename = path.basename(filePath);
+        
+        console.log('✅ [UPLOAD-MEDIA] Media file saved:', filePath);
+        
+        // Explicit JSON response format
+        return res.status(200).json({ 
+            success: true, 
+            url: `/assets/journal/${filename}`,
+            filePath: filePath // Keep for backward compatibility
+        });
     } catch (error) {
-        console.error('❌ Error uploading media:', error);
+        console.error('❌ [UPLOAD-MEDIA] Upload error:', error);
         res.status(500).json({ error: error.message });
     }
 });
