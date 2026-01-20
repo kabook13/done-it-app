@@ -1,8 +1,9 @@
 // Service Worker for Done-It PWA
-const CACHE_NAME = 'doneit-v1';
+const CACHE_NAME = 'doneit-v2';
 const urlsToCache = [
-  '/done-it-app/lumina-vault.html',
-  '/done-it-app/index.html',
+  '/lumina-vault.html',
+  '/manifest.json',
+  '/assets/icon.png',
   'https://cdn.tailwindcss.com',
   'https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;800&display=swap'
 ];
@@ -75,14 +76,14 @@ self.addEventListener('message', (event) => {
     const { title, body, tag, icon } = event.data;
     self.registration.showNotification(title, {
       body: body,
-      icon: icon || '/done-it-app/icon-192.png',
-      badge: '/done-it-app/icon-192.png',
+            icon: icon || '/assets/icon.png',
+            badge: '/assets/icon.png',
       tag: tag,
       requireInteraction: false,
       silent: false,
       vibrate: [200, 100, 200],
       data: {
-        url: '/done-it-app/lumina-vault.html'
+        url: '/lumina-vault.html'
       }
     });
   } else if (event.data && event.data.type === 'UPDATE_REMINDERS') {
@@ -110,7 +111,7 @@ self.addEventListener('notificationclick', (event) => {
       }
       // Otherwise open new window
       if (clients.openWindow) {
-        return clients.openWindow('/done-it-app/lumina-vault.html');
+        return clients.openWindow('/lumina-vault.html');
       }
     })
   );
@@ -177,14 +178,14 @@ async function checkStoredReminders() {
         try {
           await self.registration.showNotification(title, {
             body: body,
-            icon: '/done-it-app/icon-192.png',
-            badge: '/done-it-app/icon-192.png',
+            icon: '/assets/icon.png',
+            badge: '/assets/icon.png',
             tag: tag,
             requireInteraction: false,
             silent: false,
             vibrate: [200, 100, 200],
             data: {
-              url: '/done-it-app/lumina-vault.html',
+              url: '/lumina-vault.html',
               taskId: task.id
             }
           });
@@ -225,14 +226,14 @@ async function checkStoredReminders() {
         try {
           await self.registration.showNotification(title, {
             body: body,
-            icon: '/done-it-app/icon-192.png',
-            badge: '/done-it-app/icon-192.png',
+            icon: '/assets/icon.png',
+            badge: '/assets/icon.png',
             tag: tag,
             requireInteraction: false,
             silent: false,
             vibrate: [200, 100, 200],
             data: {
-              url: '/done-it-app/lumina-vault.html',
+              url: '/lumina-vault.html',
               space: note.space,
               noteIndex: note.index
             }

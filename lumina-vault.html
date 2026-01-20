@@ -12,8 +12,8 @@
     
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/icon.png">
+    <link rel="apple-touch-icon" href="assets/icon.png">
     
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -1213,7 +1213,27 @@
         if (!progressData.weeklyProgress) progressData.weeklyProgress = {};
         
         // Gifts data - מתנות ממני
-        let gifts = JSON.parse(localStorage.getItem('lumina_gifts')) || [];
+        // Default hardcoded gifts (always present, even if localStorage is cleared)
+        const DEFAULT_GIFTS = [
+            {
+                id: 'default-1',
+                title: 'ברוכה הבאה! 💝',
+                message: 'זו מתנה קטנה ממני. אני אוהב אותך! ❤️',
+                icon: '💝',
+                revealDate: null, // Show immediately
+                viewed: false,
+                createdAt: Date.now()
+            }
+        ];
+        
+        // Load gifts from localStorage, but merge with defaults (defaults take priority if localStorage is empty)
+        const storedGifts = JSON.parse(localStorage.getItem('lumina_gifts')) || [];
+        let gifts = storedGifts.length > 0 ? storedGifts : DEFAULT_GIFTS;
+        
+        // Ensure default gifts are always present (merge strategy)
+        const defaultIds = DEFAULT_GIFTS.map(g => g.id);
+        const userGifts = gifts.filter(g => !defaultIds.includes(g.id));
+        gifts = [...DEFAULT_GIFTS, ...userGifts];
         let giftsAdminVisible = false;
         let secretTapCount = 0;
         let currentSpace = '';
@@ -1404,14 +1424,14 @@
                         console.log('🔔 Showing notification via Service Worker...');
                         const notificationOptions = {
                             body: body,
-                            icon: '/done-it-app/icon-192.png',
-                            badge: '/done-it-app/icon-192.png',
+                            icon: '/assets/icon.png',
+                            badge: '/assets/icon.png',
                             tag: tag,
                             requireInteraction: false,
                             silent: false,
                             vibrate: [200, 100, 200],
                             data: {
-                                url: '/done-it-app/lumina-vault.html',
+                                url: '/lumina-vault.html',
                                 taskId: taskId
                             }
                         };
@@ -1425,14 +1445,14 @@
                         if (permission === 'granted') {
                             await registration.showNotification(title, {
                                 body: body,
-                                icon: '/done-it-app/icon-192.png',
-                                badge: '/done-it-app/icon-192.png',
+                                icon: '/assets/icon.png',
+                                badge: '/assets/icon.png',
                                 tag: tag,
                                 requireInteraction: false,
                                 silent: false,
                                 vibrate: [200, 100, 200],
                                 data: {
-                                    url: '/done-it-app/lumina-vault.html',
+                                    url: '/lumina-vault.html',
                                     taskId: taskId
                                 }
                             });
@@ -1453,8 +1473,8 @@
                         console.log('🔔 Creating Notification object...');
                         const notification = new Notification(title, {
                             body: body,
-                            icon: '/done-it-app/icon-192.png',
-                            badge: '/done-it-app/icon-192.png',
+                            icon: '/assets/icon.png',
+                            badge: '/assets/icon.png',
                             tag: tag,
                             requireInteraction: false,
                             silent: false,
@@ -1471,8 +1491,8 @@
                     if (permission === 'granted') {
                         const notification = new Notification(title, {
                             body: body,
-                            icon: '/done-it-app/icon-192.png',
-                            badge: '/done-it-app/icon-192.png',
+                            icon: '/assets/icon.png',
+                            badge: '/assets/icon.png',
                             tag: tag,
                             requireInteraction: false,
                             silent: false,
@@ -1894,14 +1914,14 @@
                         console.log('🔔 Showing notification via Service Worker...');
                         const notificationOptions = {
                             body: body,
-                            icon: '/done-it-app/icon-192.png',
-                            badge: '/done-it-app/icon-192.png',
+                            icon: '/assets/icon.png',
+                            badge: '/assets/icon.png',
                             tag: tag,
                             requireInteraction: false,
                             silent: false,
                             vibrate: [200, 100, 200],
                             data: {
-                                url: '/done-it-app/lumina-vault.html',
+                                url: '/lumina-vault.html',
                                 space: space,
                                 noteIndex: noteIndex
                             }
@@ -1916,14 +1936,14 @@
                         if (permission === 'granted') {
                             await registration.showNotification(title, {
                                 body: body,
-                                icon: '/done-it-app/icon-192.png',
-                                badge: '/done-it-app/icon-192.png',
+                                icon: '/assets/icon.png',
+                                badge: '/assets/icon.png',
                                 tag: tag,
                                 requireInteraction: false,
                                 silent: false,
                                 vibrate: [200, 100, 200],
                                 data: {
-                                    url: '/done-it-app/lumina-vault.html',
+                                    url: '/lumina-vault.html',
                                     space: space,
                                     noteIndex: noteIndex
                                 }
@@ -1945,8 +1965,8 @@
                         console.log('🔔 Creating Notification object...');
                         const notification = new Notification(title, {
                             body: body,
-                            icon: '/done-it-app/icon-192.png',
-                            badge: '/done-it-app/icon-192.png',
+                            icon: '/assets/icon.png',
+                            badge: '/assets/icon.png',
                             tag: tag,
                             requireInteraction: false,
                             silent: false,
@@ -1963,8 +1983,8 @@
                     if (permission === 'granted') {
                         const notification = new Notification(title, {
                             body: body,
-                            icon: '/done-it-app/icon-192.png',
-                            badge: '/done-it-app/icon-192.png',
+                            icon: '/assets/icon.png',
+                            badge: '/assets/icon.png',
                             tag: tag,
                             requireInteraction: false,
                             silent: false,
@@ -2240,6 +2260,11 @@
         }
         
         function deleteGift(id) {
+            // Prevent deletion of default gifts
+            if (DEFAULT_GIFTS.some(g => g.id === id)) {
+                alert('לא ניתן למחוק מתנות ברירת מחדל');
+                return;
+            }
             if (confirm('למחוק את המתנה?')) {
                 gifts = gifts.filter(g => g.id !== id);
                 saveGifts();
@@ -2249,14 +2274,17 @@
         function clearAllGifts() {
             if (confirm('למחוק את כל המתנות? זה לא ניתן לשחזור!')) {
                 if (confirm('בטוח בטוח?')) {
-                    gifts = [];
+                    // Keep default gifts, only remove user-added ones
+                    gifts = [...DEFAULT_GIFTS];
                     saveGifts();
                 }
             }
         }
         
         function saveGifts() {
-            localStorage.setItem('lumina_gifts', JSON.stringify(gifts));
+            // Save only user-added gifts (exclude defaults)
+            const userGifts = gifts.filter(g => !DEFAULT_GIFTS.some(dg => dg.id === g.id));
+            localStorage.setItem('lumina_gifts', JSON.stringify(userGifts));
             renderGifts();
         }
         
@@ -2821,7 +2849,7 @@
             // Register Service Worker for background notifications
             if ('serviceWorker' in navigator) {
                 console.log('🔧 Registering Service Worker...');
-                navigator.serviceWorker.register('/done-it-app/service-worker.js')
+                navigator.serviceWorker.register('/service-worker.js')
                     .then(registration => {
                         console.log('✅ Service Worker registered successfully:', registration);
                         console.log('🔧 Service Worker scope:', registration.scope);
