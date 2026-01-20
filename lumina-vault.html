@@ -1431,7 +1431,7 @@
                             silent: false,
                             vibrate: [200, 100, 200],
                             data: {
-                                url: '/lumina-vault.html',
+                                url: './lumina-vault.html',
                                 taskId: taskId
                             }
                         };
@@ -1452,7 +1452,7 @@
                                 silent: false,
                                 vibrate: [200, 100, 200],
                                 data: {
-                                    url: '/lumina-vault.html',
+                                    url: './lumina-vault.html',
                                     taskId: taskId
                                 }
                             });
@@ -1921,7 +1921,7 @@
                             silent: false,
                             vibrate: [200, 100, 200],
                             data: {
-                                url: '/lumina-vault.html',
+                                url: './lumina-vault.html',
                                 space: space,
                                 noteIndex: noteIndex
                             }
@@ -1943,7 +1943,7 @@
                                 silent: false,
                                 vibrate: [200, 100, 200],
                                 data: {
-                                    url: '/lumina-vault.html',
+                                    url: './lumina-vault.html',
                                     space: space,
                                     noteIndex: noteIndex
                                 }
@@ -2849,7 +2849,7 @@
             // Register Service Worker for background notifications
             if ('serviceWorker' in navigator) {
                 console.log('🔧 Registering Service Worker...');
-                navigator.serviceWorker.register('/service-worker.js')
+                navigator.serviceWorker.register('./service-worker.js')
                     .then(registration => {
                         console.log('✅ Service Worker registered successfully:', registration);
                         console.log('🔧 Service Worker scope:', registration.scope);

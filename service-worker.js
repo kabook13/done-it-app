@@ -1,9 +1,10 @@
 // Service Worker for Done-It PWA
-const CACHE_NAME = 'doneit-v2';
+const CACHE_NAME = 'doneit-v3';
 const urlsToCache = [
-  '/lumina-vault.html',
-  '/manifest.json',
-  '/assets/icon.png',
+  './lumina-vault.html',
+  './index.html',
+  './manifest.json',
+  './assets/icon.png',
   'https://cdn.tailwindcss.com',
   'https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;800&display=swap'
 ];
@@ -76,14 +77,14 @@ self.addEventListener('message', (event) => {
     const { title, body, tag, icon } = event.data;
     self.registration.showNotification(title, {
       body: body,
-            icon: icon || '/assets/icon.png',
-            badge: '/assets/icon.png',
+            icon: icon || './assets/icon.png',
+            badge: './assets/icon.png',
       tag: tag,
       requireInteraction: false,
       silent: false,
       vibrate: [200, 100, 200],
       data: {
-        url: '/lumina-vault.html'
+        url: './lumina-vault.html'
       }
     });
   } else if (event.data && event.data.type === 'UPDATE_REMINDERS') {
@@ -111,7 +112,7 @@ self.addEventListener('notificationclick', (event) => {
       }
       // Otherwise open new window
       if (clients.openWindow) {
-        return clients.openWindow('/lumina-vault.html');
+        return clients.openWindow('./lumina-vault.html');
       }
     })
   );
@@ -185,7 +186,7 @@ async function checkStoredReminders() {
             silent: false,
             vibrate: [200, 100, 200],
             data: {
-              url: '/lumina-vault.html',
+              url: './lumina-vault.html',
               taskId: task.id
             }
           });
@@ -233,7 +234,7 @@ async function checkStoredReminders() {
             silent: false,
             vibrate: [200, 100, 200],
             data: {
-              url: '/lumina-vault.html',
+              url: './lumina-vault.html',
               space: note.space,
               noteIndex: note.index
             }
